@@ -16,7 +16,9 @@ function build_road(origin, target) {
 		);
 	}
 	function place_road(pos) {
-		console.log("\t" + pos.look());
+		existing = pos.look();
+		console.log("\t" + existing[0]);
+		console.log("\t" + existing.length);
 		console.log("\tBuilding Road at: " + pos);
 		pos.createConstructionSite(STRUCTURE_ROAD);
 	}
