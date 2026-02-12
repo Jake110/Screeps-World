@@ -104,7 +104,6 @@ module.exports.loop = function () {
 		for (let target in [spawn, _source.room.controller]) {
 			for (let step in _source.pos.findPathTo(target, {
 				ignoreCreeps: true,
-				ignore: [TERRAIN_MASK_WALL],
 				swampCost: 1,
 			})) {
 				_source.room.createConstructionSite(
