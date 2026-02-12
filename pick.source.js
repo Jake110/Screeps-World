@@ -34,7 +34,10 @@ module.exports = {
 						return false;
 					}
 				}
-				console.log();
+				console.log(
+					"\tCreep Capacity: " + creep.store.getFreeCapacity(),
+				);
+				console.log("\tSource Energy: " + _source.energy);
 				return _source.energy < creep.store.getFreeCapacity();
 			},
 		});
