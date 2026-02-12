@@ -101,7 +101,7 @@ module.exports.loop = function () {
 	_source = harvest.pick(spawn);
 	if (_source) {
 		// Build roads between source and Spawn/Controller
-		for (let target in [spawn, creep.room.controller]) {
+		for (let target in [spawn, _source.room.controller]) {
 			for (let step in _source.pos.findPathTo(target, {
 				ignoreCreeps: true,
 				ignore: [TERRAIN_MASK_WALL],
