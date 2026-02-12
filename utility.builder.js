@@ -17,14 +17,13 @@ function build_road(origin, target) {
 	}
 	function place_road(pos) {
 		console.log("\tChecking: " + pos);
-		const look = pos.look();
-		if (
-			look.forEach(function (lookObject) {
-				if (lookObject.type == LOOK_CONSTRUCTION_SITES) {
-					return True;
-				}
-			})
-		) {
+		let no_construction = true;
+		pos.look().forEach(function (lookObject) {
+			if (lookObject.type == LOOK_CONSTRUCTION_SITES) {
+				no_construction = false;
+			}
+		});
+		if (no_construction) {
 			console.log("\t\tAlready in use!");
 		} else {
 			console.log("\tBuilding Road at: " + pos);
