@@ -58,10 +58,10 @@ function build_road(origin, target) {
 
 module.exports = {
 	build_roads: function (spawn) {
-		for (var _source in spawn.room.find(FIND_SOURCES)) {
+		spawn.room.find(FIND_SOURCES).forEach(function (_source, _) {
 			// Build roads between source and Spawn/Controller
 			build_road(_source, spawn);
 			build_road(_source, spawn.room.controller);
-		}
+		});
 	},
 };
