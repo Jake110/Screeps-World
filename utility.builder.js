@@ -56,7 +56,7 @@ function build_road(_source, target) {
 	}
 }
 
-mopdule.exports = {
+module.exports = {
 	build_roads: function (spawn) {
 		sources = spawn.room.find(FIND_SOURCES);
 		for (let _source in sources) {
