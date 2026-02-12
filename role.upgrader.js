@@ -1,4 +1,4 @@
-var pick_source = require("pick.source");
+var harvest = require("utility.harvest");
 
 module.exports = {
 	/** @param {Creep} creep **/
@@ -22,12 +22,7 @@ module.exports = {
 				});
 			}
 		} else {
-			let _source = pick_source.pick(creep);
-			if (creep.harvest(_source) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(_source, {
-					visualizePathStyle: { stroke: "#ffaa00" },
-				});
-			}
+			harvest.harvest(creep);
 		}
 	},
 };
