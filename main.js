@@ -19,6 +19,27 @@ var roles = [
 ];
 var spawn = Game.spawns["Spawn1"];
 
+function build_road(_source, target) {
+	console.log(
+		"Building Road From [" +
+			_source.pos.x +
+			", " +
+			_source.pos.y +
+			"] to [" +
+			target.pos.x +
+			", " +
+			target.pos.y +
+			"]",
+	);
+	for (let step in _source.pos.findPathTo(target, {
+		ignoreCreeps: true,
+		swampCost: 1,
+	})) {
+		console.log("\t\tStep: [" + step.x + ", " + step.y + "]");
+		_source.room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD);
+	}
+}
+
 module.exports.loop = function () {
 	// Memory cleanup
 	for (let name in Memory.creeps) {
@@ -101,21 +122,7 @@ module.exports.loop = function () {
 	_source = harvest.pick(spawn);
 	if (_source) {
 		// Build roads between source and Spawn/Controller
-		console.log("Start: [" + _source.pos.x + ", " + _source.pos.y + "]");
-		for (let target in [spawn, _source.room.controller]) {
-			console.log("Target Properties: " + Object.keys(target));
-			console.log("\tEnd: [" + target.pos.x + ", " + target.pos.y + "]");
-			for (let step in _source.pos.findPathTo(target, {
-				ignoreCreeps: true,
-				swampCost: 1,
-			})) {
-				console.log("\t\tStep: [" + step.x + ", " + step.y + "]");
-				_source.room.createConstructionSite(
-					step.x,
-					step.y,
-					STRUCTURE_ROAD,
-				);
-			}
-		}
+		build_road(_source, spawn);
+		build_road(_source, _source.room.controller);
 	}
 };
