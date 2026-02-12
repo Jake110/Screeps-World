@@ -43,8 +43,7 @@ module.exports.loop = function () {
 			dryRun: true,
 		}) == OK
 	) {
-		for (let n in roles) {
-			let role = roles[n];
+		roles.forEach(function (role, _) {
 			let role_cap = role.name;
 			role_cap[0] = role_cap[0].toUpperCase();
 			let max = role.count;
@@ -63,9 +62,9 @@ module.exports.loop = function () {
 				spawn.spawnCreep([WORK, CARRY, MOVE], new_name, {
 					memory: { role: role.name },
 				});
-				break;
+				return;
 			}
-		}
+		});
 	}
 
 	// Tower control
@@ -85,8 +84,7 @@ module.exports.loop = function () {
 	}
 
 	// Creep control
-	for (let name in Game.creeps) {
-		let creep = Game.creeps[name];
+	Game.creeps.forEach(function (creep, _) {
 		if (creep.memory.role == "builder") {
 			role_builder.run(creep);
 		}
@@ -96,7 +94,7 @@ module.exports.loop = function () {
 		if (creep.memory.role == "upgrader") {
 			role_upgrader.run(creep);
 		}
-	}
+	});
 
 	// Consruction
 	if (!built_roads) {

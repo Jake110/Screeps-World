@@ -32,14 +32,14 @@ function build_road(origin, target) {
 					ignoreCreeps: true,
 					swampCost: 1,
 				});
-				steps.pop();
-				for (let n in steps) {
-					step = steps[n];
-					origin.room.createConstructionSite(
+                steps.pop();
+                steps.forEach(function (step, _) {
+                    origin.room.createConstructionSite(
 						step.x,
 						step.y,
 						STRUCTURE_ROAD,
 					);
+                })
 				}
 				for (let i = -1; i <= 1; i++) {
 					for (let j = -1; j <= 1; j++) {
