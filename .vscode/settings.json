@@ -2,5 +2,8 @@
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnPaste": false,
-	"editor.formatOnType": true
+	"editor.formatOnType": true,
+	"merge-conflict.autoNavigateNextConflict.enabled": true,
+	"search.showLineNumbers": true,
+	"workbench.colorTheme": "Default Dark+",
 }
