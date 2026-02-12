@@ -68,10 +68,18 @@ function build_road(origin, target) {
 
 module.exports = {
 	build_roads: function (spawn) {
-		spawn.room.find(FIND_SOURCES).forEach(function (_source, _) {
-			// Build roads between source and Spawn/Controller
-			build_road(_source, spawn);
-			build_road(_source, spawn.room.controller);
+		if (!Memory.built_roads) {
+			Memory.built_roads = [];
+		}
+		if (!Memory.built_roads[spawn.id]) {
+			Memory.built_roads[spawn.id] = [];
+		}
+		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
+			filter: function (_source) {
+				return Memory.built_roads[spawn.id].indexOf(_source.id) == -1;
+			},
 		});
+		build_road(_source, spawn);
+		Memory.built_roads[spawn.id].push(_source.id);
 	},
 };

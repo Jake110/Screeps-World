@@ -98,8 +98,7 @@ module.exports.loop = function () {
 	}
 
 	// Consruction
-	if (!Memory.built_roads) {
+	if (spawn.room.find(FIND_MY_CONSTRUCTION_SITES).length == 0) {
 		builder.build_roads(spawn);
-		Memory.built_roads = true;
 	}
 };
