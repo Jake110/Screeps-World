@@ -26,7 +26,7 @@ function build_road(origin, target) {
 		if (!no_construction) {
 			console.log("\t\tAlready in use!");
 		} else {
-			console.log("\tBuilding Road at: " + pos);
+			console.log("\t\tBuilding Road at: " + pos);
 			pos.createConstructionSite(STRUCTURE_ROAD);
 		}
 	}
@@ -45,11 +45,7 @@ function build_road(origin, target) {
 				});
 				steps.pop();
 				steps.forEach(function (step, _) {
-					origin.room.createConstructionSite(
-						step.x,
-						step.y,
-						STRUCTURE_ROAD,
-					);
+					place_road(origin.room.getPositionAt(step.x, step.y));
 				});
 				for (let i = -1; i <= 1; i++) {
 					for (let j = -1; j <= 1; j++) {
@@ -58,6 +54,7 @@ function build_road(origin, target) {
 							target.pos.y + parseInt(j),
 						);
 						if (isEnterable(target_adjacent)) {
+							place_road(target_adjacent);
 						}
 					}
 				}
