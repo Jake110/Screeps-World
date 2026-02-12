@@ -18,15 +18,32 @@ var roles = [
 	},
 ];
 var spawn = Game.spawns["Spawn1"];
+const isObstacle = _.transform(
+	OBSTACLE_OBJECT_TYPES,
+	(o, type) => {
+		o[type] = true;
+	},
+	{},
+);
 
 function build_road(_source, target) {
-	steps = _source.pos.findPathTo(target, {
-		ignoreCreeps: true,
-		swampCost: 1,
-	});
-	for (let n in steps) {
-		step = steps[n];
-		_source.room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD);
+	/** @param {RoomPosition} pos **/
+	function isEnterable(pos) {
+		return _.every(pos.look(), (item) =>
+			item.type === "terrain"
+				? item.terrain !== "wall"
+				: !isObstacle[item.structureType],
+		);
+	}
+	for (let position in isEnterable(_source.pos)) {
+		steps = position.findPathTo(target, {
+			ignoreCreeps: true,
+			swampCost: 1,
+		});
+		for (let n in steps) {
+			step = steps[n];
+			_source.room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD);
+		}
 	}
 }
 
