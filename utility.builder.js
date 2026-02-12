@@ -16,10 +16,11 @@ function build_road(origin, target) {
 		);
 	}
 	function place_road(pos) {
-		console.log(pos.look());
-		console.log("Building Road at: " + pos);
+		console.log("\t" + pos.look());
+		console.log("\tBuilding Road at: " + pos);
 		pos.createConstructionSite(STRUCTURE_ROAD);
 	}
+	console.log(origin.pos);
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
 			origin_adjacent = origin.room.getPositionAt(

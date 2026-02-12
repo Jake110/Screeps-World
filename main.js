@@ -18,7 +18,6 @@ var roles = [
 	},
 ];
 var spawn = Game.spawns["Spawn1"];
-var built_roads = false;
 
 module.exports.loop = function () {
 	// Memory cleanup
@@ -99,8 +98,8 @@ module.exports.loop = function () {
 	}
 
 	// Consruction
-	if (!built_roads) {
+	if (!Memory.built_roads) {
 		builder.build_roads(spawn);
-		built_roads = true;
+		Memory.built_roads = true;
 	}
 };
