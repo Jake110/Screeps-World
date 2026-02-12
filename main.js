@@ -37,23 +37,26 @@ function build_road(_source, target) {
 	}
 	x = _source.pos.x;
 	y = _source.pos.y;
-	let positions = [];
-	for (let n in [-1, 0, 1]) {
-		for (let m in [-1, 0, 1]) {
-			position = _source.room.getPositionAt(x + n, y + m);
+	for (let n = -1; n <= 1; n++) {
+		for (let m = -1; m <= 1; m++) {
+			position = _source.room.getPositionAt(
+				x + parseInt(n),
+				y + parseInt(m),
+			);
 			if (isEnterable(position)) {
-				positions.push(position);
+				steps = position.findPathTo(target, {
+					ignoreCreeps: true,
+					swampCost: 1,
+				});
+				for (let n in steps) {
+					step = steps[n];
+					_source.room.createConstructionSite(
+						step.x,
+						step.y,
+						STRUCTURE_ROAD,
+					);
+				}
 			}
-		}
-	}
-	for (let position in positions) {
-		steps = position.findPathTo(target, {
-			ignoreCreeps: true,
-			swampCost: 1,
-		});
-		for (let n in steps) {
-			step = steps[n];
-			_source.room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD);
 		}
 	}
 }
