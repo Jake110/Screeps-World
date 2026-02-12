@@ -44,6 +44,7 @@ function build_road(_source, target) {
 				y + parseInt(m),
 			);
 			if (isEnterable(position)) {
+				position.createConstructionSite(STRUCTURE_ROAD);
 				steps = position.findPathTo(target, {
 					ignoreCreeps: true,
 					swampCost: 1,
