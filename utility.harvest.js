@@ -13,16 +13,9 @@ function pick(creep) {
 			}
 			let hostiles = _source.pos.findInRange(FIND_HOSTILE_CREEPS, 10, {
 				filter: function (object) {
-					console.log(
-						"\tChecking Creep at: [" +
-							object.pos.x +
-							", " +
-							object.pos.y +
-							"]",
-					);
 					return (
-						object.getActiveBodyparts(ATTACK) == 0 ||
-						object.getActiveBodyparts(RANGED_ATTACK) == 0
+						object.getActiveBodyparts(ATTACK) != 0 ||
+						object.getActiveBodyparts(RANGED_ATTACK) != 0
 					);
 				},
 			});

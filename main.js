@@ -5,7 +5,7 @@ var role_upgrader = require("role.upgrader");
 var roles = [
 	{
 		name: "builder",
-		count: 3,
+		count: 6,
 	},
 	{
 		name: "harvester",
