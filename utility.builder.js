@@ -23,7 +23,7 @@ function build_road(origin, target) {
 				no_construction = false;
 			}
 		});
-		if (no_construction) {
+		if (!no_construction) {
 			console.log("\t\tAlready in use!");
 		} else {
 			console.log("\tBuilding Road at: " + pos);
