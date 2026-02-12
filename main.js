@@ -1,4 +1,4 @@
-var harvest = require("utility.harvest");
+var builder = require("utility.builder");
 var role_builder = require("role.builder");
 var role_harvester = require("role.harvester");
 var role_upgrader = require("role.upgrader");
@@ -18,49 +18,7 @@ var roles = [
 	},
 ];
 var spawn = Game.spawns["Spawn1"];
-const isObstacle = _.transform(
-	OBSTACLE_OBJECT_TYPES,
-	(o, type) => {
-		o[type] = true;
-	},
-	{},
-);
-
-function build_road(_source, target) {
-	/** @param {RoomPosition} pos **/
-	function isEnterable(pos) {
-		return _.every(pos.look(), (item) =>
-			item.type === "terrain"
-				? item.terrain !== "wall"
-				: !isObstacle[item.structureType],
-		);
-	}
-	x = _source.pos.x;
-	y = _source.pos.y;
-	for (let n = -1; n <= 1; n++) {
-		for (let m = -1; m <= 1; m++) {
-			position = _source.room.getPositionAt(
-				x + parseInt(n),
-				y + parseInt(m),
-			);
-			if (isEnterable(position)) {
-				position.createConstructionSite(STRUCTURE_ROAD);
-				steps = position.findPathTo(target, {
-					ignoreCreeps: true,
-					swampCost: 1,
-				});
-				for (let n in steps) {
-					step = steps[n];
-					_source.room.createConstructionSite(
-						step.x,
-						step.y,
-						STRUCTURE_ROAD,
-					);
-				}
-			}
-		}
-	}
-}
+var built_roads = false;
 
 module.exports.loop = function () {
 	// Memory cleanup
@@ -141,10 +99,8 @@ module.exports.loop = function () {
 	}
 
 	// Consruction
-	_source = harvest.pick(spawn);
-	if (_source) {
-		// Build roads between source and Spawn/Controller
-		build_road(_source, spawn);
-		build_road(_source, _source.room.controller);
+	if (!built_roads) {
+		builder.build_roads(spwan);
+		built_roads = true;
 	}
 };
