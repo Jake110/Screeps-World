@@ -38,7 +38,7 @@ module.exports = {
 					"\tCreep Capacity: " + creep.store.getFreeCapacity(),
 				);
 				console.log("\tSource Energy: " + _source.energy);
-				return _source.energy < creep.store.getFreeCapacity();
+				return _source.energy > creep.store.getFreeCapacity();
 			},
 		});
 	},
