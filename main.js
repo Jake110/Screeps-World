@@ -17,7 +17,7 @@ var roles = [
 		count: 1,
 	},
 ];
-var _spawn = Game.spawns["Spawn1"];
+var spawn = Game.spawns["Spawn1"];
 
 module.exports.loop = function () {
 	// Memory cleanup
@@ -31,7 +31,7 @@ module.exports.loop = function () {
 	// Spawn new creeps
 	for (let n in roles) {
 		if (
-			_spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
+			spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
 				dryRun: true,
 			}) != OK
 		) {
@@ -51,17 +51,17 @@ module.exports.loop = function () {
 			console.log(role_cap + " count: " + role_creeps.length + "/" + max);
 			let new_name = role_cap + Game.time;
 			console.log("Spawning new " + role.name + ": " + new_name);
-			_spawn.spawnCreep([WORK, CARRY, MOVE], new_name, {
+			spawn.spawnCreep([WORK, CARRY, MOVE], new_name, {
 				memory: { role: role.name },
 			});
 		}
 
-		if (_spawn.spawning) {
-			let spawning_creep = Game.creeps[_spawn.spawning.name];
-			_spawn.room.visual.text(
+		if (spawn.spawning) {
+			let spawning_creep = Game.creeps[spawn.spawning.name];
+			spawn.room.visual.text(
 				"🛠️" + spawning_creep.memory.role,
-				_spawn.pos.x + 1,
-				_spawn.pos.y,
+				spawn.pos.x + 1,
+				spawn.pos.y,
 				{ align: "left", opacity: 0.8 },
 			);
 		}
@@ -98,11 +98,11 @@ module.exports.loop = function () {
 	}
 
 	// Consruction
-	_source = harvest.pick(_spawn);
+	_source = harvest.pick(spawn);
 	if (_source) {
 		// Build roads between source and Spawn/Controller
 		console.log("Start: [" + _source.pos.x + ", " + _source.pos.y + "]");
-		for (let target in [_spawn, _source.room.controller]) {
+		for (let target in [spawn, _source.room.controller]) {
 			console.log("Target Properties: " + Object.keys(target));
 			console.log("\tEnd: [" + target.pos.x + ", " + target.pos.y + "]");
 			for (let step in _source.pos.findPathTo(target, {
