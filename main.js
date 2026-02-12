@@ -20,26 +20,12 @@ var roles = [
 var spawn = Game.spawns["Spawn1"];
 
 function build_road(_source, target) {
-	console.log(
-		"Building Road From [" +
-			_source.pos.x +
-			", " +
-			_source.pos.y +
-			"] to [" +
-			target.pos.x +
-			", " +
-			target.pos.y +
-			"]",
-	);
 	steps = _source.pos.findPathTo(target, {
 		ignoreCreeps: true,
 		swampCost: 1,
 	});
 	for (let n in steps) {
 		step = steps[n];
-		console.log(step);
-		console.log(typeof step);
-		console.log("\t\tStep: [" + step.x + ", " + step.y + "]");
 		_source.room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD);
 	}
 }
