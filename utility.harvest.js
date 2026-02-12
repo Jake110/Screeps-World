@@ -33,7 +33,7 @@ module.exports = {
 	},
 
 	/** @param {Creep} creep **/
-	pick: pick(creep),
+	pick: pick,
 
 	/** @param {Creep} creep **/
 	recharge: function (creep) {
