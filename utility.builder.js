@@ -6,7 +6,7 @@ const isObstacle = _.transform(
 	{},
 );
 
-function build_road(_source, target) {
+function build_road(origin, target) {
 	/** @param {RoomPosition} pos **/
 	function isEnterable(pos) {
 		return _.every(pos.look(), (item) =>
@@ -17,25 +17,25 @@ function build_road(_source, target) {
 	}
 	function place_road(pos) {
 		console.log(pos.look());
-		console.log("Building Road at: " + source_adjacent);
-		source_adjacent.createConstructionSite(STRUCTURE_ROAD);
+		console.log("Building Road at: " + pos);
+		pos.createConstructionSite(STRUCTURE_ROAD);
 	}
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
-			source_adjacent = _source.room.getPositionAt(
-				_source.pos.x + parseInt(n),
-				_source.pos.y + parseInt(m),
+			origin_adjacent = origin.room.getPositionAt(
+				origin.pos.x + parseInt(n),
+				origin.pos.y + parseInt(m),
 			);
-			if (isEnterable(source_adjacent)) {
-				place_road(source_adjacent);
-				steps = source_adjacent.findPathTo(target, {
+			if (isEnterable(origin_adjacent)) {
+				place_road(origin_adjacent);
+				steps = origin_adjacent.findPathTo(target, {
 					ignoreCreeps: true,
 					swampCost: 1,
 				});
 				steps.pop();
 				for (let n in steps) {
 					step = steps[n];
-					_source.room.createConstructionSite(
+					origin.room.createConstructionSite(
 						step.x,
 						step.y,
 						STRUCTURE_ROAD,
@@ -43,7 +43,7 @@ function build_road(_source, target) {
 				}
 				for (let i = -1; i <= 1; i++) {
 					for (let j = -1; j <= 1; j++) {
-						target_adjacent = _source.room.getPositionAt(
+						target_adjacent = origin.room.getPositionAt(
 							target.pos.x + parseInt(i),
 							target.pos.y + parseInt(j),
 						);
