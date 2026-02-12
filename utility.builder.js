@@ -22,7 +22,7 @@ function build_road(_source, target) {
 	}
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
-			source_adjacent = _source.room.getPositionAt(
+			source_adjacent = target.room.getPositionAt(
 				_source.pos.x + parseInt(n),
 				_source.pos.y + parseInt(m),
 			);
@@ -35,7 +35,7 @@ function build_road(_source, target) {
 				steps.pop();
 				for (let n in steps) {
 					step = steps[n];
-					_source.room.createConstructionSite(
+					target.room.createConstructionSite(
 						step.x,
 						step.y,
 						STRUCTURE_ROAD,
@@ -43,7 +43,7 @@ function build_road(_source, target) {
 				}
 				for (let i = -1; i <= 1; i++) {
 					for (let j = -1; j <= 1; j++) {
-						target_adjacent = _source.room.getPositionAt(
+						target_adjacent = target.room.getPositionAt(
 							target.pos.x + parseInt(i),
 							target.pos.y + parseInt(j),
 						);
@@ -58,11 +58,10 @@ function build_road(_source, target) {
 
 module.exports = {
 	build_roads: function (spawn) {
-		sources = spawn.room.find(FIND_SOURCES);
-		for (let _source in sources) {
+		for (let _source in spawn.room.find(FIND_SOURCES)) {
 			// Build roads between source and Spawn/Controller
 			build_road(_source, spawn);
-			build_road(_source, _source.room.controller);
+			build_road(_source, spawn.room.controller);
 		}
 	},
 };
