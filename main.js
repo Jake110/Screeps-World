@@ -103,6 +103,7 @@ module.exports.loop = function () {
 		// Build roads between source and Spawn/Controller
 		console.log("Start: [" + _source.pos.x + ", " + _source.pos.y + "]");
 		for (let target in [spawn, _source.room.controller]) {
+			console.log("Target Properties: " + Object.keys(target));
 			console.log("\tEnd: [" + target.pos.x + ", " + target.pos.y + "]");
 			for (let step in _source.pos.findPathTo(target, {
 				ignoreCreeps: true,
