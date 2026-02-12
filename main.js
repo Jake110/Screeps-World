@@ -57,42 +57,43 @@ module.exports.loop = function () {
 	}
 
 	// Spawn new creeps
-	for (let n in roles) {
-		if (
-			spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
-				dryRun: true,
-			}) != OK
-		) {
-			break;
-		}
-		let role = roles[n];
-		let role_cap = role.name;
-		role_cap[0] = role_cap[0].toUpperCase();
-		let max = role.count;
+	if (
+		spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
+			dryRun: true,
+		}) == OK
+	) {
+		for (let n in roles) {
+			let role = roles[n];
+			let role_cap = role.name;
+			role_cap[0] = role_cap[0].toUpperCase();
+			let max = role.count;
 
-		let role_creeps = _.filter(
-			Game.creeps,
-			(creep) => creep.memory.role == role.name,
-		);
-
-		if (role_creeps.length < max) {
-			console.log(role_cap + " count: " + role_creeps.length + "/" + max);
-			let new_name = role_cap + Game.time;
-			console.log("Spawning new " + role.name + ": " + new_name);
-			spawn.spawnCreep([WORK, CARRY, MOVE], new_name, {
-				memory: { role: role.name },
-			});
-		}
-
-		if (spawn.spawning) {
-			let spawning_creep = Game.creeps[spawn.spawning.name];
-			spawn.room.visual.text(
-				"🛠️" + spawning_creep.memory.role,
-				spawn.pos.x + 1,
-				spawn.pos.y,
-				{ align: "left", opacity: 0.8 },
+			let role_creeps = _.filter(
+				Game.creeps,
+				(creep) => creep.memory.role == role.name,
 			);
+
+			if (role_creeps.length < max) {
+				console.log(
+					role_cap + " count: " + role_creeps.length + "/" + max,
+				);
+				let new_name = role_cap + Game.time;
+				console.log("Spawning new " + role.name + ": " + new_name);
+				spawn.spawnCreep([WORK, CARRY, MOVE], new_name, {
+					memory: { role: role.name },
+				});
+				break;
+			}
 		}
+	}
+	if (spawn.spawning) {
+		let spawning_creep = Game.creeps[spawn.spawning.name];
+		spawn.room.visual.text(
+			"🛠️" + spawning_creep.memory.role,
+			spawn.pos.x + 1,
+			spawn.pos.y,
+			{ align: "left", opacity: 0.8 },
+		);
 	}
 
 	// Tower control
