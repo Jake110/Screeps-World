@@ -100,7 +100,7 @@ module.exports.loop = function () {
 
 	// Consruction
 	if (!built_roads) {
-		builder.build_roads(spwan);
+		builder.build_roads(spawn);
 		built_roads = true;
 	}
 };
