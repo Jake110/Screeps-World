@@ -35,7 +35,18 @@ function build_road(_source, target) {
 				: !isObstacle[item.structureType],
 		);
 	}
-	for (let position in isEnterable(_source.pos)) {
+	x = _source.pos.x;
+	y = _source.pos.y;
+	let positions = [];
+	for (let n in [-1, 0, 1]) {
+		for (let m in [-1, 0, 1]) {
+			position = _source.room.getPositionAt(x + n, y + m);
+			if (isEnterable(position)) {
+				positions.push(position);
+			}
+		}
+	}
+	for (let position in positions) {
 		steps = position.findPathTo(target, {
 			ignoreCreeps: true,
 			swampCost: 1,
