@@ -1,13 +1,6 @@
 function pick(creep) {
 	return creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
 		filter: function (_source) {
-			console.log(
-				"Checking Source at: [" +
-					_source.pos.x +
-					", " +
-					_source.pos.y +
-					"]",
-			);
 			if (_source.energy < creep.store.getFreeCapacity()) {
 				return false;
 			}
@@ -19,11 +12,7 @@ function pick(creep) {
 					);
 				},
 			});
-			if (hostiles.length > 0) {
-				console.log("\tHostile Found!");
-				return false;
-			}
-			return true;
+			return hostiles.length == 0;
 		},
 	});
 }
