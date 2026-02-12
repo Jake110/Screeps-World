@@ -1,3 +1,4 @@
+var harvest = require("utility.harvest");
 var role_builder = require("role.builder");
 var role_harvester = require("role.harvester");
 var role_upgrader = require("role.upgrader");
@@ -16,6 +17,7 @@ var roles = [
 		count: 1,
 	},
 ];
+var spawn = Game.spawns["Spawn1"];
 
 module.exports.loop = function () {
 	// Memory cleanup
@@ -29,7 +31,7 @@ module.exports.loop = function () {
 	// Spawn new creeps
 	for (let n in roles) {
 		if (
-			Game.spawns["Spawn1"].spawnCreep([WORK, CARRY, MOVE], "Test", {
+			spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
 				dryRun: true,
 			}) != OK
 		) {
@@ -49,18 +51,17 @@ module.exports.loop = function () {
 			console.log(role_cap + " count: " + role_creeps.length + "/" + max);
 			let new_name = role_cap + Game.time;
 			console.log("Spawning new " + role.name + ": " + new_name);
-			Game.spawns["Spawn1"].spawnCreep([WORK, CARRY, MOVE], new_name, {
+			spawn.spawnCreep([WORK, CARRY, MOVE], new_name, {
 				memory: { role: role.name },
 			});
 		}
 
-		if (Game.spawns["Spawn1"].spawning) {
-			let spawning_creep =
-				Game.creeps[Game.spawns["Spawn1"].spawning.name];
-			Game.spawns["Spawn1"].room.visual.text(
+		if (spawn.spawning) {
+			let spawning_creep = Game.creeps[spawn.spawning.name];
+			spawn.room.visual.text(
 				"🛠️" + spawning_creep.memory.role,
-				Game.spawns["Spawn1"].pos.x + 1,
-				Game.spawns["Spawn1"].pos.y,
+				spawn.pos.x + 1,
+				spawn.pos.y,
 				{ align: "left", opacity: 0.8 },
 			);
 		}
@@ -93,6 +94,25 @@ module.exports.loop = function () {
 		}
 		if (creep.memory.role == "upgrader") {
 			role_upgrader.run(creep);
+		}
+	}
+
+	// Consruction
+	_source = harvest.pick(spawn);
+	if (_source) {
+		// Build roads between source and Spawn/Controller
+		for (let target in [spawn, creep.room.controller]) {
+			for (let step in _source.pos.findPathTo(target, {
+				ignoreCreeps: true,
+				ignore: [TERRAIN_MASK_WALL],
+				swampCost: 1,
+			})) {
+				_source.room.createConstructionSite(
+					step.x,
+					step.y,
+					STRUCTURE_ROAD,
+				);
+			}
 		}
 	}
 };

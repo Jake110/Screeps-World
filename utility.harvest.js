@@ -1,3 +1,4 @@
+/** @param {Creep} creep **/
 function pick(creep) {
 	return creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
 		filter: function (_source) {
@@ -30,6 +31,9 @@ module.exports = {
 			});
 		}
 	},
+
+	/** @param {Creep} creep **/
+	pick: pick(creep),
 
 	/** @param {Creep} creep **/
 	recharge: function (creep) {
