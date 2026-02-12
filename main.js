@@ -57,7 +57,15 @@ module.exports.loop = function () {
 	}
 
 	// Spawn new creeps
-	if (
+	if (spawn.spawning) {
+		let spawning_creep = Game.creeps[spawn.spawning.name];
+		spawn.room.visual.text(
+			"🛠️" + spawning_creep.memory.role,
+			spawn.pos.x + 1,
+			spawn.pos.y,
+			{ align: "left", opacity: 0.8 },
+		);
+	} else if (
 		spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
 			dryRun: true,
 		}) == OK
@@ -85,15 +93,6 @@ module.exports.loop = function () {
 				break;
 			}
 		}
-	}
-	if (spawn.spawning) {
-		let spawning_creep = Game.creeps[spawn.spawning.name];
-		spawn.room.visual.text(
-			"🛠️" + spawning_creep.memory.role,
-			spawn.pos.x + 1,
-			spawn.pos.y,
-			{ align: "left", opacity: 0.8 },
-		);
 	}
 
 	// Tower control
