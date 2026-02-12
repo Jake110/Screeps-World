@@ -23,7 +23,7 @@ module.exports = {
 				role_harvester.run(creep);
 			}
 		} else {
-			harvest(creep);
+			harvest.harvest(creep);
 		}
 	},
 };
