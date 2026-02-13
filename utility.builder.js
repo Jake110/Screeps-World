@@ -28,8 +28,8 @@ function build_road(origin, target) {
 			);
 			if (isEnterable(origin_adjacent)) {
 				let pos = (origin_adjacent.x, origin_adjacent.y);
+				console.log(pos)
 				if (road_positions.indexOf(pos) == -1) {
-					console.log(pos)
 					road_positions.push(pos);
 				}
 				steps = origin_adjacent.findPathTo(target, {
