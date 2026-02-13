@@ -15,24 +15,8 @@ function build_road(origin, target) {
 				: !isObstacle[item.structureType],
 		);
 	}
-	function place_road(pos) {
-		console.log("\tChecking: " + pos);
-		let no_construction = true;
-		pos.look().forEach(function (lookObject) {
-			console.log("\t\tObject type: " + lookObject.type)
-			if (lookObject.type == LOOK_CONSTRUCTION_SITES) {
-				console.log("\t\tConstruction Site Present")
-				no_construction = false;
-			}
-		});
-		if (!no_construction) {
-			console.log("\t\tAlready in use!");
-		} else {
-			console.log("\t\tBuilding Road at: " + pos);
-			pos.createConstructionSite(STRUCTURE_ROAD);
-		}
-	}
 	console.log(origin.pos);
+	let road_positions = [];
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
 			if (n == 0 && m == 0) {
@@ -43,14 +27,20 @@ function build_road(origin, target) {
 				origin.pos.y + parseInt(m),
 			);
 			if (isEnterable(origin_adjacent)) {
-				place_road(origin_adjacent);
+				let pos = (origin_adjacent.x, origin_adjacent.y);
+				if (road_positions.indexOf(pos) == -1) {
+					road_positions.push(pos);
+				}
 				steps = origin_adjacent.findPathTo(target, {
 					ignoreCreeps: true,
 					swampCost: 1,
 				});
 				steps.pop();
 				steps.forEach(function (step, _) {
-					place_road(origin.room.getPositionAt(step.x, step.y));
+					pos = (step.x, step.y);
+					if (road_positions.indexOf(pos) == -1) {
+						road_positions.push(pos);
+					}
 				});
 			}
 		}
@@ -65,10 +55,20 @@ function build_road(origin, target) {
 				target.pos.y + parseInt(j),
 			);
 			if (isEnterable(target_adjacent)) {
-				place_road(target_adjacent);
+				let pos = (target_adjacent.x, target_adjacent.y);
+				if (road_positions.indexOf(pos) == -1) {
+					road_positions.push(pos);
+				}
 			}
 		}
 	}
+	road_positions.forEach(function (coord, _) {
+		original.room.createConstructionSite(
+			coord[0],
+			coord[1],
+			STRUCTURE_ROAD,
+		);
+	});
 }
 
 module.exports = {
