@@ -31,7 +31,6 @@ module.exports.loop = function () {
 	let towers = [];
 	let spawns = [];
 	for (let name in Game.structures) {
-		console.log("Scanning Room: " + name);
 		let structure = Game.structures[name];
 		if (structure.structureType == STRUCTURE_TOWER) {
 			towers.push(structure)
@@ -39,8 +38,6 @@ module.exports.loop = function () {
 			spawns.push(structure)
 		}
 	}
-	console.log("Towers: " + towers.length);
-	console.log("Spawns: " + spawns.length);
 
 	// Tower control
 	towers.forEach(function (tower) {
