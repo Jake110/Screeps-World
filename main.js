@@ -44,47 +44,8 @@ module.exports.loop = function () {
 		);
 	}
 
-	// Spawn new creeps
-	if (spawn.spawning) {
-		let spawning_creep = Game.creeps[spawn.spawning.name];
-		spawn.room.visual.text(
-			"🛠️" + spawning_creep.memory.role,
-			spawn.pos.x + 1,
-			spawn.pos.y,
-			{ align: "left", opacity: 0.8 },
-		);
-	} else if (
-		spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
-			dryRun: true,
-		}) == OK
-	) {
-		for (let n in roles) {
-			let role = roles[n];
-			let role_cap = role.name;
-			role_cap[0] = role_cap[0].toUpperCase();
-			let max = role.count;
-
-			let role_creeps = _.filter(
-				Game.creeps,
-				(creep) => creep.memory.role == role.name,
-			);
-
-			if (role_creeps.length < max) {
-				console.log(
-					role_cap + " count: " + role_creeps.length + "/" + max,
-				);
-				let new_name = role_cap + Game.time;
-				console.log("Spawning new " + role.name + ": " + new_name);
-				spawn.spawnCreep([WORK, CARRY, MOVE], new_name, {
-					memory: { role: role.name },
-				});
-				break;
-			}
-		}
-	}
-
 	// Tower control
-	if (tower) {
+	towers.forEach(function (tower) {
 		let damaged_structure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
 			filter: (structure) => structure.hits < structure.hitsMax,
 		});
@@ -96,7 +57,7 @@ module.exports.loop = function () {
 		if (closest_hostile) {
 			tower.attack(closest_hostile);
 		}
-	}
+	});
 
 	// Creep control
 	for (let name in Game.creeps) {
@@ -112,9 +73,49 @@ module.exports.loop = function () {
 		}
 	}
 
-	// Consruction
+	spawns.forEach(function (spawn) {
+		// Spawn new creeps
+		if (spawn.spawning) {
+			let spawning_creep = Game.creeps[spawn.spawning.name];
+			spawn.room.visual.text(
+				"🛠️" + spawning_creep.memory.role,
+				spawn.pos.x + 1,
+				spawn.pos.y,
+				{ align: "left", opacity: 0.8 },
+			);
+		} else if (
+			spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
+				dryRun: true,
+			}) == OK
+		) {
+			for (let n in roles) {
+				let role = roles[n];
+				let role_cap = role.name;
+				role_cap[0] = role_cap[0].toUpperCase();
+				let max = role.count;
 
-	if (spawn.room.find(FIND_MY_CONSTRUCTION_SITES).length == 0) {
-		builder.build_roads(spawn);
-	}
+				let role_creeps = _.filter(
+					Game.creeps,
+					(creep) => creep.memory.role == role.name,
+				);
+
+				if (role_creeps.length < max) {
+					console.log(
+						role_cap + " count: " + role_creeps.length + "/" + max,
+					);
+					let new_name = role_cap + Game.time;
+					console.log("Spawning new " + role.name + ": " + new_name);
+					spawn.spawnCreep([WORK, CARRY, MOVE], new_name, {
+						memory: { role: role.name },
+					});
+					break;
+				}
+			}
+		}
+
+		// Consruction
+		if (spawn.room.find(FIND_MY_CONSTRUCTION_SITES).length == 0) {
+			builder.build_roads(spawn);
+		}
+	});
 };
