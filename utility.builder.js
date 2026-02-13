@@ -19,6 +19,7 @@ function build_road(origin, target) {
 		console.log("\tChecking: " + pos);
 		let no_construction = true;
 		pos.look().forEach(function (lookObject) {
+			console.log("\t\tObject type: " + lookObject.type)
 			if (lookObject.type == LOOK_CONSTRUCTION_SITES) {
 				console.log("\t\tConstruction Site Present")
 				no_construction = false;
