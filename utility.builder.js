@@ -68,7 +68,19 @@ function build_road(origin, target) {
 	}
 
 	road_positions.forEach(function (coord, _) {
-		origin.room.createConstructionSite(coord[0], coord[1], STRUCTURE_ROAD);
+		pos = origin.room.getPositionAt(coord[0], coord[1]);
+		// Ensure there isn't already a road here
+		if (
+			_.every(pos.look(), (item) =>
+				item.type === "structure" ? item.structure !== "road" : true,
+			)
+		) {
+			origin.room.createConstructionSite(
+				coord[0],
+				coord[1],
+				STRUCTURE_ROAD,
+			);
+		}
 	});
 }
 
