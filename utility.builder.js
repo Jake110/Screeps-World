@@ -27,7 +27,7 @@ function build_road(origin, target) {
 				origin.pos.y + parseInt(m),
 			);
 			if (isEnterable(origin_adjacent)) {
-				let pos = (origin_adjacent.x, origin_adjacent.y);
+				let pos = [origin_adjacent.x, origin_adjacent.y];
 				console.log(pos)
 				if (road_positions.indexOf(pos) == -1) {
 					road_positions.push(pos);
@@ -38,7 +38,7 @@ function build_road(origin, target) {
 				});
 				steps.pop();
 				steps.forEach(function (step, _) {
-					pos = (step.x, step.y);
+					pos = [step.x, step.y];
 					if (road_positions.indexOf(pos) == -1) {
 						road_positions.push(pos);
 					}
@@ -56,7 +56,7 @@ function build_road(origin, target) {
 				target.pos.y + parseInt(j),
 			);
 			if (isEnterable(target_adjacent)) {
-				let pos = (target_adjacent.x, target_adjacent.y);
+				let pos = [target_adjacent.x, target_adjacent.y];
 				if (road_positions.indexOf(pos) == -1) {
 					road_positions.push(pos);
 				}
