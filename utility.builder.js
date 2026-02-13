@@ -72,7 +72,7 @@ function build_road(origin, target) {
 		// Ensure there isn't already a road here
 		let build = true;
 		pos.look().forEach(function (item) {
-			if (item.type == "structure" && item.structure == "road") {
+			if (item.type == "structure" && item.structure == STRUCTURE_ROAD) {
 				build = false;
 			}
 		});
