@@ -31,6 +31,7 @@ module.exports.loop = function () {
 	let towers = [];
 	let spawns = [];
 	for (let name in Game.rooms) {
+		console.log("Scanning Room: " + name);
 		let room = Game.rooms[name];
 		towers.push.apply(
 			room.find(FIND_MY_STRUCTURES, {
@@ -43,6 +44,8 @@ module.exports.loop = function () {
 			}),
 		);
 	}
+	console.log("Towers: " + towers.length);
+	console.log("Spawns: " + spawns.length);
 
 	// Tower control
 	towers.forEach(function (tower) {
