@@ -17,7 +17,6 @@ var roles = [
 		count: 1,
 	},
 ];
-var spawn = Game.spawns["Spawn1"];
 
 module.exports.loop = function () {
 	// Memory cleanup
@@ -26,6 +25,23 @@ module.exports.loop = function () {
 			delete Memory.creeps[name];
 			console.log("Clearing non-existing creep memory:", name);
 		}
+	}
+
+	// Get all Towers and Spawns
+	let towers = [];
+	let spawns = [];
+	for (let name in Game.rooms) {
+		let room = Game.rooms[name];
+		towers.push.apply(
+			room.find(FIND_MY_STRUCTURES, {
+				filter: { structureType: STRUCTURE_TOWER },
+			}),
+		);
+		spawns.push.apply(
+			room.find(FIND_MY_STRUCTURES, {
+				filter: { structureType: STRUCTURE_SPAWN },
+			}),
+		);
 	}
 
 	// Spawn new creeps
@@ -68,7 +84,6 @@ module.exports.loop = function () {
 	}
 
 	// Tower control
-	let tower = Game.getObjectById("c892c3d7f0ca9bd30c8f2c8d");
 	if (tower) {
 		let damaged_structure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
 			filter: (structure) => structure.hits < structure.hitsMax,
@@ -98,6 +113,7 @@ module.exports.loop = function () {
 	}
 
 	// Consruction
+
 	if (spawn.room.find(FIND_MY_CONSTRUCTION_SITES).length == 0) {
 		builder.build_roads(spawn);
 	}
