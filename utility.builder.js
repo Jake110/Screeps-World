@@ -15,7 +15,6 @@ function build_road(origin, target) {
 				: !isObstacle[item.structureType],
 		);
 	}
-	console.log(origin.pos);
 	let road_positions = [];
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
@@ -28,7 +27,6 @@ function build_road(origin, target) {
 			);
 			if (isEnterable(origin_adjacent)) {
 				let pos = [origin_adjacent.x, origin_adjacent.y];
-				console.log(pos)
 				if (road_positions.indexOf(pos) == -1) {
 					road_positions.push(pos);
 				}
@@ -64,12 +62,7 @@ function build_road(origin, target) {
 		}
 	}
 	road_positions.forEach(function (coord, _) {
-		console.log("\tBuilding Road at: " + coord)
-		origin.room.createConstructionSite(
-			coord[0],
-			coord[1],
-			STRUCTURE_ROAD,
-		);
+		origin.room.createConstructionSite(coord[0], coord[1], STRUCTURE_ROAD);
 	});
 }
 
