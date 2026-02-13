@@ -71,15 +71,23 @@ module.exports = {
 		if (!Memory.built_roads) {
 			Memory.built_roads = [];
 		}
-		if (!Memory.built_roads[spawn.id]) {
-			Memory.built_roads[spawn.id] = [];
-		}
-		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
-			filter: function (_source) {
-				return Memory.built_roads[spawn.id].indexOf(_source.id) == -1;
-			},
+		[spawn, spawn.room.controller].forEach(function (structure) {
+			if (structure) {
+				if (!Memory.built_roads[structure.id]) {
+					Memory.built_roads[structure.id] = [];
+				}
+				_source = structure.pos.findClosestByPath(FIND_SOURCES, {
+					filter: function (_source) {
+						return (
+							Memory.built_roads[structure.id].indexOf(
+								_source.id,
+							) == -1
+						);
+					},
+				});
+				build_road(_source, structure);
+				Memory.built_roads[structure.id].push(_source.id);
+			}
 		});
-		build_road(_source, spawn);
-		Memory.built_roads[spawn.id].push(_source.id);
 	},
 };
