@@ -20,6 +20,7 @@ function build_road(origin, target) {
 		let no_construction = true;
 		pos.look().forEach(function (lookObject) {
 			if (lookObject.type == LOOK_CONSTRUCTION_SITES) {
+				console.log("\t\tConstruction Site Present")
 				no_construction = false;
 			}
 		});
@@ -34,7 +35,7 @@ function build_road(origin, target) {
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
 			if (n == 0 && m == 0) {
-				continue
+				continue;
 			}
 			origin_adjacent = origin.room.getPositionAt(
 				origin.pos.x + parseInt(n),
@@ -50,20 +51,20 @@ function build_road(origin, target) {
 				steps.forEach(function (step, _) {
 					place_road(origin.room.getPositionAt(step.x, step.y));
 				});
-				for (let i = -1; i <= 1; i++) {
-					for (let j = -1; j <= 1; j++) {
-						if (i == 0 && j == 0) {
-							continue
-						}
-						target_adjacent = origin.room.getPositionAt(
-							target.pos.x + parseInt(i),
-							target.pos.y + parseInt(j),
-						);
-						if (isEnterable(target_adjacent)) {
-							place_road(target_adjacent);
-						}
-					}
-				}
+			}
+		}
+	}
+	for (let i = -1; i <= 1; i++) {
+		for (let j = -1; j <= 1; j++) {
+			if (i == 0 && j == 0) {
+				continue;
+			}
+			target_adjacent = origin.room.getPositionAt(
+				target.pos.x + parseInt(i),
+				target.pos.y + parseInt(j),
+			);
+			if (isEnterable(target_adjacent)) {
+				place_road(target_adjacent);
 			}
 		}
 	}
