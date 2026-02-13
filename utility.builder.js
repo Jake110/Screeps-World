@@ -33,6 +33,9 @@ function build_road(origin, target) {
 	console.log(origin.pos);
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
+			if (n == 0 && m == 0) {
+				continue
+			}
 			origin_adjacent = origin.room.getPositionAt(
 				origin.pos.x + parseInt(n),
 				origin.pos.y + parseInt(m),
@@ -49,6 +52,9 @@ function build_road(origin, target) {
 				});
 				for (let i = -1; i <= 1; i++) {
 					for (let j = -1; j <= 1; j++) {
+						if (i == 0 && j == 0) {
+							continue
+						}
 						target_adjacent = origin.room.getPositionAt(
 							target.pos.x + parseInt(i),
 							target.pos.y + parseInt(j),

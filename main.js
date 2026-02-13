@@ -10,7 +10,7 @@ var roles = [
 	},
 	{
 		name: "builder",
-		count: 6,
+		count: 4,
 	},
 	{
 		name: "upgrader",
