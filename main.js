@@ -30,19 +30,14 @@ module.exports.loop = function () {
 	// Get all Towers and Spawns
 	let towers = [];
 	let spawns = [];
-	for (let name in Game.rooms) {
+	for (let name in Game.structures) {
 		console.log("Scanning Room: " + name);
-		let room = Game.rooms[name];
-		towers.push.apply(
-			room.find(FIND_MY_STRUCTURES, {
-				filter: { structureType: STRUCTURE_TOWER },
-			}),
-		);
-		spawns.push.apply(
-			room.find(FIND_MY_STRUCTURES, {
-				filter: { structureType: STRUCTURE_SPAWN },
-			}),
-		);
+		let structure = Game.structures[name];
+		if (structure.structureType == STRUCTURE_TOWER) {
+			towers.push(structure)
+		} else if (structure.structureType == STRUCTURE_SPAWN) {
+			spawns.push(structure)
+		}
 	}
 	console.log("Towers: " + towers.length);
 	console.log("Spawns: " + spawns.length);
