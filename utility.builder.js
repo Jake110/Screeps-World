@@ -70,16 +70,14 @@ function build_road(origin, target) {
 	road_positions.forEach(function (coord, _) {
 		pos = origin.room.getPositionAt(coord[0], coord[1]);
 		// Ensure there isn't already a road here
-		if (
-			_.every(pos.look(), (item) =>
-				item.type === "structure" ? item.structure !== "road" : true,
-			)
-		) {
-			origin.room.createConstructionSite(
-				coord[0],
-				coord[1],
-				STRUCTURE_ROAD,
-			);
+		let build = true;
+		pos.look().forEach(function (item) {
+			if (item.type == "structure" && item.structure == "road") {
+				build = false;
+			}
+		});
+		if (build) {
+			pos.createConstructionSite(STRUCTURE_ROAD);
 		}
 	});
 }
