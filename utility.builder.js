@@ -63,6 +63,7 @@ function build_road(origin, target) {
 		}
 	}
 	road_positions.forEach(function (coord, _) {
+		console.log("\tBuilding Road at: " + coord)
 		origin.room.createConstructionSite(
 			coord[0],
 			coord[1],
