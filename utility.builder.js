@@ -27,7 +27,7 @@ function build_road(origin, target) {
 			);
 			if (isEnterable(origin_adjacent)) {
 				let pos = [origin_adjacent.x, origin_adjacent.y];
-				if (road_positions.indexOf(pos) == -1) {
+				if (!road_positions.includes(pos)) {
 					road_positions.push(pos);
 				}
 				[target, origin.room.controller].forEach(function (_target) {
@@ -38,7 +38,7 @@ function build_road(origin, target) {
 					steps.pop();
 					steps.forEach(function (step, _) {
 						pos = [step.x, step.y];
-						if (road_positions.indexOf(pos) == -1) {
+						if (!road_positions.includes(pos)) {
 							road_positions.push(pos);
 						}
 					});
@@ -59,7 +59,7 @@ function build_road(origin, target) {
 				);
 				if (isEnterable(target_adjacent)) {
 					let pos = [target_adjacent.x, target_adjacent.y];
-					if (road_positions.indexOf(pos) == -1) {
+					if (!road_positions.includes(pos)) {
 						road_positions.push(pos);
 					}
 				}
@@ -92,7 +92,7 @@ module.exports = {
 		}
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
-				return Memory.built_roads[spawn.id].indexOf(_source.id) == -1;
+				return !Memory.built_roads[spawn.id].includes(_source.id);
 			},
 		});
 		build_road(_source, spawn);
