@@ -66,6 +66,21 @@ module.exports.loop = function () {
 			}
 		});
 
+		// Tower Construction
+		const room_level = room.controller.level
+		let max_towers = 0
+		switch (true) {
+			case (room_level == 8):
+				max_towers += 3
+			case (room_level == 7):
+			    max_towers += 1
+			case (room_level in [5, 6]):
+				max_towers += 1
+			case (room_level in [3, 4]):
+				max_towers += 1
+		}
+		console.log("Max Towers: " + max_towers)
+
 		spawns.forEach(function (spawn) {
 			// Spawn new creeps
 			if (spawn.spawning) {
@@ -106,7 +121,7 @@ module.exports.loop = function () {
 				}
 			}
 
-			// Consruction
+			// Road Consruction
 			if (spawn.room.find(FIND_MY_CONSTRUCTION_SITES).length == 0) {
 				builder.build_roads(spawn);
 			}
