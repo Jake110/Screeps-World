@@ -43,43 +43,47 @@ module.exports.loop = function () {
 
 	// Loop through all rooms
 	for (let name in Game.rooms) {
-		let room = Game.rooms[name]
+		let room = Game.rooms[name];
 		towers = room.find(FIND_MY_STRUCTURES, {
-			filter: { structureType: STRUCTURE_TOWER }
+			filter: { structureType: STRUCTURE_TOWER },
 		});
 		spawns = room.find(FIND_MY_STRUCTURES, {
-			filter: { structureType: STRUCTURE_SPAWN }
+			filter: { structureType: STRUCTURE_SPAWN },
 		});
 
 		// Tower control
 		towers.forEach(function (tower) {
-			let damaged_structure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-				filter: (structure) => structure.hits < structure.hitsMax,
-			});
+			let damaged_structure = tower.pos.findClosestByRange(
+				FIND_STRUCTURES,
+				{
+					filter: (structure) => structure.hits < structure.hitsMax,
+				},
+			);
 			if (damaged_structure) {
 				tower.repair(damaged_structure);
 			}
 
-			let closest_hostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+			let closest_hostile =
+				tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 			if (closest_hostile) {
 				tower.attack(closest_hostile);
 			}
 		});
 
 		// Tower Construction
-		const room_level = room.controller.level
-		let max_towers = 0
+		const room_level = room.controller.level;
+		let max_towers = 0;
 		switch (true) {
-			case (room_level == 8):
-				max_towers += 3
-			case (room_level == 7):
-			    max_towers += 1
-			case (room_level in [5, 6]):
-				max_towers += 1
-			case (room_level in [3, 4]):
-				max_towers += 1
+			case room_level == 8:
+				max_towers += 3;
+			case room_level == 7:
+				max_towers += 1;
+			case [5, 6].includes(room_level):
+				max_towers += 1;
+			case [3, 4].includes(room_level):
+				max_towers += 1;
 		}
-		console.log("Max Towers: " + max_towers)
+		console.log("Max Towers: " + max_towers);
 
 		spawns.forEach(function (spawn) {
 			// Spawn new creeps
@@ -109,10 +113,16 @@ module.exports.loop = function () {
 
 					if (role_creeps.length < max) {
 						console.log(
-							role_cap + " count: " + role_creeps.length + "/" + max,
+							role_cap +
+								" count: " +
+								role_creeps.length +
+								"/" +
+								max,
 						);
 						let new_name = role_cap + Game.time;
-						console.log("Spawning new " + role.name + ": " + new_name);
+						console.log(
+							"Spawning new " + role.name + ": " + new_name,
+						);
 						spawn.spawnCreep([WORK, CARRY, MOVE], new_name, {
 							memory: { role: role.name },
 						});
