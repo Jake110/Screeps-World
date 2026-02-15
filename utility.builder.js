@@ -46,12 +46,13 @@ function build_road(origin, target) {
 					_target.pos.x + parseInt(i),
 					_target.pos.y + parseInt(j),
 				);
+				console.log("Build road at " + target_adjacent + "?")
 				if (can_build_road(target_adjacent)) {
 					let pos = [target_adjacent.x, target_adjacent.y];
 					if (!road_positions.includes(pos)) {
 						road_positions.push(pos);
 					}
-				}
+				} else {console.log("\tNo")}
 			});
 		}
 	}
@@ -85,6 +86,9 @@ function can_build_road(pos) {
 		if (item.type === LOOK_STRUCTURES) {
 			return item.structureType === STRUCTURE_ROAD;
 		}
+		if (item.type == LOOK_CONSTRUCTION_SITES) {
+			return item.constructionSite === STRUCTURE_ROAD
+		}
 		return true;
 	});
 }
@@ -104,8 +108,10 @@ module.exports = {
 				return !Memory.built_roads[spawn.id].includes(_source.id);
 			},
 		});
-		console.log("Building road from spawn [" + spawn.id + "] to source [" + _source.id + "]")
-		build_road(_source, spawn);
-		Memory.built_roads[spawn.id].push(_source.id);
+		if (_source) {
+			build_road(_source, spawn);
+			Memory.built_roads[spawn.id].push(_source.id);
+		}
+	},
 	},
 };
