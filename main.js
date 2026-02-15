@@ -132,7 +132,8 @@ module.exports.loop = function () {
 			}
 
 			// Road Consruction
-			if (spawn.room.find(FIND_MY_CONSTRUCTION_SITES).length == 0) {
+			console.log("Construction Sites: " + room.find(FIND_MY_CONSTRUCTION_SITES).length)
+			if (room.find(FIND_MY_CONSTRUCTION_SITES).length == 0) {
 				builder.build_roads(spawn);
 			}
 		});
