@@ -113,5 +113,5 @@ module.exports = {
 			Memory.built_roads[spawn.id].push(_source.id);
 		}
 	},
-	},
+
 };
