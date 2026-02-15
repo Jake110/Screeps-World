@@ -4,18 +4,6 @@
  * @param {RoomPosition} target
  */
 function build_road(origin, target) {
-	/** @param {RoomPosition} pos **/
-	function isEnterable(pos) {
-		return _.every(pos.look(), function (item) {
-			/*if (item.type === LOOK_TERRAIN) {
-				return item.terrain !== "wall";
-			}*/
-			if (item.type === LOOK_STRUCTURES) {
-				return item.structureType === STRUCTURE_ROAD;
-			}
-			return true;
-		});
-	}
 	let road_positions = [];
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
@@ -26,7 +14,7 @@ function build_road(origin, target) {
 				origin.pos.x + parseInt(n),
 				origin.pos.y + parseInt(m),
 			);
-			if (isEnterable(origin_adjacent)) {
+			if (can_build_road(origin_adjacent)) {
 				let pos = [origin_adjacent.x, origin_adjacent.y];
 				if (!road_positions.includes(pos)) {
 					road_positions.push(pos);
@@ -58,7 +46,7 @@ function build_road(origin, target) {
 					_target.pos.x + parseInt(i),
 					_target.pos.y + parseInt(j),
 				);
-				if (isEnterable(target_adjacent)) {
+				if (can_build_road(target_adjacent)) {
 					let pos = [target_adjacent.x, target_adjacent.y];
 					if (!road_positions.includes(pos)) {
 						road_positions.push(pos);
@@ -85,6 +73,23 @@ function build_road(origin, target) {
 		}
 	});
 }
+
+/** @param {RoomPosition} pos **/
+function can_build_road(pos) {
+	console.log("-----");
+	return _.every(pos.look(), function (item) {
+		console.log("item keys: " + Object.keys(item));
+		/*if (item.type === LOOK_TERRAIN) {
+				return item.terrain !== "wall";
+			}*/
+		if (item.type === LOOK_STRUCTURES) {
+			return item.structureType === STRUCTURE_ROAD;
+		}
+		return true;
+	});
+}
+
+
 
 module.exports = {
 	build_roads: function (spawn) {
