@@ -14,7 +14,7 @@ function build_road(origin, target) {
 				origin.pos.x + parseInt(n),
 				origin.pos.y + parseInt(m),
 			);
-			if (can_build_road(origin_adjacent)) {
+			if (can_build_here(origin_adjacent)) {
 				let pos = [origin_adjacent.x, origin_adjacent.y];
 				if (!road_positions.includes(pos)) {
 					road_positions.push(pos);
@@ -46,13 +46,15 @@ function build_road(origin, target) {
 					_target.pos.x + parseInt(i),
 					_target.pos.y + parseInt(j),
 				);
-				console.log("Build road at " + target_adjacent + "?")
-				if (can_build_road(target_adjacent)) {
+				console.log("Build road at " + target_adjacent + "?");
+				if (can_build_here(target_adjacent)) {
 					let pos = [target_adjacent.x, target_adjacent.y];
 					if (!road_positions.includes(pos)) {
 						road_positions.push(pos);
 					}
-				} else {console.log("\tNo")}
+				} else {
+					console.log("\tNo");
+				}
 			});
 		}
 	}
@@ -76,23 +78,14 @@ function build_road(origin, target) {
 }
 
 /** @param {RoomPosition} pos **/
-function can_build_road(pos) {
-	console.log("-----");
-	return _.every(pos.look(), function (item) {
-		console.log("item keys: " + Object.keys(item));
-		/*if (item.type === LOOK_TERRAIN) {
-				return item.terrain !== "wall";
-			}*/
-		if (item.type === LOOK_STRUCTURES) {
-			console.log("\tStructure Type: " + item.structureType)
-			return item.structureType === STRUCTURE_ROAD;
-		}
-		if (item.type == LOOK_CONSTRUCTION_SITES) {
-			console.log("\tConstruction Site: " + item.constructionSite)
-			return item.constructionSite === STRUCTURE_ROAD
-		}
-		return true;
-	});
+function can_build_here(pos) {
+	return _.every(pos.look(), (item) =>
+		item.type === LOOK_STRUCTURES
+			? item.structureType === STRUCTURE_ROAD
+			: item.type === LOOK_CONSTRUCTION_SITES
+				? item.constructionSite === STRUCTURE_ROAD
+				: true,
+	);
 }
 
 
