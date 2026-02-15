@@ -93,10 +93,10 @@ function can_build_road(pos) {
 
 module.exports = {
 	build_roads: function (spawn) {
-		if (!Memory.built_roads) {
+		if (Memory.built_roads == null) {
 			Memory.built_roads = {};
 		}
-		if (!Memory.built_roads[spawn.id]) {
+		if (Memory.built_roads[spawn.id] == null) {
 			Memory.built_roads[spawn.id] = [];
 		}
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
