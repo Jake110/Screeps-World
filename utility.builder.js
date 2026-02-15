@@ -104,6 +104,7 @@ module.exports = {
 				return !Memory.built_roads[spawn.id].includes(_source.id);
 			},
 		});
+		console.log("Building road from spawn [" + spawn.id + "] to source [" + _source.id + "]")
 		build_road(_source, spawn);
 		Memory.built_roads[spawn.id].push(_source.id);
 	},
