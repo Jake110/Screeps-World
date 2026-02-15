@@ -10,7 +10,7 @@ function build_road(origin, target) {
 			if (item.type === LOOK_TERRAIN) {
 				return item.terrain !== "wall";
 			}
-			if (item.type === LOOK_STRUCTURE) {
+			if (item.type === LOOK_STRUCTURES) {
 				return item.structureType === STRUCTURE_ROAD;
 			}
 			return true;
@@ -74,7 +74,7 @@ function build_road(origin, target) {
 		let build = true;
 		pos.look().forEach(function (item) {
 			if (
-				item.type == LOOK_STRUCTURE &&
+				item.type == LOOK_STRUCTURES &&
 				item.structure == STRUCTURE_ROAD
 			) {
 				build = false;
