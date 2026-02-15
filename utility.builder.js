@@ -84,9 +84,11 @@ function can_build_road(pos) {
 				return item.terrain !== "wall";
 			}*/
 		if (item.type === LOOK_STRUCTURES) {
+			console.log("\tStructure Type: " + item.structureType)
 			return item.structureType === STRUCTURE_ROAD;
 		}
 		if (item.type == LOOK_CONSTRUCTION_SITES) {
+			console.log("\tConstruction Site: " + item.constructionSite)
 			return item.constructionSite === STRUCTURE_ROAD
 		}
 		return true;
