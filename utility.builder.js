@@ -93,12 +93,12 @@ function can_build_road(pos) {
 
 module.exports = {
 	build_roads: function (spawn) {
-		/*if (!Memory.built_roads) {
-			Memory.built_roads = [];
+		if (!Memory.built_roads) {
+			Memory.built_roads = {};
 		}
 		if (!Memory.built_roads[spawn.id]) {
 			Memory.built_roads[spawn.id] = [];
-		}*/
+		}
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				return !Memory.built_roads[spawn.id].includes(_source.id);
