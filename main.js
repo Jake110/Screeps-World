@@ -93,7 +93,7 @@ module.exports.loop = function () {
 					"🛠️" + spawning_creep.memory.role,
 					spawn.pos.x + 1,
 					spawn.pos.y,
-					{ align: "left", opacity: 0.8 },
+					{ opacity: 0.8 },
 				);
 			} else if (
 				spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {

@@ -1,19 +1,20 @@
-const isObstacle = _.transform(
-	OBSTACLE_OBJECT_TYPES,
-	(o, type) => {
-		o[type] = true;
-	},
-	{},
-);
-
+/**
+ * Build roads from the origin to the target & room controller
+ * @param {RoomPosition} origin
+ * @param {RoomPosition} target
+ */
 function build_road(origin, target) {
 	/** @param {RoomPosition} pos **/
 	function isEnterable(pos) {
-		return _.every(pos.look(), (item) =>
-			item.type === "terrain"
-				? item.terrain !== "wall"
-				: !isObstacle[item.structureType],
-		);
+		return _.every(pos.look(), function (item) {
+			if (item.type === LOOK_TERRAIN) {
+				return item.terrain !== "wall";
+			}
+			if (item.type === LOOK_STRUCTURE) {
+				return item.structureType === STRUCTURE_ROAD;
+			}
+			return true;
+		});
 	}
 	let road_positions = [];
 	for (let n = -1; n <= 1; n++) {
@@ -72,7 +73,10 @@ function build_road(origin, target) {
 		// Ensure there isn't already a road here
 		let build = true;
 		pos.look().forEach(function (item) {
-			if (item.type == "structure" && item.structure == STRUCTURE_ROAD) {
+			if (
+				item.type == LOOK_STRUCTURE &&
+				item.structure == STRUCTURE_ROAD
+			) {
 				build = false;
 			}
 		});
