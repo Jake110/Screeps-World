@@ -7,9 +7,9 @@ function build_road(origin, target) {
 	/** @param {RoomPosition} pos **/
 	function isEnterable(pos) {
 		return _.every(pos.look(), function (item) {
-			if (item.type === LOOK_TERRAIN) {
+			/*if (item.type === LOOK_TERRAIN) {
 				return item.terrain !== "wall";
-			}
+			}*/
 			if (item.type === LOOK_STRUCTURES) {
 				return item.structureType === STRUCTURE_ROAD;
 			}
