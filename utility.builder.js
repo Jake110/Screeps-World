@@ -85,21 +85,16 @@ function build_road(origin, target) {
 
 /** @param {RoomPosition} pos **/
 function can_build_here(pos) {
-	console.log("Build road at " + pos + "?");
-	let result = _.every(pos.look(), function (item) {
-		console.log("\tItem Keys: " + Object.keys(item));
-		if (item.type === LOOK_STRUCTURES) {
-			console.log("\t\tStructure Type: " + item.structureType);
-			return item.structureType === STRUCTURE_ROAD;
+		let result = _.every(pos.look(), function (item) {
+				if (item.type === LOOK_STRUCTURES) {
+						return item.structureType === STRUCTURE_ROAD;
 		}
 		if (item.type === LOOK_CONSTRUCTION_SITES) {
-			console.log("\t\tConstruction Type: " + item.constructionSite);
-			return item.constructionSite === STRUCTURE_ROAD;
+						return item.constructionSite === STRUCTURE_ROAD;
 		}
 		return true;
 	});
-	console.log("Result: " + result);
-	return result;
+		return result;
 }
 
 
