@@ -63,11 +63,7 @@ function can_build_here(pos, respect_walls = false) {
 		}
 		if (item.type === LOOK_FLAGS) {
 			console.log("\tFlag: " + item.flag);
-			console.log("\tColour: " + item.color);
-			console.log("\tSecondary: " + item.colorSeconary);
-			return (
-				item.color === COLOR_BROWN && item.colorSeconary === COLOR_WHITE
-			);
+			return item.flag.startsWith("build:" + STRUCTURE_ROAD + ":");
 		}
 		return true;
 	});
