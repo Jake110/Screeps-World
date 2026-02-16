@@ -12,7 +12,7 @@ function place_road(room, origin, target) {
 		ignoreRoads: true,
 		swampCost: 1,
 	});
-	steps.pop()
+	steps.pop();
 	steps.forEach(function (step) {
 		place_road_flag(room.getPositionAt(step.x, step.y));
 	});
@@ -41,7 +41,10 @@ function place_road_flag(pos) {
 	if (Memory.road_count == null) {
 		Memory.road_count = 0;
 	}
-	if (pos.lookFor(LOOK_FLAGS).length == 0 && pos.lookFor(LOOK_STRUCTURES) == 0) {
+	if (
+		pos.lookFor(LOOK_FLAGS).length == 0 &&
+		pos.lookFor(LOOK_STRUCTURES) == 0
+	) {
 		Memory.road_count += 1;
 		pos.createFlag(
 			"build:" + STRUCTURE_ROAD + ":" + Memory.road_count,
@@ -54,10 +57,13 @@ function place_road_flag(pos) {
 /** @param {RoomPosition} pos **/
 function can_build_here(pos, respect_walls = false) {
 	return _.every(pos.look(), function (item) {
+		console.log("\tItem Keys: " + Object.keys(item));
 		if (respect_walls && item.type == LOOK_TERRAIN) {
 			return item.terrain !== "wall";
 		}
 		if (item.type === LOOK_FLAGS) {
+			console.log("\tColour: " + item.color);
+			console.log("\tSecondary: " + item.colorSeconary);
 			return (
 				item.color === COLOR_BROWN && item.colorSeconary === COLOR_WHITE
 			);
@@ -80,14 +86,16 @@ function get_next_adjacent(room, pos, layer = 1) {
 				room.getPositionAt(pos.x + m, pos.y + l),
 			);
 		}
+		console.log("Options: " + options);
 		next = pos.findClosestByPath(options, {
 			ignoreCreeps: true,
 			ignoreRoads: true,
 			swampCost: 1,
 			filter: can_build_here,
 		});
+		console.log("\tSelected: " + next);
 	}
-	return next
+	return next;
 }
 
 module.exports = {
@@ -132,7 +140,7 @@ module.exports = {
 				new_tower_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
 					flag.remove();
 				});
-				place_road_around(room, new_tower_site)
+				place_road_around(room, new_tower_site);
 				new_tower_site.createFlag(
 					"build:" + STRUCTURE_TOWER + ":" + tower_sites,
 					COLOR_GREEN,
