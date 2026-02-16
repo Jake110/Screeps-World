@@ -131,24 +131,28 @@ module.exports = {
 			case [3, 4].includes(room_level):
 				max_towers += 1;
 		}
-		tower_sites = room.find(FIND_FLAGS, {
-			filter: { color: COLOR_GREEN, colorSeconary: COLOR_BROWN },
-		}).length;
-		if (tower_sites < max_towers) {
-			let pos = room.controller.pos;
-			for (; tower_sites < max_towers; tower_sites++) {
-				console.log("Towers: " + tower_sites);
-				let new_tower_site = get_next_adjacent(room, pos, 2);
-				new_tower_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
-					flag.remove();
-				});
-				place_road_around(room, new_tower_site);
-				new_tower_site.createFlag(
-					"build:" + STRUCTURE_TOWER + ":" + tower_sites,
-					COLOR_GREEN,
-					COLOR_BROWN,
-				);
-			}
+		for (
+			let tower_sites = room.find(FIND_FLAGS, {
+				filter: { color: COLOR_GREEN, colorSeconary: COLOR_BROWN },
+			}).length;
+			tower_sites < max_towers;
+			tower_sites++
+		) {
+			console.log("Towers: " + tower_sites);
+			let new_tower_site = get_next_adjacent(
+				room,
+				room.controller.pos,
+				2,
+			);
+			new_tower_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
+				flag.remove();
+			});
+			place_road_around(room, new_tower_site);
+			new_tower_site.createFlag(
+				"build:" + STRUCTURE_TOWER + ":" + tower_sites,
+				COLOR_GREEN,
+				COLOR_BROWN,
+			);
 		}
 	},
 };
