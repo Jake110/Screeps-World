@@ -76,7 +76,7 @@ function build_road(origin, target) {
 
 /** @param {RoomPosition} pos **/
 function can_build_here(pos) {
-	console.log("Build road at " + target_adjacent + "?");
+	console.log("Build road at " + pos + "?");
 	let result = _.every(pos.look(), function (item) {
 		console.log("\tItem Keys: " + Object.keys(item))
 		if (item.type === LOOK_STRUCTURES) {
