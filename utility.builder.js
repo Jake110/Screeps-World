@@ -22,7 +22,7 @@ function place_road(origin, target) {
 				}
 		}
 	}
-					steps = origin.findPathTo(target, {
+	steps = origin.pos.findPathTo(target, {
 						ignoreCreeps: true,
 ignoreRoads: true,
 						swampCost: 1,
