@@ -57,14 +57,11 @@ function place_road_flag(pos) {
 /** @param {RoomPosition} pos **/
 function can_build_here(pos, respect_walls = false) {
 	return _.every(pos.look(), function (item) {
-		console.log("\tItem Keys: " + Object.keys(item));
-		if (respect_walls && item.type == LOOK_TERRAIN) {
+				if (respect_walls && item.type == LOOK_TERRAIN) {
 			return item.terrain !== "wall";
 		}
 		if (item.type === LOOK_FLAGS) {
-			console.log("\tFlag: " + item.flag);
-			console.log("\t\t" + item.flag.name);
-			return item.flag.name.startsWith("build:" + STRUCTURE_ROAD + ":");
+						return item.flag.name.startsWith("build:" + STRUCTURE_ROAD + ":");
 		}
 		return true;
 	});
