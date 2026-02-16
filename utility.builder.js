@@ -62,6 +62,7 @@ function can_build_here(pos, respect_walls = false) {
 			return item.terrain !== "wall";
 		}
 		if (item.type === LOOK_FLAGS) {
+			console.log("\tFlag: " + item.flag);
 			console.log("\tColour: " + item.color);
 			console.log("\tSecondary: " + item.colorSeconary);
 			return (
@@ -136,6 +137,7 @@ module.exports = {
 		if (tower_sites < max_towers) {
 			let pos = room.controller.pos;
 			for (; tower_sites < max_towers; tower_sites++) {
+				console.log("Towers: " + tower_sites);
 				let new_tower_site = get_next_adjacent(room, pos, 2);
 				new_tower_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
 					flag.remove();
