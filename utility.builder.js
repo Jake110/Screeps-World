@@ -12,6 +12,7 @@ function place_road(room, origin, target) {
 		ignoreRoads: true,
 		swampCost: 1,
 	});
+	steps.pop()
 	steps.forEach(function (step) {
 		place_road_flag(room.getPositionAt(step.x, step.y));
 	});
