@@ -71,19 +71,7 @@ module.exports.loop = function () {
 		});
 
 		// Tower Construction
-		const room_level = room.controller.level;
-		let max_towers = 0;
-		switch (true) {
-			case room_level == 8:
-				max_towers += 3;
-			case room_level == 7:
-				max_towers += 1;
-			case [5, 6].includes(room_level):
-				max_towers += 1;
-			case [3, 4].includes(room_level):
-				max_towers += 1;
-		}
-		console.log("Max Towers: " + max_towers);
+		builder.build_towers(room);
 
 		spawns.forEach(function (spawn) {
 			// Spawn new creeps
@@ -135,23 +123,23 @@ module.exports.loop = function () {
 			// Get a count for how many road flags do not have road on them
 			road_flags_unfinished = room.find(FIND_FLAGS, {
 				filter: function (flag) {
-// If the flag isn't for roads, ignore it
+					// If the flag isn't for roads, ignore it
 					if (
 						flag.color !== COLOR_BROWN ||
 						flag.secondaryColor !== COLOR_WHITE
 					) {
 						return false;
 					}
-// Ignore road flags which have roads built already
+					// Ignore road flags which have roads built already
 					return _.every(flag.pos.look(), function (item) {
 						if (item.type === FIND_STRUCTURES) {
 							return item.structureType !== STRUCTURE_ROAD;
 						}
-return true;
+						return true;
 					});
 				},
 			}).length;
-						if (road_flags_unfinished == 0) {
+			if (road_flags_unfinished == 0) {
 				builder.place_source_roads(spawn);
 			}
 		});

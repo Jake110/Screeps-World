@@ -5,7 +5,7 @@
  * @param {RoomPosition} target
  */
 function place_road(room, origin, target) {
-		place_road_around(room, origin);
+	place_road_around(room, origin);
 	place_road_around(room, target);
 	steps = origin.findPathTo(target, {
 		ignoreCreeps: true,
@@ -32,29 +32,29 @@ function place_road_around(room, pos) {
 				if (origin_adjacent.lookFor(LOOK_FLAGS).length == 0) {
 					place_road_flag(origin_adjacent);
 				}
-					}
-				}
-					}
-	}
-
-function place_road_flag(pos) {
-			if (Memory.road_count == null) {
-				Memory.road_count = 0;
 			}
-	if (pos.lookFor(LOOK_FLAGS).length == 0 && pos.lookFor(LOOK_STRUCTURES) == 0) {
-			Memory.road_count += 1;
-			pos.createFlag(
-				"build:" + STRUCTURE_ROAD + ":" + Memory.road_count,
-				COLOR_BROWN,
-				COLOR_WHITE,
-			);
 		}
 	}
+}
+
+function place_road_flag(pos) {
+	if (Memory.road_count == null) {
+		Memory.road_count = 0;
+	}
+	if (pos.lookFor(LOOK_FLAGS).length == 0 && pos.lookFor(LOOK_STRUCTURES) == 0) {
+		Memory.road_count += 1;
+		pos.createFlag(
+			"build:" + STRUCTURE_ROAD + ":" + Memory.road_count,
+			COLOR_BROWN,
+			COLOR_WHITE,
+		);
+	}
+}
 
 /** @param {RoomPosition} pos **/
 function can_build_here(pos, respect_walls = false) {
-		return _.every(pos.look(), function (item) {
-if (respect_walls && item.type == LOOK_TERRAIN) {
+	return _.every(pos.look(), function (item) {
+		if (respect_walls && item.type == LOOK_TERRAIN) {
 			return item.terrain !== "wall";
 		}
 		if (item.type === LOOK_FLAGS) {
@@ -64,9 +64,30 @@ if (respect_walls && item.type == LOOK_TERRAIN) {
 		}
 		return true;
 	});
-	
 }
 
+function get_next_adjacent(room, pos, layer = 1) {
+	let next;
+	for (; next == null; layer++) {
+		let l = parseInt(layer);
+		let options = [];
+		for (let n = 0 - layer; n <= layer; n += 2) {
+			let m = parseInt(n);
+			options.push(
+				room.getPositionAt(pos.x - l, pos.y + m),
+				room.getPositionAt(pos.x + l, pos.y + m),
+				room.getPositionAt(pos.x + m, pos.y - l),
+				room.getPositionAt(pos.x + m, pos.y + l),
+			);
+		}
+		next = pos.findClosestByPath(options, {
+			ignoreCreeps: true,
+			ignoreRoads: true,
+			swampCost: 1,
+			filter: can_build_here,
+		});
+	}
+}
 
 module.exports = {
 	place_source_roads: function (spawn) {
@@ -87,5 +108,37 @@ module.exports = {
 			Memory.built_roads[spawn.id].push(_source.id);
 		}
 	},
-
+	build_towers: function (room) {
+		const room_level = room.controller.level;
+		let max_towers = 0;
+		switch (true) {
+			case room_level == 8:
+				max_towers += 3;
+			case room_level == 7:
+				max_towers += 1;
+			case [5, 6].includes(room_level):
+				max_towers += 1;
+			case [3, 4].includes(room_level):
+				max_towers += 1;
+		}
+		tower_sites = room.find(FIND_FLAGS, {
+			filter: { color: COLOR_GREEN, colorSeconary: COLOR_BROWN },
+		});
+		if (tower_sites.length < max_towers) {
+			let pos = room.controller.pos;
+			while (tower_sites.length < max_towers) {
+				let new_tower_site = get_next_adjacent(room, pos, 2);
+				new_tower_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
+					flag.remove();
+				});
+				place_road_around(room, new_tower_site)
+				new_tower_site.createFlag(
+					"build:" + STRUCTURE_TOWER + ":" + tower_sites.length,
+					COLOR_GREEN,
+					COLOR_BROWN,
+				);
+				tower_sites.push(new_tower_site);
+			}
+		}
+	},
 };
