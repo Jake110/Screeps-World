@@ -124,10 +124,10 @@ module.exports = {
 		}
 		tower_sites = room.find(FIND_FLAGS, {
 			filter: { color: COLOR_GREEN, colorSeconary: COLOR_BROWN },
-		});
+		}).length;
 		if (tower_sites.length < max_towers) {
 			let pos = room.controller.pos;
-			while (tower_sites.length < max_towers) {
+			for (; tower_sites < max_towers; tower_sites++) {
 				let new_tower_site = get_next_adjacent(room, pos, 2);
 				new_tower_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
 					flag.remove();
@@ -138,7 +138,6 @@ module.exports = {
 					COLOR_GREEN,
 					COLOR_BROWN,
 				);
-				tower_sites.push(new_tower_site);
 			}
 		}
 	},
