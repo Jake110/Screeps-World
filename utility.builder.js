@@ -63,8 +63,8 @@ function can_build_here(pos, respect_walls = false) {
 		}
 		if (item.type === LOOK_FLAGS) {
 			console.log("\tFlag: " + item.flag);
-			console.log("\t\t" + typeof item.flag);
-			return item.flag.startsWith("build:" + STRUCTURE_ROAD + ":");
+			console.log("\t\t" + item.flag.name);
+			return item.flag.name.startsWith("build:" + STRUCTURE_ROAD + ":");
 		}
 		return true;
 	});
