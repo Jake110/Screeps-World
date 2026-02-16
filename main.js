@@ -143,7 +143,7 @@ module.exports.loop = function () {
 						return false;
 					}
 // Ignore road flags which have roads built already
-					return _.every(pos.look(), function (item) {
+					return _.every(flag.pos.look(), function (item) {
 						if (item.type === FIND_STRUCTURES) {
 							return item.structureType !== STRUCTURE_ROAD;
 						}
