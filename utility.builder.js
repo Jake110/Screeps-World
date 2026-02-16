@@ -72,7 +72,7 @@ function get_next_adjacent(room, pos, layer = 1) {
 	for (; next == null; layer++) {
 		let l = parseInt(layer);
 		let options = [];
-		for (let n = 0 - layer; n <= layer-2; n += 2) {
+		for (let n = 0 - layer; n <= layer - 2; n += 2) {
 			let m = parseInt(n);
 			options.push(
 				room.getPositionAt(pos.x - l, pos.y + m),
@@ -147,6 +147,7 @@ module.exports = {
 				COLOR_GREEN,
 				COLOR_BROWN,
 			);
+			tower_sites++
 		}
 	},
 };
