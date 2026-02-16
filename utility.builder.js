@@ -1,9 +1,9 @@
 /**
- * Build roads from the origin to the target & room controller
+ * Build roads from the origin to the target
  * @param {RoomPosition} origin
  * @param {RoomPosition} target
  */
-function build_road(origin, target) {
+function place_road(origin, target) {
 	let road_positions = [];
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
@@ -19,9 +19,12 @@ function build_road(origin, target) {
 				if (!road_positions.includes(pos)) {
 					road_positions.push(pos);
 				}
-				[target, origin.room.controller].forEach(function (_target) {
-					steps = origin_adjacent.findPathTo(_target, {
+				}
+		}
+	}
+					steps = origin.findPathTo(target, {
 						ignoreCreeps: true,
+ignoreRoads: true,
 						swampCost: 1,
 					});
 					steps.pop();
@@ -31,20 +34,14 @@ function build_road(origin, target) {
 							road_positions.push(pos);
 						}
 					});
-				});
-			}
-		}
-	}
-
-	for (let i = -1; i <= 1; i++) {
+					for (let i = -1; i <= 1; i++) {
 		for (let j = -1; j <= 1; j++) {
 			if (i == 0 && j == 0) {
 				continue;
 			}
-			[target, origin.room.controller].forEach(function (_target) {
-				target_adjacent = origin.room.getPositionAt(
-					_target.pos.x + parseInt(i),
-					_target.pos.y + parseInt(j),
+							target_adjacent = origin.room.getPositionAt(
+					target.pos.x + parseInt(i),
+					target.pos.y + parseInt(j),
 				);
 				if (can_build_here(target_adjacent, true)) {
 					let pos = [target_adjacent.x, target_adjacent.y];
@@ -52,8 +49,7 @@ function build_road(origin, target) {
 						road_positions.push(pos);
 					}
 				}
-			});
-		}
+					}
 	}
 		road_positions.forEach(function (coord) {
 				pos = origin.room.getPositionAt(coord[0], coord[1]);
@@ -61,8 +57,9 @@ function build_road(origin, target) {
 		let build = true;
 		pos.look().forEach(function (item) {
 			if (
-				item.type == LOOK_STRUCTURES &&
-				item.structure == STRUCTURE_ROAD
+				item.type === LOOK_FLAGS &&
+				item.color === COLOR_BROWN &&
+				item.colorSeconary === COLOR_WHITE
 			) {
 				build = false;
 			}
@@ -83,24 +80,22 @@ function build_road(origin, target) {
 
 /** @param {RoomPosition} pos **/
 function can_build_here(pos, respect_walls = false) {
-		let result = _.every(pos.look(), function (item) {
+		return _.every(pos.look(), function (item) {
 if (respect_walls && item.type == LOOK_TERRAIN) {
-			return item.terrain !== "wall"
+			return item.terrain !== "wall";
 		}
 				if (item.type === LOOK_STRUCTURES) {
 						return item.structureType === STRUCTURE_ROAD;
 		}
 		if (item.type === LOOK_CONSTRUCTION_SITES) {
-						return item.constructionSite === STRUCTURE_ROAD;
+			return item.constructionSite === STRUCTURE_ROAD;
 		}
 		return true;
 	});
-		return result;
-}
-
+	
 
 module.exports = {
-	build_roads: function (spawn) {
+	place_source_roads: function (spawn) {
 		if (Memory.built_roads == null) {
 			Memory.built_roads = {};
 		}
@@ -113,7 +108,8 @@ module.exports = {
 			},
 		});
 		if (_source) {
-			build_road(_source, spawn);
+			place_road(_source, spawn);
+			place_road(_source, spawn.room.controller);
 			Memory.built_roads[spawn.id].push(_source.id);
 		}
 	},

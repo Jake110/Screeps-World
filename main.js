@@ -147,13 +147,13 @@ module.exports.loop = function () {
 						if (item.type === FIND_STRUCTURES) {
 							return item.structureType !== STRUCTURE_ROAD;
 						}
-return true
+return true;
 					});
 				},
 			}).length;
 			console.log("Unfinished Roads: " + road_flags_unfinished);
 			if (road_flags_unfinished == 0) {
-				builder.build_roads(spawn);
+				builder.place_source_roads(spawn);
 			}
 		});
 	}
