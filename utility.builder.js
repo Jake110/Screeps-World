@@ -87,6 +87,7 @@ function get_next_adjacent(room, pos, layer = 1) {
 			filter: can_build_here,
 		});
 	}
+	return next
 }
 
 module.exports = {
