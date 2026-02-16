@@ -133,6 +133,7 @@ module.exports = {
 			tower_sites++
 		) {
 			console.log("Towers: " + tower_sites);
+			console.log("\tType: " + typeof tower_sites);
 			let new_tower_site = get_next_adjacent(
 				room,
 				room.controller.pos,
@@ -147,7 +148,6 @@ module.exports = {
 				COLOR_GREEN,
 				COLOR_BROWN,
 			);
-			tower_sites++
 		}
 	},
 };
