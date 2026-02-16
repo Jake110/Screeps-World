@@ -93,6 +93,8 @@ if (respect_walls && item.type == LOOK_TERRAIN) {
 		return true;
 	});
 	
+}
+
 
 module.exports = {
 	place_source_roads: function (spawn) {
