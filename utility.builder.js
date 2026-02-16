@@ -41,7 +41,7 @@ function place_road_flag(pos) {
 			if (Memory.road_count == null) {
 				Memory.road_count = 0;
 			}
-if (pos.lookFor(LOOK_FLAGS).length == 0) {
+	if (pos.lookFor(LOOK_FLAGS).length == 0 && pos.lookFor(LOOK_STRUCTURE) == 0) {
 			Memory.road_count += 1;
 			pos.createFlag(
 				"build:" + STRUCTURE_ROAD + ":" + Memory.road_count,
