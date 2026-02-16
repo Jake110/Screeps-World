@@ -125,7 +125,7 @@ module.exports = {
 		tower_sites = room.find(FIND_FLAGS, {
 			filter: { color: COLOR_GREEN, colorSeconary: COLOR_BROWN },
 		}).length;
-		if (tower_sites.length < max_towers) {
+		if (tower_sites < max_towers) {
 			let pos = room.controller.pos;
 			for (; tower_sites < max_towers; tower_sites++) {
 				let new_tower_site = get_next_adjacent(room, pos, 2);
@@ -134,7 +134,7 @@ module.exports = {
 				});
 				place_road_around(room, new_tower_site)
 				new_tower_site.createFlag(
-					"build:" + STRUCTURE_TOWER + ":" + tower_sites.length,
+					"build:" + STRUCTURE_TOWER + ":" + tower_sites,
 					COLOR_GREEN,
 					COLOR_BROWN,
 				);
