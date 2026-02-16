@@ -57,7 +57,7 @@ function build_road(origin, target) {
 	}
     console.log("Building road at positions:")
 	road_positions.forEach(function (coord) {
-		console.log("\t[" + pos + "]")
+		console.log("\t[" + coord + "]")
 		pos = origin.room.getPositionAt(coord[0], coord[1]);
 		// Ensure there isn't already a road here
 		let build = true;
