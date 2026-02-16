@@ -132,8 +132,24 @@ module.exports.loop = function () {
 			}
 
 			// Road Consruction
-			console.log("Construction Sites: " + room.find(FIND_MY_CONSTRUCTION_SITES).length)
-			if (room.find(FIND_MY_CONSTRUCTION_SITES).length == 0) {
+			// Get a count for how many road flags do not have road on them
+			road_flags_unfinished = room.find(FIND_FLAGS, {
+				filter: function (flag) {
+					if (
+						flag.color !== COLOR_BROWN ||
+						flag.secondaryColor !== COLOR_WHITE
+					) {
+						return false;
+					}
+					return _.every(pos.look(), function (item) {
+						if (item.type === FIND_STRUCTURES) {
+							return item.structureType !== STRUCTURE_ROAD;
+						}
+					});
+				},
+			}).length;
+			console.log("Unfinished Roads: " + road_flags_unfinished);
+			if (road_flags_unfinished == 0) {
 				builder.build_roads(spawn);
 			}
 		});

@@ -14,7 +14,7 @@ function build_road(origin, target) {
 				origin.pos.x + parseInt(n),
 				origin.pos.y + parseInt(m),
 			);
-			if (can_build_here(origin_adjacent)) {
+			if (can_build_here(origin_adjacent, true)) {
 				let pos = [origin_adjacent.x, origin_adjacent.y];
 				if (!road_positions.includes(pos)) {
 					road_positions.push(pos);
@@ -46,7 +46,7 @@ function build_road(origin, target) {
 					_target.pos.x + parseInt(i),
 					_target.pos.y + parseInt(j),
 				);
-				if (can_build_here(target_adjacent)) {
+				if (can_build_here(target_adjacent, true)) {
 					let pos = [target_adjacent.x, target_adjacent.y];
 					if (!road_positions.includes(pos)) {
 						road_positions.push(pos);
@@ -75,7 +75,7 @@ function build_road(origin, target) {
 			}
 			Memory.road_count += 1;
 			pos.createFlag(
-				"build:" + STRUCTURE_ROAD + Memory.road_count,
+				"build:" + STRUCTURE_ROAD + ":" + Memory.road_count,
 				COLOR_BROWN,
 				COLOR_WHITE,
 			);
@@ -84,8 +84,11 @@ function build_road(origin, target) {
 }
 
 /** @param {RoomPosition} pos **/
-function can_build_here(pos) {
+function can_build_here(pos, respect_walls = false) {
 		let result = _.every(pos.look(), function (item) {
+if (respect_walls && item.type == LOOK_TERRAIN) {
+			return item.terrain === "wall"
+		}
 				if (item.type === LOOK_STRUCTURES) {
 						return item.structureType === STRUCTURE_ROAD;
 		}
