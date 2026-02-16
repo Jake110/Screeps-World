@@ -55,9 +55,9 @@ function build_road(origin, target) {
 			});
 		}
 	}
-    console.log("Building road at positions:")
+	console.log("Building road at positions:");
 	road_positions.forEach(function (coord) {
-		console.log("\t[" + coord + "]")
+		console.log("\t[" + coord + "]");
 		pos = origin.room.getPositionAt(coord[0], coord[1]);
 		// Ensure there isn't already a road here
 		let build = true;
@@ -70,7 +70,15 @@ function build_road(origin, target) {
 			}
 		});
 		if (build) {
-			pos.createConstructionSite(STRUCTURE_ROAD);
+			if (Memory.road_count == null) {
+				Memory.road_count = 0;
+			}
+			Memory.road_count += 1;
+			pos.createFlag(
+				"build:" + STRUCTURE_ROAD + Memory.road_count,
+				COLOR_BROWN,
+				COLOR_WHITE,
+			);
 		}
 	});
 }
@@ -79,19 +87,19 @@ function build_road(origin, target) {
 function can_build_here(pos) {
 	console.log("Build road at " + pos + "?");
 	let result = _.every(pos.look(), function (item) {
-		console.log("\tItem Keys: " + Object.keys(item))
+		console.log("\tItem Keys: " + Object.keys(item));
 		if (item.type === LOOK_STRUCTURES) {
-			console.log("\t\tStructure Type: " + item.structureType)
+			console.log("\t\tStructure Type: " + item.structureType);
 			return item.structureType === STRUCTURE_ROAD;
 		}
 		if (item.type === LOOK_CONSTRUCTION_SITES) {
-			console.log("\t\tConstruction Type: " + item.constructionSite)
+			console.log("\t\tConstruction Type: " + item.constructionSite);
 			return item.constructionSite === STRUCTURE_ROAD;
 		}
 		return true;
 	});
-	console.log("Reasult: " + result)
-	return result
+	console.log("Result: " + result);
+	return result;
 }
 
 
