@@ -151,8 +151,7 @@ return true;
 					});
 				},
 			}).length;
-			console.log("Unfinished Roads: " + road_flags_unfinished);
-			if (road_flags_unfinished == 0) {
+						if (road_flags_unfinished == 0) {
 				builder.place_source_roads(spawn);
 			}
 		});
