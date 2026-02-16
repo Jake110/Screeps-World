@@ -25,7 +25,7 @@ function build_road(origin, target) {
 						swampCost: 1,
 					});
 					steps.pop();
-					steps.forEach(function (step, _) {
+					steps.forEach(function (step) {
 						pos = [step.x, step.y];
 						if (!road_positions.includes(pos)) {
 							road_positions.push(pos);
