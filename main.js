@@ -135,16 +135,19 @@ module.exports.loop = function () {
 			// Get a count for how many road flags do not have road on them
 			road_flags_unfinished = room.find(FIND_FLAGS, {
 				filter: function (flag) {
+// If the flag isn't for roads, ignore it
 					if (
 						flag.color !== COLOR_BROWN ||
 						flag.secondaryColor !== COLOR_WHITE
 					) {
 						return false;
 					}
+// Ignore road flags which have roads built already
 					return _.every(pos.look(), function (item) {
 						if (item.type === FIND_STRUCTURES) {
 							return item.structureType !== STRUCTURE_ROAD;
 						}
+return true
 					});
 				},
 			}).length;

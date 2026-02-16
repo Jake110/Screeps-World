@@ -85,7 +85,7 @@ function build_road(origin, target) {
 function can_build_here(pos, respect_walls = false) {
 		let result = _.every(pos.look(), function (item) {
 if (respect_walls && item.type == LOOK_TERRAIN) {
-			return item.terrain === "wall"
+			return item.terrain !== "wall"
 		}
 				if (item.type === LOOK_STRUCTURES) {
 						return item.structureType === STRUCTURE_ROAD;
