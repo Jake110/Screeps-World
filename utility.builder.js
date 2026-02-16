@@ -46,14 +46,11 @@ function build_road(origin, target) {
 					_target.pos.x + parseInt(i),
 					_target.pos.y + parseInt(j),
 				);
-				console.log("Build road at " + target_adjacent + "?");
 				if (can_build_here(target_adjacent)) {
 					let pos = [target_adjacent.x, target_adjacent.y];
 					if (!road_positions.includes(pos)) {
 						road_positions.push(pos);
 					}
-				} else {
-					console.log("\tNo");
 				}
 			});
 		}
@@ -79,15 +76,22 @@ function build_road(origin, target) {
 
 /** @param {RoomPosition} pos **/
 function can_build_here(pos) {
-	return _.every(pos.look(), (item) =>
-		item.type === LOOK_STRUCTURES
-			? item.structureType === STRUCTURE_ROAD
-			: item.type === LOOK_CONSTRUCTION_SITES
-				? item.constructionSite === STRUCTURE_ROAD
-				: true,
-	);
+	console.log("Build road at " + target_adjacent + "?");
+	let result = _.every(pos.look(), function (item) {
+		console.log("\tItem Keys: " + Object.keys(item))
+		if (item.type === LOOK_STRUCTURES) {
+			console.log("\t\tStructure Type: " + item.structureType)
+			return item.structureType === STRUCTURE_ROAD;
+		}
+		if (item.type === LOOK_CONSTRUCTION_SITES) {
+			console.log("\t\tConstruction Type: " + item.constructionSite)
+			return item.constructionSite === STRUCTURE_ROAD;
+		}
+		return true;
+	});
+	console.log("Reasult: " + result)
+	return result
 }
-
 
 
 module.exports = {
