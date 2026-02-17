@@ -71,7 +71,7 @@ module.exports.loop = function () {
 		});
 
 		// Tower Construction
-		builder.build_towers(room);
+		builder.place_towers(room)
 
 		spawns.forEach(function (spawn) {
 			// Spawn new creeps

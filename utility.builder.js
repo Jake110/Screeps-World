@@ -67,7 +67,10 @@ function can_build_here(pos, respect_walls = false) {
 	});
 }
 
-function get_next_adjacent(room, pos, layer = 1) {
+function get_next_adjacent(room, pos, layer = 1, avoid_pos = null) {
+	if (avoid_pos == null) {
+		avoid_pos = [];
+	}
 	let next;
 	for (; next == null; layer++) {
 		let l = parseInt(layer);
@@ -81,26 +84,59 @@ function get_next_adjacent(room, pos, layer = 1) {
 				room.getPositionAt(pos.x + m, pos.y + l),
 			);
 		}
-		console.log("Options: " + options);
+		options = options.filter(function (option) {
+			return !avoid_pos.includes(option);
+		});
 		next = pos.findClosestByPath(options, {
 			ignoreCreeps: true,
 			ignoreRoads: true,
 			swampCost: 1,
 			filter: can_build_here,
 		});
-		console.log("\tSelected: " + next);
 	}
 	return next;
 }
 
+function set_up_memory(path, value) {
+	if (path == null) {
+		path = value;
+	}
+}
+
 module.exports = {
+	place_extensions: function (room, spawn) {
+		const room_level = room.controller.level;
+		let max_entensions;
+		if (room_level < 2) {
+			max_entensions = 0;
+		} else if (room_level == 2) {
+			max_entensions = 5;
+		} else {
+			max_entensions = (room_level - 2) * 10;
+		}
+		set_up_memory(Memory[spawn.id], {});
+		set_up_memory(Memory[spawn.id].extensions, []);
+		let extension_sites = room.find(FIND_FLAGS, {
+			filter: { color: COLOR_CYAN, secondaryColor: COLOR_GREEN },
+		});
+		if (extension_sites < max_entensions) {
+			let new_site = get_next_adjacent(
+				room,
+				spawn.pos,
+				2,
+				Memory[spawn.id].extensions,
+			);
+			clear_space(new_site);
+			place_road_around(room, new_site);
+			new_site.createFlag(
+				"build:" + STRUCTURE_EXTENSION + ":" + extension_sites,
+			);
+			Memory[spawn.id].extensions.push(new_site);
+		}
+	},
 	place_source_roads: function (spawn) {
-		if (Memory.built_roads == null) {
-			Memory.built_roads = {};
-		}
-		if (Memory.built_roads[spawn.id] == null) {
-			Memory.built_roads[spawn.id] = [];
-		}
+		set_up_memory(Memory[spawn.id], {});
+		set_up_memory(Memory[spawn.id].roads, []);
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				return !Memory.built_roads[spawn.id].includes(_source.id);
@@ -109,10 +145,10 @@ module.exports = {
 		if (_source) {
 			place_road(spawn.room, _source.pos, spawn.pos);
 			place_road(spawn.room, _source.pos, spawn.room.controller.pos);
-			Memory.built_roads[spawn.id].push(_source.id);
+			Memory[spawn.id].roads.push(_source.id);
 		}
 	},
-	build_towers: function (room) {
+	place_towers: function (room) {
 		const room_level = room.controller.level;
 		let max_towers = 0;
 		switch (true) {
@@ -125,25 +161,32 @@ module.exports = {
 			case [3, 4].includes(room_level):
 				max_towers += 1;
 		}
-		let tower_sites = room.find(FIND_FLAGS, {
+		set_up_memory(Memory.towers, []);
+		/*room.find(FIND_FLAGS, {
 			filter: { color: COLOR_GREEN, secondaryColor: COLOR_BROWN },
-		}).length;
-		if (tower_sites < max_towers) {
-			console.log("Towers: " + tower_sites + "/" + max_towers);
-			let new_tower_site = get_next_adjacent(
+		}).length;*/
+		//if (tower_sites < max_towers) {
+		for (
+			let tower_sites = Memory.towers.length;
+			tower_sites < max_towers;
+			tower_sites++
+		) {
+			let new_site = get_next_adjacent(
 				room,
 				room.controller.pos,
 				2,
+				Memory.towers,
 			);
-			new_tower_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
+			new_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
 				flag.remove();
 			});
-			place_road_around(room, new_tower_site);
-			new_tower_site.createFlag(
+			place_road_around(room, new_site);
+			new_site.createFlag(
 				"build:" + STRUCTURE_TOWER + ":" + tower_sites,
 				COLOR_GREEN,
 				COLOR_BROWN,
 			);
+			Memory.towers.push(new_site);
 		}
 	},
 };
