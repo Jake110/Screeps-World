@@ -85,7 +85,7 @@ function get_next_adjacent(room, pos, layer = 1, avoid_pos = null) {
 			);
 		}
 		options = options.filter(function (option) {
-			return !avoid_pos.includes(option);
+			return !avoid_pos.includes([option.x, option.y]);
 		});
 		next = pos.findClosestByPath(options, {
 			ignoreCreeps: true,
@@ -98,17 +98,12 @@ function get_next_adjacent(room, pos, layer = 1, avoid_pos = null) {
 }
 
 function set_up_memory(path, value, sub_path = null) {
-	let log = "Checking: Memory[" + path + "]"
 	if (sub_path) {
-		console.log(log +"["+sub_path+"]")
 		if (Memory[path][sub_path] == null) {
-			Memory[path][sub_path] = value
+			Memory[path][sub_path] = value;
 		}
-	} else {
-		console.log(log)
-		if (Memory[path] == null) {
-			Memory[path] = value
-		}
+	} else if (Memory[path] == null) {
+		Memory[path] = value;
 	}
 }
 
@@ -140,7 +135,7 @@ module.exports = {
 			new_site.createFlag(
 				"build:" + STRUCTURE_EXTENSION + ":" + extension_sites,
 			);
-			Memory[spawn.id].extensions.push(new_site);
+			Memory[spawn.id].extensions.push([new_site.x, new_site.y]);
 		}
 	},
 	place_source_roads: function (spawn) {
@@ -195,7 +190,7 @@ module.exports = {
 				COLOR_GREEN,
 				COLOR_BROWN,
 			);
-			Memory.towers.push(new_site);
+			Memory.towers.push([new_site.x, new_site.y]);
 		}
 	},
 };
