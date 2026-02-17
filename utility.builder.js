@@ -127,32 +127,12 @@ module.exports = {
 		}
 		for (
 			let tower_sites = room.find(FIND_FLAGS, {
-				filter: function (flag) {
-					console.log("Keys: " + Object.keys(flag));
-					Object.keys(flag).forEach(function (key) {
-						console.log(key + ": " + flag[key]);
-					});
-					console.log(
-						"\tColour Check: " +
-							(parseInt(flag.color) == COLOR_GREEN &&
-								parseInt(flag.secondaryColour) == COLOR_BROWN),
-					);
-					console.log(
-						"\tName Check: " +
-							flag.name.startsWith(
-								"build:" + STRUCTURE_TOWER + ":",
-							),
-					);
-					return flag.name.startsWith(
-						"build:" + STRUCTURE_TOWER + ":",
-					);
-				},
+				filter:  { color: COLOR_GREEN, secondaryColor: COLOR_BROWN },
 			}).length;
 			tower_sites < max_towers;
 			tower_sites++
 		) {
 			console.log("Towers: " + tower_sites + "/" + max_towers);
-			console.log("\tType: " + typeof tower_sites);
 			let new_tower_site = get_next_adjacent(
 				room,
 				room.controller.pos,
