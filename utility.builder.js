@@ -148,7 +148,7 @@ module.exports = {
 		set_up_memory(spawn.id, [], "roads");
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
-				return !Memory.built_roads[spawn.id].includes(_source.id);
+				return !Memory[spawn.id].roads.includes(_source.id);
 			},
 		});
 		if (_source) {
