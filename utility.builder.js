@@ -127,7 +127,9 @@ module.exports = {
 		}
 		for (
 			let tower_sites = room.find(FIND_FLAGS, {
-				filter: { color: COLOR_GREEN, colorSecondary: COLOR_BROWN },
+				filter: function (flag) {
+					console.log("Flag Keys: "+Object.keys(flag))
+				},
 			}).length;
 			tower_sites < max_towers;
 			tower_sites++
