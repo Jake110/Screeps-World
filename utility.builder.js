@@ -97,13 +97,18 @@ function get_next_adjacent(room, pos, layer = 1, avoid_pos = null) {
 	return next;
 }
 
-function set_up_memory(path, value, sub_path=null) {
+function set_up_memory(path, value, sub_path = null) {
+	let log = "Checking: Memory[" + path + "]"
 	if (sub_path) {
+		console.log(log +"["+sub_path+"]")
 		if (Memory[path][sub_path] == null) {
 			Memory[path][sub_path] = value
 		}
-	} else if (Memory[path] == null) {
-		Memory[path] = value
+	} else {
+		console.log(log)
+		if (Memory[path] == null) {
+			Memory[path] = value
+		}
 	}
 }
 
