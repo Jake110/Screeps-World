@@ -134,8 +134,8 @@ module.exports = {
 					});
 					console.log(
 						"\tColour Check: " +
-							(flag.color == COLOR_GREEN &&
-								flag.secondaryColour == COLOR_BROWN),
+							(parseInt(flag.color) == COLOR_GREEN &&
+								parseInt(flag.secondaryColour) == COLOR_BROWN),
 					);
 					console.log(
 						"\tName Check: " +
@@ -143,9 +143,8 @@ module.exports = {
 								"build:" + STRUCTURE_TOWER + ":",
 							),
 					);
-					return (
-						flag.color == COLOR_GREEN &&
-						flag.secondaryColour == COLOR_BROWN
+					return flag.name.startsWith(
+						"build:" + STRUCTURE_TOWER + ":",
 					);
 				},
 			}).length;
