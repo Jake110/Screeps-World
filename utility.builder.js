@@ -126,13 +126,13 @@ module.exports = {
 				max_towers += 1;
 		}
 		for (
-			let tower_sites = parseInt(room.find(FIND_FLAGS, {
+			let tower_sites = room.find(FIND_FLAGS, {
 				filter: { color: COLOR_GREEN, colorSeconary: COLOR_BROWN },
-			}).length);
+			}).length;
 			tower_sites < max_towers;
 			tower_sites++
 		) {
-			console.log("Towers: " + tower_sites);
+			console.log("Towers: " + tower_sites + "/" + max_towers);
 			console.log("\tType: " + typeof tower_sites);
 			let new_tower_site = get_next_adjacent(
 				room,
