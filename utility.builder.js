@@ -128,11 +128,25 @@ module.exports = {
 		for (
 			let tower_sites = room.find(FIND_FLAGS, {
 				filter: function (flag) {
-					console.log("Keys: " + Object.keys(flag))
+					console.log("Keys: " + Object.keys(flag));
 					Object.keys(flag).forEach(function (key) {
-						console.log(key + ": " + flag[key])
-					})
-					return flag.color == COLOR_GREEN && flag.secondaryColour == COLOR_BROWN
+						console.log(key + ": " + flag[key]);
+					});
+					console.log(
+						"\tColour Check: " +
+							(flag.color == COLOR_GREEN &&
+								flag.secondaryColour == COLOR_BROWN),
+					);
+					console.log(
+						"\tName Check: " +
+							flag.name.startsWith(
+								"build:" + STRUCTURE_TOWER + ":",
+							),
+					);
+					return (
+						flag.color == COLOR_GREEN &&
+						flag.secondaryColour == COLOR_BROWN
+					);
 				},
 			}).length;
 			tower_sites < max_towers;
