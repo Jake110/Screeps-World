@@ -282,4 +282,4 @@ if __name__ == "__main__":
         cut()
     if args.delete:
         delete()
-    copy()
+    cut()

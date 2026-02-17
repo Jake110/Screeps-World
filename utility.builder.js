@@ -125,13 +125,10 @@ module.exports = {
 			case [3, 4].includes(room_level):
 				max_towers += 1;
 		}
-		for (
-			let tower_sites = room.find(FIND_FLAGS, {
-				filter:  { color: COLOR_GREEN, secondaryColor: COLOR_BROWN },
-			}).length;
-			tower_sites < max_towers;
-			tower_sites++
-		) {
+		let tower_sites = room.find(FIND_FLAGS, {
+			filter: { color: COLOR_GREEN, secondaryColor: COLOR_BROWN },
+		}).length;
+		if (tower_sites < max_towers) {
 			console.log("Towers: " + tower_sites + "/" + max_towers);
 			let new_tower_site = get_next_adjacent(
 				room,
