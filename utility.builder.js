@@ -118,8 +118,7 @@ module.exports = {
 		} else {
 			max_entensions = (room_level - 2) * 10;
 		}
-		set_up_memory(spawn.id, {});
-		set_up_memory(spawn.id, [], "extensions");
+		set_up_memory(room.id, [], "extensions");
 		let extension_sites = room.find(FIND_FLAGS, {
 			filter: { color: COLOR_CYAN, secondaryColor: COLOR_GREEN },
 		});
@@ -128,14 +127,14 @@ module.exports = {
 				room,
 				spawn.pos,
 				2,
-				Memory[spawn.id].extensions,
+				Memory[room.id].extensions,
 			);
 			clear_space(new_site);
 			place_road_around(room, new_site);
 			new_site.createFlag(
 				"build:" + STRUCTURE_EXTENSION + ":" + extension_sites,
 			);
-			Memory[spawn.id].extensions.push(new_site.x + ":" + new_site.y);
+			Memory[room.id].extensions.push(new_site.x + ":" + new_site.y);
 		}
 	},
 	place_source_roads: function (spawn) {
@@ -165,7 +164,7 @@ module.exports = {
 			case [3, 4].includes(room_level):
 				max_towers += 1;
 		}
-		set_up_memory("towers", []);
+		set_up_memory(room.id, [], "towers");
 		/*room.find(FIND_FLAGS, {
 			filter: { color: COLOR_GREEN, secondaryColor: COLOR_BROWN },
 		}).length;*/
@@ -179,7 +178,7 @@ module.exports = {
 				room,
 				room.controller.pos,
 				2,
-				Memory.towers,
+				Memory[room.id].towers,
 			);
 			new_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
 				flag.remove();
@@ -190,7 +189,7 @@ module.exports = {
 				COLOR_GREEN,
 				COLOR_BROWN,
 			);
-			Memory.towers.push(new_site.x + ":" + new_site.y);
+			Memory[room.id].towers.push(new_site.x + ":" + new_site.y);
 		}
 	},
 };
