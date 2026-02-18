@@ -130,26 +130,18 @@ module.exports.loop = function () {
 			unfinished_road = 0;
 			console.log(Memory[room.name].roads);
 			Memory[room.name].roads.forEach(function (coord) {
-				console.log("-----");
-				console.log(coord);
 				let x = parseInt(coord.split(":")[0]);
 				let y = parseInt(coord.split(":")[1]);
 				pos = room.getPositionAt(x, y);
-				console.log(pos);
 				let unfinished = true;
 				pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
-					console.log(structure);
-					console.log(Object.keys(structure));
-					console.log(structure.structureType);
 					if (structure.structureType == STRUCTURE_ROAD) {
 						unfinished = false;
 					}
 				});
 				if (unfinished) {
-					console.log("Unfinished");
 					unfinished_road++;
 					if (pos.lookFor(LOOK_CONSTRUCTION_SITES).length == 0) {
-						console.log("Starting construction");
 						pos.createConstructionSite(STRUCTURE_ROAD);
 					}
 				}
