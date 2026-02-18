@@ -140,6 +140,9 @@ module.exports.loop = function () {
 					!_.every(
 						pos.lookFor(LOOK_STRUCTURES),
 						function (structure) {
+							console.log(structure)
+							console.log(Object.keys(structure))
+							console.log(structure.structureType)
 							return structure.structureType != STRUCTURE_ROAD;
 						},
 					)
