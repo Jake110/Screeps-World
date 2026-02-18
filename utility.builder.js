@@ -47,10 +47,9 @@ function save_road(room_name, coord) {
  **/
 function can_build_here(pos, respect_walls = false) {
 	coord = pos.x + ":" + pos.y;
-	console.log("Room: "+pos.room)
 	if (
-		Memory[pos.room].towers.includes(coord) ||
-		MemMemory[pos.room].extensions.includes(coord)
+		Memory[pos.roomName].towers.includes(coord) ||
+		MemMemory[pos.roomName].extensions.includes(coord)
 	) {
 		return false;
 	}
