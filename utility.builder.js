@@ -14,6 +14,7 @@ function place_road(room, origin, target) {
 	});
 	steps.pop();
 	steps.forEach(function (step) {
+		Memory[room.id].roads.push(step.x+":"+step.y)
 		place_road_flag(room.getPositionAt(step.x, step.y));
 	});
 }
@@ -28,6 +29,9 @@ function place_road_around(room, pos) {
 				pos.x + parseInt(n),
 				pos.y + parseInt(m),
 			);
+			console.log(origin_adjacent)
+			coord = (pos.x + n) + ":" + (pos.y + m)
+			console.log(coord)
 			if (can_build_here(origin_adjacent, true)) {
 				if (origin_adjacent.lookFor(LOOK_FLAGS).length == 0) {
 					place_road_flag(origin_adjacent);
