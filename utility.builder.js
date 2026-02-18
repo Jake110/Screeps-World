@@ -47,9 +47,10 @@ function save_road(room, coord) {
  **/
 function can_build_here(pos, respect_walls = false) {
 	coord = pos.x + ":" + pos.y;
+	room_id = Gamepad.rooms[pos.room].id
 	if (
-		Memory[pos.room.id].towers.includes(coord) ||
-		MemMemory[pos.room.id].extensions.includes(coord)
+		Memory[room_id].towers.includes(coord) ||
+		MemMemory[room_id].extensions.includes(coord)
 	) {
 		return false;
 	}
