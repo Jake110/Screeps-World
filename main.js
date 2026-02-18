@@ -23,7 +23,6 @@ module.exports.loop = function () {
 	for (let name in Memory.creeps) {
 		if (!Game.creeps[name]) {
 			delete Memory.creeps[name];
-			console.log("Clearing non-existing creep memory:", name);
 		}
 	}
 
@@ -44,6 +43,13 @@ module.exports.loop = function () {
 	// Loop through all rooms
 	for (let name in Game.rooms) {
 		let room = Game.rooms[name];
+
+		// Memory variables
+		builder.set_up_memory(room.id, {})
+		builder.set_up_memory(room.id, [], "extensions");
+		builder.set_up_memory(room.id, [], "roads")
+		builder.set_up_memory(room.id, [], "towers");
+
 		towers = room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_TOWER },
 		});
@@ -121,25 +127,21 @@ module.exports.loop = function () {
 
 			// Road Consruction
 			// Get a count for how many road flags do not have road on them
-			road_flags_unfinished = room.find(FIND_FLAGS, {
-				filter: function (flag) {
-					// If the flag isn't for roads, ignore it
-					if (
-						flag.color !== COLOR_BROWN ||
-						flag.secondaryColor !== COLOR_WHITE
-					) {
-						return false;
+			unfinished_road = 0
+			Memory[room.id].roads.forEach(function (coord) {
+				let x = parseInt(coord.split(":")[0])
+				let y = parseInt(coord.split(":")[1])
+				pos = room.getPositionAt(x, y)
+				if (!_.every(pos.lookFor(LOOK_STRUCTURES), function (structure) {
+					return structure.structureType == STRUCTURE_ROAD
+				})) {
+					unfinished_road++
+					if (pos.lookFor(LOOK_CONSTRUCTION_SITES).length == 0) {
+						pos.createConstructionSite(STRUCTURE_ROAD)
 					}
-					// Ignore road flags which have roads built already
-					return _.every(flag.pos.look(), function (item) {
-						if (item.type === FIND_STRUCTURES) {
-							return item.structureType !== STRUCTURE_ROAD;
-						}
-						return true;
-					});
-				},
-			}).length;
-			if (road_flags_unfinished == 0) {
+				}
+			})
+			if (unfinished_road == 0) {
 				builder.place_source_roads(spawn);
 			}
 		});

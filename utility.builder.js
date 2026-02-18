@@ -97,15 +97,7 @@ function get_next_adjacent(room, pos, layer = 1, avoid_pos = null) {
 	return next;
 }
 
-function set_up_memory(path, value, sub_path = null) {
-	if (sub_path) {
-		if (Memory[path][sub_path] == null) {
-			Memory[path][sub_path] = value;
-		}
-	} else if (Memory[path] == null) {
-		Memory[path] = value;
-	}
-}
+
 
 module.exports = {
 	place_extensions: function (room, spawn) {
@@ -118,7 +110,6 @@ module.exports = {
 		} else {
 			max_entensions = (room_level - 2) * 10;
 		}
-		set_up_memory(room.id, [], "extensions");
 		let extension_sites = room.find(FIND_FLAGS, {
 			filter: { color: COLOR_CYAN, secondaryColor: COLOR_GREEN },
 		});
@@ -138,8 +129,8 @@ module.exports = {
 		}
 	},
 	place_source_roads: function (spawn) {
-		set_up_memory(spawn.id, {});
-		set_up_memory(spawn.id, [], "roads");
+		this.set_up_memory(spawn.id, {});
+		this.set_up_memory(spawn.id, [], "roads");
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				return !Memory[spawn.id].roads.includes(_source.id);
@@ -164,7 +155,6 @@ module.exports = {
 			case [3, 4].includes(room_level):
 				max_towers += 1;
 		}
-		set_up_memory(room.id, [], "towers");
 		/*room.find(FIND_FLAGS, {
 			filter: { color: COLOR_GREEN, secondaryColor: COLOR_BROWN },
 		}).length;*/
@@ -192,4 +182,13 @@ module.exports = {
 			Memory[room.id].towers.push(new_site.x + ":" + new_site.y);
 		}
 	},
+	set_up_memory : function(path, value, sub_path = null) {
+	if (sub_path) {
+		if (Memory[path][sub_path] == null) {
+			Memory[path][sub_path] = value;
+		}
+	} else if (Memory[path] == null) {
+		Memory[path] = value;
+	}
+}
 };
