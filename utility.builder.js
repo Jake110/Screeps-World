@@ -84,12 +84,9 @@ function get_next_adjacent(room, pos, layer = 1, avoid_pos = null) {
 				room.getPositionAt(pos.x + m, pos.y + l),
 			);
 		}
-		console.log("Options: " + options);
-		console.log("Avoid: " + avoid_pos);
 		options = options.filter(function (option) {
 			return !avoid_pos.includes(option.x + ":" + option.y);
 		});
-		console.log("New Options: " + options);
 		next = pos.findClosestByPath(options, {
 			ignoreCreeps: true,
 			ignoreRoads: true,
