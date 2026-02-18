@@ -87,7 +87,7 @@ function get_next_adjacent(room, pos, layer = 1, avoid_pos = null) {
 		console.log("Options: " + options);
 		console.log("Avoid: " + avoid_pos);
 		options = options.filter(function (option) {
-			return !avoid_pos.includes([option.x, option.y]);
+			return !avoid_pos.includes(option.x + ":" + option.y);
 		});
 		console.log("New Options: " + options);
 		next = pos.findClosestByPath(options, {
@@ -138,7 +138,7 @@ module.exports = {
 			new_site.createFlag(
 				"build:" + STRUCTURE_EXTENSION + ":" + extension_sites,
 			);
-			Memory[spawn.id].extensions.push([new_site.x, new_site.y]);
+			Memory[spawn.id].extensions.push(new_site.x + ":" + new_site.y);
 		}
 	},
 	place_source_roads: function (spawn) {
@@ -193,7 +193,7 @@ module.exports = {
 				COLOR_GREEN,
 				COLOR_BROWN,
 			);
-			Memory.towers.push([new_site.x, new_site.y]);
+			Memory.towers.push(new_site.x + ":" + new_site.y);
 		}
 	},
 };
