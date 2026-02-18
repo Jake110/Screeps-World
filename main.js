@@ -128,10 +128,14 @@ module.exports.loop = function () {
 			// Road Consruction
 			// Get a count for how many road flags do not have road on them
 			unfinished_road = 0;
+			console.log(Memory[room.name].roads)
 			Memory[room.name].roads.forEach(function (coord) {
+				console.log("-----")
+				console.log(coord)
 				let x = parseInt(coord.split(":")[0]);
 				let y = parseInt(coord.split(":")[1]);
 				pos = room.getPositionAt(x, y);
+				console.log(pos)
 				if (
 					!_.every(
 						pos.lookFor(LOOK_STRUCTURES),
@@ -140,8 +144,10 @@ module.exports.loop = function () {
 						},
 					)
 				) {
+					console.log("Unfinished")
 					unfinished_road++;
 					if (pos.lookFor(LOOK_CONSTRUCTION_SITES).length == 0) {
+						console.log("Starting construction")
 						pos.createConstructionSite(STRUCTURE_ROAD);
 					}
 				}
