@@ -136,7 +136,7 @@ module.exports.loop = function () {
 					!_.every(
 						pos.lookFor(LOOK_STRUCTURES),
 						function (structure) {
-							return structure.structureType == STRUCTURE_ROAD;
+							return structure.structureType != STRUCTURE_ROAD;
 						},
 					)
 				) {
