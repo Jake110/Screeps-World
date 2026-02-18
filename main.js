@@ -137,7 +137,7 @@ module.exports.loop = function () {
 				pos = room.getPositionAt(x, y);
 				console.log(pos)
 				if (
-					!_.every(
+					_.every(
 						pos.lookFor(LOOK_STRUCTURES),
 						function (structure) {
 							console.log(structure)
