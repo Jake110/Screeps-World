@@ -14,7 +14,7 @@ function place_road(room, origin, target) {
 	});
 	steps.pop();
 	steps.forEach(function (step) {
-		save_road(room, step.x + ":" + step.y);
+		save_road(room.name, step.x + ":" + step.y);
 	});
 }
 
@@ -29,15 +29,15 @@ function place_road_around(room, pos) {
 				pos.y + parseInt(m),
 			);
 			if (can_build_here(origin_adjacent, true)) {
-				save_road(room, pos.x + n + ":" + (pos.y + m));
+				save_road(room.name, pos.x + n + ":" + (pos.y + m));
 			}
 		}
 	}
 }
 
-function save_road(room, coord) {
-	if (!Memory[room.id].roads.includes(coord)) {
-		Memory[room.id].roads.push(coord);
+function save_road(room_name, coord) {
+	if (!Memory[room_name].roads.includes(coord)) {
+		Memory[room_name].roads.push(coord);
 	}
 }
 
@@ -47,10 +47,9 @@ function save_road(room, coord) {
  **/
 function can_build_here(pos, respect_walls = false) {
 	coord = pos.x + ":" + pos.y;
-	room_id = Game.rooms[pos.room].id
 	if (
-		Memory[room_id].towers.includes(coord) ||
-		MemMemory[room_id].extensions.includes(coord)
+		Memory[pos.room].towers.includes(coord) ||
+		MemMemory[pos.room].extensions.includes(coord)
 	) {
 		return false;
 	}
@@ -111,14 +110,14 @@ module.exports = {
 				room,
 				spawn.pos,
 				2,
-				Memory[room.id].extensions,
+				Memory[room.name].extensions,
 			);
 			clear_space(new_site);
 			place_road_around(room, new_site);
 			new_site.createFlag(
 				"build:" + STRUCTURE_EXTENSION + ":" + extension_sites,
 			);
-			Memory[room.id].extensions.push(new_site.x + ":" + new_site.y);
+			Memory[room.name].extensions.push(new_site.x + ":" + new_site.y);
 		}
 	},
 	place_source_roads: function (spawn) {
@@ -153,7 +152,7 @@ module.exports = {
 		}).length;*/
 		//if (tower_sites < max_towers) {
 		for (
-			let tower_sites = Memory[room.id].towers.length;
+			let tower_sites = Memory[room.name].towers.length;
 			tower_sites < max_towers;
 			tower_sites++
 		) {
@@ -161,7 +160,7 @@ module.exports = {
 				room,
 				room.controller.pos,
 				2,
-				Memory[room.id].towers,
+				Memory[room.name].towers,
 			);
 			new_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
 				flag.remove();
@@ -172,7 +171,7 @@ module.exports = {
 				COLOR_GREEN,
 				COLOR_BROWN,
 			);
-			Memory[room.id].towers.push(new_site.x + ":" + new_site.y);
+			Memory[room.name].towers.push(new_site.x + ":" + new_site.y);
 		}
 	},
 	set_up_memory: function (path, value, sub_path = null) {

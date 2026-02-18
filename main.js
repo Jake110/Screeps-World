@@ -45,10 +45,10 @@ module.exports.loop = function () {
 		let room = Game.rooms[name];
 
 		// Memory variables
-		builder.set_up_memory(room.id, {})
-		builder.set_up_memory(room.id, [], "extensions");
-		builder.set_up_memory(room.id, [], "roads")
-		builder.set_up_memory(room.id, [], "towers");
+		builder.set_up_memory(room.name, {});
+		builder.set_up_memory(room.name, [], "extensions");
+		builder.set_up_memory(room.name, [], "roads");
+		builder.set_up_memory(room.name, [], "towers");
 
 		towers = room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_TOWER },
@@ -77,7 +77,7 @@ module.exports.loop = function () {
 		});
 
 		// Tower Construction
-		builder.place_towers(room)
+		builder.place_towers(room);
 
 		spawns.forEach(function (spawn) {
 			// Spawn new creeps
@@ -127,20 +127,25 @@ module.exports.loop = function () {
 
 			// Road Consruction
 			// Get a count for how many road flags do not have road on them
-			unfinished_road = 0
-			Memory[room.id].roads.forEach(function (coord) {
-				let x = parseInt(coord.split(":")[0])
-				let y = parseInt(coord.split(":")[1])
-				pos = room.getPositionAt(x, y)
-				if (!_.every(pos.lookFor(LOOK_STRUCTURES), function (structure) {
-					return structure.structureType == STRUCTURE_ROAD
-				})) {
-					unfinished_road++
+			unfinished_road = 0;
+			Memory[room.name].roads.forEach(function (coord) {
+				let x = parseInt(coord.split(":")[0]);
+				let y = parseInt(coord.split(":")[1]);
+				pos = room.getPositionAt(x, y);
+				if (
+					!_.every(
+						pos.lookFor(LOOK_STRUCTURES),
+						function (structure) {
+							return structure.structureType == STRUCTURE_ROAD;
+						},
+					)
+				) {
+					unfinished_road++;
 					if (pos.lookFor(LOOK_CONSTRUCTION_SITES).length == 0) {
-						pos.createConstructionSite(STRUCTURE_ROAD)
+						pos.createConstructionSite(STRUCTURE_ROAD);
 					}
 				}
-			})
+			});
 			if (unfinished_road == 0) {
 				builder.place_source_roads(spawn);
 			}
