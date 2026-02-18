@@ -160,7 +160,7 @@ module.exports = {
 		}).length;*/
 		//if (tower_sites < max_towers) {
 		for (
-			let tower_sites = Memory.towers.length;
+			let tower_sites = Memory[room.id].towers.length;
 			tower_sites < max_towers;
 			tower_sites++
 		) {
