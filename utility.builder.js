@@ -49,7 +49,7 @@ function can_build_here(pos, respect_walls = false) {
 	coord = pos.x + ":" + pos.y;
 	if (
 		Memory[pos.roomName].towers.includes(coord) ||
-		MemMemory[pos.roomName].extensions.includes(coord)
+		Memory[pos.roomName].extensions.includes(coord)
 	) {
 		return false;
 	}
