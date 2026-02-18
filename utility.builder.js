@@ -14,8 +14,7 @@ function place_road(room, origin, target) {
 	});
 	steps.pop();
 	steps.forEach(function (step) {
-		Memory[room.id].roads.push(step.x+":"+step.y)
-		place_road_flag(room.getPositionAt(step.x, step.y));
+		save_road(room, step.x + ":" + step.y);
 	});
 }
 
@@ -29,43 +28,34 @@ function place_road_around(room, pos) {
 				pos.x + parseInt(n),
 				pos.y + parseInt(m),
 			);
-			console.log(origin_adjacent)
-			coord = (pos.x + n) + ":" + (pos.y + m)
-			console.log(coord)
 			if (can_build_here(origin_adjacent, true)) {
-				if (origin_adjacent.lookFor(LOOK_FLAGS).length == 0) {
-					place_road_flag(origin_adjacent);
-				}
+				save_road(room, pos.x + n + ":" + (pos.y + m));
 			}
 		}
 	}
 }
 
-function place_road_flag(pos) {
-	if (Memory.road_count == null) {
-		Memory.road_count = 0;
-	}
-	if (
-		pos.lookFor(LOOK_FLAGS).length == 0 &&
-		pos.lookFor(LOOK_STRUCTURES) == 0
-	) {
-		Memory.road_count += 1;
-		pos.createFlag(
-			"build:" + STRUCTURE_ROAD + ":" + Memory.road_count,
-			COLOR_BROWN,
-			COLOR_WHITE,
-		);
+function save_road(room, coord) {
+	if (!Memory[room.id].roads.includes(coord)) {
+		Memory[room.id].roads.push(coord);
 	}
 }
 
-/** @param {RoomPosition} pos **/
+/**
+ * @param {RoomPosition} pos
+ * @param {boolean} respect_walls
+ **/
 function can_build_here(pos, respect_walls = false) {
+	coord = pos.x + ":" + pos.y;
+	if (
+		Memory[pos.room.id].towers.includes(coord) ||
+		MemMemory[pos.room.id].extensions.includes(coord)
+	) {
+		return false;
+	}
 	return _.every(pos.look(), function (item) {
 		if (respect_walls && item.type == LOOK_TERRAIN) {
 			return item.terrain !== "wall";
-		}
-		if (item.type === LOOK_FLAGS) {
-			return item.flag.name.startsWith("build:" + STRUCTURE_ROAD + ":");
 		}
 		return true;
 	});
@@ -100,8 +90,6 @@ function get_next_adjacent(room, pos, layer = 1, avoid_pos = null) {
 	}
 	return next;
 }
-
-
 
 module.exports = {
 	place_extensions: function (room, spawn) {
@@ -186,13 +174,13 @@ module.exports = {
 			Memory[room.id].towers.push(new_site.x + ":" + new_site.y);
 		}
 	},
-	set_up_memory : function(path, value, sub_path = null) {
-	if (sub_path) {
-		if (Memory[path][sub_path] == null) {
-			Memory[path][sub_path] = value;
+	set_up_memory: function (path, value, sub_path = null) {
+		if (sub_path) {
+			if (Memory[path][sub_path] == null) {
+				Memory[path][sub_path] = value;
+			}
+		} else if (Memory[path] == null) {
+			Memory[path] = value;
 		}
-	} else if (Memory[path] == null) {
-		Memory[path] = value;
-	}
-}
+	},
 };
