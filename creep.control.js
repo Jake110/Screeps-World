@@ -22,11 +22,11 @@ module.exports = {
 		return [
 			{
 				name: "harvester",
-				count: 1,
+				count: Math.ceil(source_count / 2),
 			},
 			{
 				name: "builder",
-				count: source_count * 2,
+				count: Math.ceil(source_count * 1.5),
 			},
 			{
 				name: "upgrader",
