@@ -1,4 +1,5 @@
 var builder = require("utility.builder");
+var memory = require("utility.memory")
 var role_builder = require("role.builder");
 var role_harvester = require("role.harvester");
 var role_upgrader = require("role.upgrader");
@@ -20,11 +21,7 @@ var roles = [
 
 module.exports.loop = function () {
 	// Memory cleanup
-	for (let name in Memory.creeps) {
-		if (!Game.creeps[name]) {
-			delete Memory.creeps[name];
-		}
-	}
+	memory.clear()
 
 	// Creep control
 	for (let name in Game.creeps) {
@@ -45,10 +42,7 @@ module.exports.loop = function () {
 		let room = Game.rooms[name];
 
 		// Memory variables
-		builder.set_up_memory(room.name, {});
-		builder.set_up_memory(room.name, [], "extensions");
-		builder.set_up_memory(room.name, [], "roads");
-		builder.set_up_memory(room.name, [], "towers");
+		memory.set_up(room.name)
 
 		towers = room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_TOWER },
@@ -126,26 +120,9 @@ module.exports.loop = function () {
 			}
 
 			// Road Consruction
-			// Get a count for how many road flags do not have road on them
-			unfinished_road = 0;
-			console.log(Memory[room.name].roads);
-			Memory[room.name].roads.forEach(function (coord) {
-				let x = parseInt(coord.split(":")[0]);
-				let y = parseInt(coord.split(":")[1]);
-				pos = room.getPositionAt(x, y);
-				let unfinished = true;
-				pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
-					if (structure.structureType == STRUCTURE_ROAD) {
-						unfinished = false;
-					}
-				});
-				if (unfinished) {
-					unfinished_road++;
-					if (pos.lookFor(LOOK_CONSTRUCTION_SITES).length == 0) {
-						pos.createConstructionSite(STRUCTURE_ROAD);
-					}
-				}
-			});
+			// Get a count for how many unfinished roads there are
+			let unfinished_road = builder.create_construction_sites(room, "roads", STRUCTURE_ROAD);
+			// If all roads have been built, map the next batch
 			if (unfinished_road == 0) {
 				builder.place_source_roads(spawn);
 			}

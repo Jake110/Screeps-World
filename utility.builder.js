@@ -1,5 +1,7 @@
+var memory = require("utility.memory");
+
 /**
- * place road flags from the origin to the target
+ * Map a road from the origin to the target
  * @param {Room} room
  * @param {RoomPosition} origin
  * @param {RoomPosition} target
@@ -11,6 +13,7 @@ function place_road(room, origin, target) {
 		ignoreCreeps: true,
 		ignoreRoads: true,
 		swampCost: 1,
+		avoid: memory.build_pos(room),
 	});
 	steps.pop();
 	steps.forEach(function (step) {
@@ -61,10 +64,8 @@ function can_build_here(pos, respect_walls = false) {
 	});
 }
 
-function get_next_adjacent(room, pos, layer = 1, avoid_pos = null) {
-	if (avoid_pos == null) {
-		avoid_pos = [];
-	}
+function get_next_adjacent(room, pos, layer = 1) {
+	let avoid_pos = memory.all_coords(room.name);
 	let next;
 	for (; next == null; layer++) {
 		let l = parseInt(layer);
@@ -91,7 +92,43 @@ function get_next_adjacent(room, pos, layer = 1, avoid_pos = null) {
 	return next;
 }
 
+function remove_road(pos) {
+	coord = pos.x + ":" + pos.y;
+	index = Memory[pos.roomName].roads.indexOf(coord);
+	if (index != -1) {
+		Memory[pos.roomName].roads.splice(index, 1);
+
+		pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
+			structure.destroy();
+		});
+		pos.lookFor(LOOK_CONSTRUCTION_SITES).forEach(function (site) {
+			site.remove();
+		});
+	}
+}
+
 module.exports = {
+	create_construction_sites: function (room, path, structure) {
+		let unfinished_count = 0;
+		Memory[room.name][path].forEach(function (coord) {
+			let x = parseInt(coord.split(":")[0]);
+			let y = parseInt(coord.split(":")[1]);
+			pos = room.getPositionAt(x, y);
+			let unfinished = true;
+			pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
+				if (structure.structureType == structure) {
+					unfinished = false;
+				}
+			});
+			if (unfinished) {
+				unfinished_count++;
+				if (pos.lookFor(LOOK_CONSTRUCTION_SITES).length == 0) {
+					pos.createConstructionSite(structure);
+				}
+			}
+		});
+		return unfinished_count;
+	},
 	place_extensions: function (room, spawn) {
 		const room_level = room.controller.level;
 		let max_entensions;
@@ -102,27 +139,17 @@ module.exports = {
 		} else {
 			max_entensions = (room_level - 2) * 10;
 		}
-		let extension_sites = room.find(FIND_FLAGS, {
-			filter: { color: COLOR_CYAN, secondaryColor: COLOR_GREEN },
-		});
-		if (extension_sites < max_entensions) {
-			let new_site = get_next_adjacent(
-				room,
-				spawn.pos,
-				2,
-				Memory[room.name].extensions,
-			);
-			clear_space(new_site);
+		if (Memory[room.name].extensions.length < max_entensions) {
+			let new_site = get_next_adjacent(room, spawn.pos, 2);
+			remove_road(new_site);
 			place_road_around(room, new_site);
-			new_site.createFlag(
-				"build:" + STRUCTURE_EXTENSION + ":" + extension_sites,
-			);
 			Memory[room.name].extensions.push(new_site.x + ":" + new_site.y);
 		}
+		this.create_construction_sites(room, "extensions", STRUCTURE_EXTENSION)
 	},
 	place_source_roads: function (spawn) {
-		this.set_up_memory(spawn.id, {});
-		this.set_up_memory(spawn.id, [], "roads");
+		memory.set_up_memory(spawn.id, {});
+		memory.set_up_memory(spawn.id, [], "roads");
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				return !Memory[spawn.id].roads.includes(_source.id);
@@ -147,40 +174,16 @@ module.exports = {
 			case [3, 4].includes(room_level):
 				max_towers += 1;
 		}
-		/*room.find(FIND_FLAGS, {
-			filter: { color: COLOR_GREEN, secondaryColor: COLOR_BROWN },
-		}).length;*/
-		//if (tower_sites < max_towers) {
 		for (
 			let tower_sites = Memory[room.name].towers.length;
 			tower_sites < max_towers;
 			tower_sites++
 		) {
-			let new_site = get_next_adjacent(
-				room,
-				room.controller.pos,
-				2,
-				Memory[room.name].towers,
-			);
-			new_site.lookFor(LOOK_FLAGS).forEach(function (flag) {
-				flag.remove();
-			});
+			let new_site = get_next_adjacent(room, room.controller.pos, 2);
+			remove_road();
 			place_road_around(room, new_site);
-			new_site.createFlag(
-				"build:" + STRUCTURE_TOWER + ":" + tower_sites,
-				COLOR_GREEN,
-				COLOR_BROWN,
-			);
 			Memory[room.name].towers.push(new_site.x + ":" + new_site.y);
 		}
-	},
-	set_up_memory: function (path, value, sub_path = null) {
-		if (sub_path) {
-			if (Memory[path][sub_path] == null) {
-				Memory[path][sub_path] = value;
-			}
-		} else if (Memory[path] == null) {
-			Memory[path] = value;
-		}
+		this.create_construction_sites(room, "towers", STRUCTURE_TOWER)
 	},
 };
