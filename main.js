@@ -3,6 +3,7 @@ var memory = require("utility.memory");
 var role_builder = require("role.builder");
 var role_harvester = require("role.harvester");
 var role_upgrader = require("role.upgrader");
+var tower = require("structure.tower");
 
 module.exports.loop = function () {
 	// Memory Cleanup
