@@ -150,6 +150,9 @@ module.exports = {
 		} else {
 			max_entensions = (room_level - 2) * 10;
 		}
+		if (max_entensions > 20) {
+			max_entensions = 20;
+		}
 		if (Memory[room.name].extensions.length < max_entensions) {
 			let new_site = get_next_adjacent(room, spawn.pos, 2);
 			remove_road(new_site);
