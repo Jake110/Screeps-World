@@ -13,16 +13,12 @@ module.exports = {
 			let roles = creeper.roles(room);
 
 			// Get Energy Capacity
-			let capacity = 50;
-			switch (room.controller.level) {
-				case 8:
-					capacity = 200;
-					break;
-				case 7:
-					capacity = 100;
-					break;
-			}
-			capacity = 300 + capacity * Memory[room.name].extensions.length;
+			let capacity = 300;
+			room.find(FIND_MY_STRUCTURES, {
+				filter: { structureType: STRUCTURE_EXTENSION },
+			}).forEach(function (extension) {
+				capacity += extension.store.getCapacity()
+			})
 
 			// Spawn Creeps
 			if (spawn.spawning) {
