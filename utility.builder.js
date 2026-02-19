@@ -12,8 +12,19 @@ function place_road(room, origin, target) {
 	steps = origin.findPathTo(target, {
 		ignoreCreeps: true,
 		ignoreRoads: true,
+		costCallback: function (roomName, costMatrix) {
+			let _room = null;
+			try {
+				_room = Game.rooms[roomName];
+			} catch {}
+			if (_room != null) {
+				memory.build_pos(_room).forEach(function (pos) {
+					// Set all building positions to be non-walkable
+					costMatrix.set(pos.x, pos.y, 0xff);
+				});
+			}
+		},
 		swampCost: 1,
-		avoid: memory.build_pos(room),
 	});
 	steps.pop();
 	steps.forEach(function (step) {
@@ -145,7 +156,7 @@ module.exports = {
 			place_road_around(room, new_site);
 			Memory[room.name].extensions.push(new_site.x + ":" + new_site.y);
 		}
-		this.create_construction_sites(room, "extensions", STRUCTURE_EXTENSION)
+		this.create_construction_sites(room, "extensions", STRUCTURE_EXTENSION);
 	},
 	place_source_roads: function (spawn) {
 		memory.set_up_memory(spawn.id, {});
@@ -184,6 +195,6 @@ module.exports = {
 			place_road_around(room, new_site);
 			Memory[room.name].towers.push(new_site.x + ":" + new_site.y);
 		}
-		this.create_construction_sites(room, "towers", STRUCTURE_TOWER)
+		this.create_construction_sites(room, "towers", STRUCTURE_TOWER);
 	},
 };
