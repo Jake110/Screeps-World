@@ -1,14 +1,18 @@
 var builder = require("structure.builder");
+var creep = require("creep.control");
 
 module.exports = {
-	main: function (room, roles) {
+	main: function (room) {
 		room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_SPAWN },
 		}).forEach(function (spawn) {
 			// Extension Construction
 			builder.place_extensions(room, spawn);
 
-			// Spawn new creeps
+			// Get Creep Roles
+			let roles = creep.roles();
+
+			// Spawn Creeps
 			if (spawn.spawning) {
 				let spawning_creep = Game.creeps[spawn.spawning.name];
 				spawn.room.visual.text(
