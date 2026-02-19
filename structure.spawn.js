@@ -77,14 +77,16 @@ module.exports = {
 			// Renew Creeps
 			for (let name in Game.creeps) {
 				let creep = Game.creeps[name];
-				console.log("Life: " + creep.ticksToLive);
-				console.log("Renew? " + creep.memory.renew);
-				if (
-					creep.ticksToLive < 200 &&
-					_.every(creep.body, function (part) {
-						return part.type != CARRY;
-					})
-				) {
+				let role = creep.memory.role;
+				let body = [];
+				creep.body.forEach(function (part) {
+					body.push(part.type);
+				});
+				console.log("Creep: " + creep.name);
+				console.log("\tLife: " + creep.ticksToLive);
+				console.log("\tRenew? " + creep.memory.renew);
+				console.log("\tBody: " + body);
+				if (creep.ticksToLive < 200) {
 					// If a creep has less than 200 ticks left
 					// and doesn't have a CARRY part, trigger renew process
 					creep.memory.renew = true;
