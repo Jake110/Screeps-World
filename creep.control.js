@@ -24,8 +24,8 @@ module.exports = {
 				];
 			case capacity >= 500:
 				return [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
-			case capacity >= 300:
-				return [WORK, CARRY, CARRY, MOVE, MOVE];
+			case capacity >= 250:
+				return [WORK, CARRY, MOVE, MOVE];
 		}
 	},
 	main: function () {
