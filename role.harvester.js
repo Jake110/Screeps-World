@@ -1,5 +1,4 @@
 var harvest = require("creep.harvest");
-var role_upgrader = require("role.upgrader");
 
 module.exports = {
 	/** @param {Creep} creep **/
@@ -13,7 +12,14 @@ module.exports = {
 
 		if (creep.memory.full) {
 			if (!harvest.recharge(creep)) {
-				role_upgrader.run(creep);
+				if (
+					creep.upgradeController(creep.room.controller) ==
+					ERR_NOT_IN_RANGE
+				) {
+					creep.moveTo(creep.room.controller, {
+						visualizePathStyle: { stroke: "#7b00ac" },
+					});
+				}
 			}
 		} else {
 			harvest.harvest(creep);

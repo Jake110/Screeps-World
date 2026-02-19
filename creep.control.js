@@ -1,10 +1,9 @@
-var role_builder = require("role.builder");
 var role_harvester = require("role.harvester");
-var role_upgrader = require("role.upgrader");
+var role_worker = require("role.worker")
 
 module.exports = {
 	body: function (role, capacity) {
-		if (["harvester", "builder", "upgrader"].includes(role)) {
+		if (role == "harvester") {
 			role = "worker";
 		}
 		switch (true) {
@@ -13,18 +12,18 @@ module.exports = {
 					WORK,
 					WORK,
 					WORK,
-					WORK,
 					CARRY,
 					CARRY,
 					CARRY,
-					CARRY,
+					MOVE,
+					MOVE,
 					MOVE,
 					MOVE,
 					MOVE,
 					MOVE,
 				];
 			case capacity >= 500:
-				return [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
+				return [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
 			case capacity >= 300:
 				return [WORK, CARRY, CARRY, MOVE, MOVE];
 		}
@@ -32,14 +31,11 @@ module.exports = {
 	main: function () {
 		for (let name in Game.creeps) {
 			let creep = Game.creeps[name];
-			if (creep.memory.role == "builder") {
-				role_builder.run(creep);
-			}
 			if (creep.memory.role == "harvester") {
 				role_harvester.run(creep);
 			}
-			if (creep.memory.role == "upgrader") {
-				role_upgrader.run(creep);
+			if (creep.memory.role == "worker") {
+				role_worker.run(creep);
 			}
 		}
 	},
@@ -48,15 +44,11 @@ module.exports = {
 		return [
 			{
 				name: "harvester",
-				count: Math.ceil(source_count / 2),
+				count: Math.ceil(source_count * 7.5),
 			},
 			{
-				name: "builder",
+				name: "worker",
 				count: Math.ceil(source_count * 1.5),
-			},
-			{
-				name: "upgrader",
-				count: 1,
 			},
 		];
 	},
