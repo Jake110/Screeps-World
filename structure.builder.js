@@ -25,7 +25,7 @@ function place_road(room, origin, target) {
 		swampCost: 1,
 	};
 	steps = origin.findPathTo(target, pathing_options);
-	let crossroad = room.getPositionAt(steps[2].x, steps[2].y);
+	let crossroad = room.getPositionAt(steps[1].x, steps[1].y);
 	place_road_around(room, origin, true).forEach(function (start) {
 		start.findPathTo(crossroad, pathing_options).forEach(function (step) {
 			save_road(room.name, step.x + ":" + step.y);
