@@ -1,5 +1,6 @@
 var builder = require("structure.builder");
 var creep = require("creep.control");
+const { body } = require("./creep.control");
 
 module.exports = {
 	main: function (room) {
@@ -12,6 +13,18 @@ module.exports = {
 			// Get Creep Roles
 			let roles = creep.roles(room);
 
+			// Get Energy Capacity
+			let capacity = 50;
+			switch (room.controller.level) {
+				case 8:
+					capacity = 200;
+					break;
+				case 7:
+					capacity = 100;
+					break;
+			}
+			capacity = 300 + capacity * Memory[room.name].extensions.length;
+
 			// Spawn Creeps
 			if (spawn.spawning) {
 				let spawning_creep = Game.creeps[spawn.spawning.name];
@@ -21,11 +34,7 @@ module.exports = {
 					spawn.pos.y + 1,
 					{ color: "#2bff00", opacity: 0.8 },
 				);
-			} else if (
-				spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
-					dryRun: true,
-				}) == OK
-			) {
+			} else {
 				for (let n in roles) {
 					let role = roles[n];
 					let role_cap = role.name;
@@ -38,6 +47,14 @@ module.exports = {
 					);
 
 					if (role_creeps.length < max) {
+						let body = creep.body(role, capacity);
+						if (
+							spawn.spawnCreep(body, "Test", { dryRun: true }) !=
+							OK
+						) {
+							// If we can't spawn the creep for this role, move on
+							continue;
+						}
 						console.log(
 							role_cap +
 								" count: " +
@@ -49,7 +66,7 @@ module.exports = {
 						console.log(
 							"Spawning new " + role.name + ": " + new_name,
 						);
-						spawn.spawnCreep([WORK, CARRY, MOVE], new_name, {
+						spawn.spawnCreep(body, new_name, {
 							memory: { role: role.name },
 						});
 						break;

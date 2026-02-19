@@ -3,6 +3,32 @@ var role_harvester = require("role.harvester");
 var role_upgrader = require("role.upgrader");
 
 module.exports = {
+	body: function (role, capacity) {
+		if (["harvester", "builder", "upgrader"].includes(role)) {
+			role = "worker";
+		}
+		switch (true) {
+			case capacity >= 800:
+				return [
+					WORK,
+					WORK,
+					WORK,
+					WORK,
+					CARRY,
+					CARRY,
+					CARRY,
+					CARRY,
+					MOVE,
+					MOVE,
+					MOVE,
+					MOVE,
+				];
+			case capacity >= 500:
+				return [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE];
+			case capacity >= 300:
+				return [WORK, CARRY, CARRY, MOVE, MOVE];
+		}
+	},
 	main: function () {
 		for (let name in Game.creeps) {
 			let creep = Game.creeps[name];
