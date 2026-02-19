@@ -1,3 +1,5 @@
+let structure_names = ["extensions","towers"]
+
 module.exports = {
 	build_coords: function (room_name) {
 		positions = [];
@@ -37,6 +39,6 @@ module.exports = {
 			Memory[path] = value;
 		}
 	},
-	structure_names: ["extensions", "towers"],
-	tracker_names: this.structure_names.concat(["roads"]),
+	structure_names: structure_names,
+	tracker_names: structure_names.concat(["roads"]),
 };
