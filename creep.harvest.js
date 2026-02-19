@@ -32,7 +32,7 @@ module.exports = {
 	harvest: function (creep) {
 		let target = pick(creep);
 		if (target) {
-			if (target.ticksToRegeneration == null) {
+			if (target.energyCapacity == null) {
 				result = creep.pickup(target);
 			} else {
 				result = creep.harvest(target);
