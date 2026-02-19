@@ -81,9 +81,10 @@ module.exports = {
 				creep.body.forEach(function (part) {
 					body.push(part.type);
 				});
+				body = body.join("-")
 				console.log("Body: " + body)
-				console.log("Expected: "+creeper.body(role, capacity))
-				if (body != creeper.body(role, capacity)) {
+				console.log("Expected: "+creeper.body(role, capacity).join("-"))
+				if (body != creeper.body(role, capacity).join("-")) {
 					creep.memory.recycle = true;
 					console.log("\tRecycling Creep")
 					if (spawn.recycleCreep(creep) == ERR_NOT_IN_RANGE) {
