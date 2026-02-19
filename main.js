@@ -84,9 +84,9 @@ module.exports.loop = function () {
 				let spawning_creep = Game.creeps[spawn.spawning.name];
 				spawn.room.visual.text(
 					"🛠️" + spawning_creep.memory.role,
-					spawn.pos.x + 1,
-					spawn.pos.y,
-					{ align: "right", opacity: 0.8 },
+					spawn.pos.x,
+					spawn.pos.y + 1,
+					{ opacity: 0.8 },
 				);
 			} else if (
 				spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
