@@ -1,7 +1,7 @@
 var builder = require("structure.builder");
 
 module.exports = {
-	main: function (room) {
+	main: function (room, roles) {
 		room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_SPAWN },
 		}).forEach(function (spawn) {
