@@ -165,8 +165,8 @@ module.exports = {
 	place_source_roads: function (spawn) {
 		memory.set_up_memory(spawn.id, {});
 		memory.set_up_memory(spawn.id, [], "roads");
-		place_road_around(room, spawn.pos, true);
-		place_road_around(room, spawn.room.controller.pos);
+		place_road_around(spawn.room, spawn.pos, true);
+		place_road_around(spawn.room, spawn.room.controller.pos);
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				return !Memory[spawn.id].roads.includes(_source.id);
