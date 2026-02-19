@@ -47,7 +47,7 @@ module.exports = {
 					);
 
 					if (role_creeps.length < max) {
-						let body = creep.body(role, capacity);
+						let body = creep.body(role.name, capacity);
 						if (
 							spawn.spawnCreep(body, "Test", { dryRun: true }) !=
 							OK
