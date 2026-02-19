@@ -74,6 +74,9 @@ module.exports.loop = function () {
 		builder.place_towers(room);
 
 		spawns.forEach(function (spawn) {
+			// Extension Construction
+			builder.place_extensions(room, spawn);
+
 			// Spawn new creeps
 			if (spawn.spawning) {
 				let spawning_creep = Game.creeps[spawn.spawning.name];
