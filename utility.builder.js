@@ -194,7 +194,7 @@ module.exports = {
 			tower_sites++
 		) {
 			let new_site = get_next_adjacent(room, room.controller.pos, 2);
-			console.log("new_site: " + pos);
+			console.log("new_site: " + new_site);
 			remove_road();
 			place_road_around(room, new_site);
 			Memory[room.name].towers.push(new_site.x + ":" + new_site.y);
