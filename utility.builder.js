@@ -76,7 +76,7 @@ function can_build_here(pos, respect_walls = false) {
 }
 
 function get_next_adjacent(room, pos, layer = 1) {
-	let avoid_pos = memory.all_coords(room.name);
+	let avoid_pos = memory.build_coords(room.name);
 	let next;
 	for (; next == null; layer++) {
 		let l = parseInt(layer);
