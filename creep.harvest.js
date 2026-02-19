@@ -1,11 +1,11 @@
 /** @param {Creep} creep **/
 function pick(creep) {
-	return creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
-		filter: function (_source) {
-			if (_source.energy < creep.store.getFreeCapacity()) {
+	pathing_options = {
+		filter: function (target) {
+			if (target.energy < creep.store.getFreeCapacity()) {
 				return false;
 			}
-			let hostiles = _source.pos.findInRange(FIND_HOSTILE_CREEPS, 10, {
+			let hostiles = target.pos.findInRange(FIND_HOSTILE_CREEPS, 10, {
 				filter: function (object) {
 					return (
 						object.getActiveBodyparts(ATTACK) != 0 ||
@@ -15,25 +15,29 @@ function pick(creep) {
 			});
 			return hostiles.length == 0;
 		},
-	});
+	};
+	pickup = creep.pos.findClosestByPath(LOOK_RESOURCES, pathing_options);
+	_source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, pathing_options);
+	return creep.pos.findClosestByPath([pickup, _source]);
 }
 
 module.exports = {
 	/** @param {Creep} creep **/
 	harvest: function (creep) {
-		let _source = pick(creep);
-		if (!_source) {
-			return null;
-		}
-		if (creep.harvest(_source) == ERR_NOT_IN_RANGE) {
-			creep.moveTo(_source, {
-				visualizePathStyle: { stroke: "#fff23e" },
-			});
+		let target = pick(creep);
+		if (target) {
+			if (target.energy == null) {
+				result = creep.pickup(target);
+			} else {
+				result = creep.harvest(target);
+			}
+			if (result == ERR_NOT_IN_RANGE) {
+				creep.moveTo(target, {
+					visualizePathStyle: { stroke: "#fff23e" },
+				});
+			}
 		}
 	},
-
-	/** @param {Creep} creep **/
-	pick: pick,
 
 	/** @param {Creep} creep **/
 	recharge: function (creep) {
