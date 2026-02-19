@@ -7,8 +7,7 @@ var memory = require("utility.memory");
  * @param {RoomPosition} target
  */
 function place_road(room, origin, target) {
-	place_road_around(room, origin);
-	place_road_around(room, target);
+	place_road_around(room, origin, true);
 	steps = origin.findPathTo(target, {
 		ignoreCreeps: true,
 		ignoreRoads: true,
@@ -32,10 +31,12 @@ function place_road(room, origin, target) {
 	});
 }
 
-function place_road_around(room, pos) {
+function place_road_around(room, pos, square = false) {
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
-			if (n == 0 && m == 0) {
+			if ((n == 0 && m == 0) || (!square && n != 0 && m != 0)) {
+				// Don't place a road on the position we're surrounding
+				// Don't place road in the corners unless flagged as square
 				continue;
 			}
 			origin_adjacent = room.getPositionAt(
@@ -164,6 +165,8 @@ module.exports = {
 	place_source_roads: function (spawn) {
 		memory.set_up_memory(spawn.id, {});
 		memory.set_up_memory(spawn.id, [], "roads");
+		place_road_around(room, spawn.pos, true);
+		place_road_around(room, spawn.room.controller.pos);
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				return !Memory[spawn.id].roads.includes(_source.id);
