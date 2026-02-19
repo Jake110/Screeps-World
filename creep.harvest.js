@@ -21,7 +21,10 @@ function pick(creep) {
 		pathing_options,
 	);
 	_source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, pathing_options);
-	return creep.pos.findClosestByPath([pickup, _source]);
+	if (pickup) {
+		return creep.pos.findClosestByPath([pickup, _source]);
+	}
+	return _source;
 }
 
 module.exports = {
