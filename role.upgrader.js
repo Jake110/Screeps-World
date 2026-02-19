@@ -1,4 +1,4 @@
-var harvest = require("utility.harvest");
+var harvest = require("creep.harvest");
 
 module.exports = {
 	/** @param {Creep} creep **/

@@ -1,4 +1,4 @@
-var harvest = require("utility.harvest");
+var harvest = require("creep.harvest");
 var role_harvester = require("role.harvester");
 
 module.exports = {
