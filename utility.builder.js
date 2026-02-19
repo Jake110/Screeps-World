@@ -18,7 +18,6 @@ function place_road(room, origin, target) {
 				_room = Game.rooms[roomName];
 			} catch {}
 			if (_room != null) {
-				console.log(memory.build_pos(_room));
 				memory.build_pos(_room).forEach(function (pos) {
 					// Set all building positions to be non-walkable
 					costMatrix.set(pos.x, pos.y, 0xff);
