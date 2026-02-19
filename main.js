@@ -4,21 +4,6 @@ var role_builder = require("role.builder");
 var role_harvester = require("role.harvester");
 var role_upgrader = require("role.upgrader");
 
-var roles = [
-	{
-		name: "harvester",
-		count: 1,
-	},
-	{
-		name: "builder",
-		count: 4,
-	},
-	{
-		name: "upgrader",
-		count: 1,
-	},
-];
-
 module.exports.loop = function () {
 	// Memory cleanup
 	memory.clear();
@@ -40,6 +25,23 @@ module.exports.loop = function () {
 	// Loop through all rooms
 	for (let name in Game.rooms) {
 		let room = Game.rooms[name];
+
+		// Determine creep count
+		let source_count = room.find(FIND_SOURCES).length;
+		let roles = [
+			{
+				name: "harvester",
+				count: 1,
+			},
+			{
+				name: "builder",
+				count: source_count * 2,
+			},
+			{
+				name: "upgrader",
+				count: 1,
+			},
+		];
 
 		// Memory variables
 		memory.set_up(room.name);
