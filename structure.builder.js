@@ -7,11 +7,10 @@ var memory = require("utility.memory");
  * @param {RoomPosition} target
  */
 function place_road(room, origin, target) {
-	place_road_around(room, origin, true);
-	steps = origin.findPathTo(target, {
+	let pathing_options = {
 		ignoreCreeps: true,
 		ignoreRoads: true,
-		costCallback: function (roomName, costMatrix) {
+		costCallback: function adjust_cost_matrix(roomName, costMatrix) {
 			let _room = null;
 			try {
 				_room = Game.rooms[roomName];
@@ -24,6 +23,13 @@ function place_road(room, origin, target) {
 			}
 		},
 		swampCost: 1,
+	};
+	steps = origin.findPathTo(target, pathing_options);
+	let crossroad = room.getPositionAt(steps[2].x, steps[2].y);
+	place_road_around(room, origin, true).forEach(function (start) {
+		start.findPathTo(crossroad, pathing_options).forEach(function (step) {
+			save_road(room.name, step.x + ":" + step.y);
+		});
 	});
 	steps.pop();
 	steps.forEach(function (step) {
@@ -32,6 +38,7 @@ function place_road(room, origin, target) {
 }
 
 function place_road_around(room, pos, square = false) {
+	let road_pos = [];
 	for (let n = -1; n <= 1; n++) {
 		for (let m = -1; m <= 1; m++) {
 			if ((n == 0 && m == 0) || (!square && n != 0 && m != 0)) {
@@ -45,9 +52,11 @@ function place_road_around(room, pos, square = false) {
 			);
 			if (can_build_here(origin_adjacent, true)) {
 				save_road(room.name, pos.x + n + ":" + (pos.y + m));
+				road_pos.push(origin_adjacent);
 			}
 		}
 	}
+	return road_pos;
 }
 
 function save_road(room_name, coord) {
