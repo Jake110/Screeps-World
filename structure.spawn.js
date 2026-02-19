@@ -77,10 +77,8 @@ module.exports = {
 			// Renew Creeps
 			for (let name in Game.creeps) {
 				let creep = Game.creeps[name];
-				if (creep.name == "harvester0") {
-					console.log("Life: " + creep.ticksToLive);
-					console.log("Renew? " + creep.memory.renew);
-				}
+				console.log("Life: " + creep.ticksToLive);
+				console.log("Renew? " + creep.memory.renew);
 				if (
 					creep.ticksToLive < 200 &&
 					_.every(creep.body, function (part) {
