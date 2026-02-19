@@ -18,7 +18,7 @@ module.exports = {
 				ERR_NOT_IN_RANGE
 			) {
 				creep.moveTo(creep.room.controller, {
-					visualizePathStyle: { stroke: "#ffffff" },
+					visualizePathStyle: { stroke: "#7b00ac" },
 				});
 			}
 		} else {

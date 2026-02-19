@@ -16,7 +16,7 @@ module.exports = {
 			if (target) {
 				if (creep.build(target) == ERR_NOT_IN_RANGE) {
 					creep.moveTo(target, {
-						visualizePathStyle: { stroke: "#ffffff" },
+						visualizePathStyle: { stroke: "#00ffff" },
 					});
 				}
 			} else {

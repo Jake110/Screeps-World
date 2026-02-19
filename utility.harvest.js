@@ -27,7 +27,7 @@ module.exports = {
 		}
 		if (creep.harvest(_source) == ERR_NOT_IN_RANGE) {
 			creep.moveTo(_source, {
-				visualizePathStyle: { stroke: "#ffaa00" },
+				visualizePathStyle: { stroke: "#fff23e" },
 			});
 		}
 	},
@@ -50,7 +50,7 @@ module.exports = {
 		if (target) {
 			if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
 				creep.moveTo(target, {
-					visualizePathStyle: { stroke: "#ffffff" },
+					visualizePathStyle: { stroke: "#2bff00" },
 				});
 			}
 			return true;
