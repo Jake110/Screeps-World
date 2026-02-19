@@ -93,7 +93,7 @@ module.exports = {
 				}
 				if (creep.memory.renew) {
 					if (spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
-						creep.moveTo(target, {
+						creep.moveTo(spawn, {
 							visualizePathStyle: { stroke: "#000000" },
 						});
 					}
