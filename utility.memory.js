@@ -37,7 +37,7 @@ module.exports = {
 	set_up: function (room_name) {
 		set_up_memory(room_name, {});
 		this.tracker_names.forEach(function (name) {
-			this.set_up_memory(room_name, [], name);
+			set_up_memory(room_name, [], name);
 		});
 	},
 	set_up_memory: set_up_memory,
