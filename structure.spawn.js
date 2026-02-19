@@ -17,8 +17,8 @@ module.exports = {
 			room.find(FIND_MY_STRUCTURES, {
 				filter: { structureType: STRUCTURE_EXTENSION },
 			}).forEach(function (extension) {
-				capacity += extension.store.getCapacity()
-			})
+				capacity += extension.store.getCapacity();
+			});
 
 			// Spawn Creeps
 			if (spawn.spawning) {
@@ -81,12 +81,9 @@ module.exports = {
 				creep.body.forEach(function (part) {
 					body.push(part.type);
 				});
-				body = body.join("-")
-				console.log("Body: " + body)
-				console.log("Expected: "+creeper.body(role, capacity).join("-"))
-				if (body != creeper.body(role, capacity).join("-")) {
+				if (body.join("-") != creeper.body(role, capacity).join("-")) {
 					creep.memory.recycle = true;
-					console.log("\tRecycling Creep")
+					console.log("Recycling " + role + ": " + creep.name);
 					if (spawn.recycleCreep(creep) == ERR_NOT_IN_RANGE) {
 						creep.moveTo(spawn, {
 							visualizePathStyle: { stroke: "#000000" },
