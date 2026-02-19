@@ -196,7 +196,7 @@ module.exports = {
 			tower_sites < max_towers;
 			tower_sites++
 		) {
-			let new_site = get_next_adjacent(room, room.controller.pos, 2);
+			let new_site = get_next_adjacent(room, room.controller.pos);
 			remove_road(new_site);
 			place_road_around(room, new_site);
 			Memory[room.name].towers.push(new_site.x + ":" + new_site.y);
