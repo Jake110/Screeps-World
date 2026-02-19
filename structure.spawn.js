@@ -10,7 +10,7 @@ module.exports = {
 			builder.place_extensions(room, spawn);
 
 			// Get Creep Roles
-			let roles = creep.roles();
+			let roles = creep.roles(room);
 
 			// Spawn Creeps
 			if (spawn.spawning) {
