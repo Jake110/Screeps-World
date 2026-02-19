@@ -86,7 +86,7 @@ module.exports.loop = function () {
 					"🛠️" + spawning_creep.memory.role,
 					spawn.pos.x,
 					spawn.pos.y + 1,
-					{ opacity: 0.8 },
+					{ color: "#2bff00", opacity: 0.8 },
 				);
 			} else if (
 				spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
