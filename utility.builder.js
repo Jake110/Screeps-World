@@ -120,7 +120,7 @@ function remove_road(pos) {
 }
 
 module.exports = {
-	create_construction_sites: function (room, path, structure) {
+	create_construction_sites: function (room, path, structure_type) {
 		let unfinished_count = 0;
 		Memory[room.name][path].forEach(function (coord) {
 			let x = parseInt(coord.split(":")[0]);
@@ -128,14 +128,14 @@ module.exports = {
 			pos = room.getPositionAt(x, y);
 			let unfinished = true;
 			pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
-				if (structure.structureType == structure) {
+				if (structure.structureType == structure_type) {
 					unfinished = false;
 				}
 			});
 			if (unfinished) {
 				unfinished_count++;
 				if (pos.lookFor(LOOK_CONSTRUCTION_SITES).length == 0) {
-					pos.createConstructionSite(structure);
+					pos.createConstructionSite(structure_type);
 				}
 			}
 		});
