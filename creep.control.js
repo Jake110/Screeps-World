@@ -44,7 +44,7 @@ module.exports = {
 		return [
 			{
 				name: "harvester",
-				count: Math.ceil(source_count * 7.5),
+				count: Math.ceil(source_count * 0.75),
 			},
 			{
 				name: "worker",
