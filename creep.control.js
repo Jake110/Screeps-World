@@ -31,8 +31,8 @@ module.exports = {
 	main: function () {
 		for (let name in Game.creeps) {
 			let creep = Game.creeps[name];
-			
-			if (!creep.memory.renew) {
+
+			if (!creep.memory.recycle && !creep.memory.renew) {
 				if (creep.memory.role == "harvester") {
 					role_harvester.run(creep);
 				}

@@ -1,6 +1,5 @@
 var builder = require("structure.builder");
-var creep = require("creep.control");
-const { body } = require("./creep.control");
+var creeper = require("creep.control");
 
 module.exports = {
 	main: function (room) {
@@ -11,7 +10,7 @@ module.exports = {
 			builder.place_extensions(room, spawn);
 
 			// Get Creep Roles
-			let roles = creep.roles(room);
+			let roles = creeper.roles(room);
 
 			// Get Energy Capacity
 			let capacity = 50;
@@ -47,7 +46,7 @@ module.exports = {
 					);
 
 					if (role_creeps.length < max) {
-						let body = creep.body(role.name, capacity);
+						let body = creeper.body(role.name, capacity);
 						if (
 							spawn.spawnCreep(body, "Test", { dryRun: true }) !=
 							OK
@@ -67,7 +66,11 @@ module.exports = {
 							"Spawning new " + role.name + ": " + new_name,
 						);
 						spawn.spawnCreep(body, new_name, {
-							memory: { renew: false, role: role.name },
+							memory: {
+								recycle: false,
+								renew: false,
+								role: role.name,
+							},
 						});
 						break;
 					}
@@ -82,11 +85,15 @@ module.exports = {
 				creep.body.forEach(function (part) {
 					body.push(part.type);
 				});
-				console.log("Creep: " + creep.name);
-				console.log("\tLife: " + creep.ticksToLive);
-				console.log("\tRenew? " + creep.memory.renew);
-				console.log("\tBody: " + body);
-				if (creep.ticksToLive < 200) {
+				if (body != creeper.body(role, capacity)) {
+					creep.memory.recycle = true;
+					if (spawn.recycleCreep(creep) == ERR_NOT_IN_RANGE) {
+						creep.moveTo(spawn, {
+							visualizePathStyle: { stroke: "#000000" },
+						});
+					}
+				}
+				if (creep.ticksToLive < 200 && !body.includes(CARRY)) {
 					// If a creep has less than 200 ticks left
 					// and doesn't have a CARRY part, trigger renew process
 					creep.memory.renew = true;
