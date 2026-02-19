@@ -67,7 +67,7 @@ module.exports = {
 							"Spawning new " + role.name + ": " + new_name,
 						);
 						spawn.spawnCreep(body, new_name, {
-							memory: { renew:false, role: role.name },
+							memory: { renew: false, role: role.name },
 						});
 						break;
 					}
@@ -77,6 +77,20 @@ module.exports = {
 			// Renew Creeps
 			for (let name in Game.creeps) {
 				let creep = Game.creeps[name];
+				if (creep.name == "harvester0") {
+					console.log("Life: " + creep.ticksToLive);
+					console.log("Renew? " + creep.memory.renew);
+				}
+				if (
+					creep.ticksToLive < 200 &&
+					_.every(creep.body, function (part) {
+						return part.type != CARRY;
+					})
+				) {
+					// If a creep has less than 200 ticks left
+					// and doesn't have a CARRY part, trigger renew process
+					creep.memory.renew = true;
+				}
 				if (creep.memory.renew) {
 					if (spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
 						creep.moveTo(target, {
@@ -85,7 +99,7 @@ module.exports = {
 					}
 				}
 				if (creep.ticksToLive > 1200) {
-					creep.memory.renew = false
+					creep.memory.renew = false;
 				}
 			}
 

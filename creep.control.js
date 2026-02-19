@@ -31,16 +31,7 @@ module.exports = {
 	main: function () {
 		for (let name in Game.creeps) {
 			let creep = Game.creeps[name];
-			if (
-				creep.ticksToLive < 200 &&
-				_.every(creep.body, function (part) {
-					return part.type != CARRY;
-				})
-			) {
-				// If a creep has less than 200 ticks left
-				// and doesn't have a CARRY part, trigger renew process
-				creep.memory.renew = true;
-			}
+			
 			if (!creep.memory.renew) {
 				if (creep.memory.role == "harvester") {
 					role_harvester.run(creep);
