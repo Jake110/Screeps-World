@@ -81,8 +81,11 @@ module.exports = {
 				creep.body.forEach(function (part) {
 					body.push(part.type);
 				});
+				console.log("Body: " + body)
+				console.log("Expected: "+creeper.body(role, capacity))
 				if (body != creeper.body(role, capacity)) {
 					creep.memory.recycle = true;
+					console.log("\tRecycling Creep")
 					if (spawn.recycleCreep(creep) == ERR_NOT_IN_RANGE) {
 						creep.moveTo(spawn, {
 							visualizePathStyle: { stroke: "#000000" },
