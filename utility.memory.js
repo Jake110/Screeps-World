@@ -1,4 +1,4 @@
-let structure_names = ["extensions","towers"]
+let structure_names = ["extensions", "towers"];
 
 module.exports = {
 	build_coords: function (room_name) {
@@ -24,12 +24,6 @@ module.exports = {
 			}
 		}
 	},
-	set_up: function (room_name) {
-		this.set_up_memory(room_name, {});
-		this.tracker_names.forEach(function (name) {
-			this.set_up_memory(room_name, [], name);
-		});
-	},
 	set_up_memory: function (path, value, sub_path = null) {
 		if (sub_path) {
 			if (Memory[path][sub_path] == null) {
@@ -38,6 +32,12 @@ module.exports = {
 		} else if (Memory[path] == null) {
 			Memory[path] = value;
 		}
+	},
+	set_up: function (room_name) {
+		this.set_up_memory(room_name, {});
+		this.tracker_names.forEach(function (name) {
+			this.set_up_memory(room_name, [], name);
+		});
 	},
 	structure_names: structure_names,
 	tracker_names: structure_names.concat(["roads"]),
