@@ -60,7 +60,6 @@ function save_road(room_name, coord) {
  * @param {boolean} respect_walls
  **/
 function can_build_here(pos, respect_walls = false) {
-	console.log("can_build_here pos: " + pos);
 	coord = pos.x + ":" + pos.y;
 	if (
 		Memory[pos.roomName].towers.includes(coord) ||
@@ -79,7 +78,6 @@ function can_build_here(pos, respect_walls = false) {
 function get_next_adjacent(room, pos, layer = 1) {
 	let avoid_pos = memory.build_coords(room.name);
 	let next;
-	console.log("get_next_adjacent pos: " + pos);
 	for (; next == null; layer++) {
 		let l = parseInt(layer);
 		let options = [];
@@ -106,7 +104,6 @@ function get_next_adjacent(room, pos, layer = 1) {
 }
 
 function remove_road(pos) {
-	console.log("remove_road pos: " + pos);
 	coord = pos.x + ":" + pos.y;
 	index = Memory[pos.roomName].roads.indexOf(coord);
 	if (index != -1) {
@@ -194,8 +191,7 @@ module.exports = {
 			tower_sites++
 		) {
 			let new_site = get_next_adjacent(room, room.controller.pos, 2);
-			console.log("new_site: " + new_site);
-			remove_road();
+			remove_road(new_site);
 			place_road_around(room, new_site);
 			Memory[room.name].towers.push(new_site.x + ":" + new_site.y);
 		}

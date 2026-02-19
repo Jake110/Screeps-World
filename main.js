@@ -1,5 +1,5 @@
 var builder = require("utility.builder");
-var memory = require("utility.memory")
+var memory = require("utility.memory");
 var role_builder = require("role.builder");
 var role_harvester = require("role.harvester");
 var role_upgrader = require("role.upgrader");
@@ -21,7 +21,7 @@ var roles = [
 
 module.exports.loop = function () {
 	// Memory cleanup
-	memory.clear()
+	memory.clear();
 
 	// Creep control
 	for (let name in Game.creeps) {
@@ -42,7 +42,7 @@ module.exports.loop = function () {
 		let room = Game.rooms[name];
 
 		// Memory variables
-		memory.set_up(room.name)
+		memory.set_up(room.name);
 
 		towers = room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_TOWER },
@@ -81,7 +81,7 @@ module.exports.loop = function () {
 					"🛠️" + spawning_creep.memory.role,
 					spawn.pos.x + 1,
 					spawn.pos.y,
-					{ opacity: 0.8 },
+					{ align: "right", opacity: 0.8 },
 				);
 			} else if (
 				spawn.spawnCreep([WORK, CARRY, MOVE], "Test", {
@@ -121,7 +121,11 @@ module.exports.loop = function () {
 
 			// Road Consruction
 			// Get a count for how many unfinished roads there are
-			let unfinished_road = builder.create_construction_sites(room, "roads", STRUCTURE_ROAD);
+			let unfinished_road = builder.create_construction_sites(
+				room,
+				"roads",
+				STRUCTURE_ROAD,
+			);
 			// If all roads have been built, map the next batch
 			if (unfinished_road == 0) {
 				builder.place_source_roads(spawn);
