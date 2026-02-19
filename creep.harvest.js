@@ -16,7 +16,10 @@ function pick(creep) {
 			return hostiles.length == 0;
 		},
 	};
-	pickup = creep.pos.findClosestByPath(LOOK_RESOURCES, pathing_options);
+	pickup = creep.pos.findClosestByPath(
+		FIND_DROPPED_RESOURCES,
+		pathing_options,
+	);
 	_source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, pathing_options);
 	return creep.pos.findClosestByPath([pickup, _source]);
 }
@@ -26,7 +29,7 @@ module.exports = {
 	harvest: function (creep) {
 		let target = pick(creep);
 		if (target) {
-			if (target.energy == null) {
+			if (target.ticksToRegeneration == null) {
 				result = creep.pickup(target);
 			} else {
 				result = creep.harvest(target);
