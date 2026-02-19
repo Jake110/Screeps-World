@@ -1,5 +1,5 @@
 var role_harvester = require("role.harvester");
-var role_worker = require("role.worker")
+var role_worker = require("role.worker");
 
 module.exports = {
 	body: function (role, capacity) {
@@ -31,11 +31,23 @@ module.exports = {
 	main: function () {
 		for (let name in Game.creeps) {
 			let creep = Game.creeps[name];
-			if (creep.memory.role == "harvester") {
-				role_harvester.run(creep);
+			if (
+				creep.ticksToLive < 200 &&
+				_.every(creep.body, function (part) {
+					return part.type != CARRY;
+				})
+			) {
+				// If a creep has less than 200 ticks left
+				// and doesn't have a CARRY part, trigger renew process
+				creep.memory.renew = true;
 			}
-			if (creep.memory.role == "worker") {
-				role_worker.run(creep);
+			if (!creep.memory.renew) {
+				if (creep.memory.role == "harvester") {
+					role_harvester.run(creep);
+				}
+				if (creep.memory.role == "worker") {
+					role_worker.run(creep);
+				}
 			}
 		}
 	},

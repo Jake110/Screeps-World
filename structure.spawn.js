@@ -67,10 +67,25 @@ module.exports = {
 							"Spawning new " + role.name + ": " + new_name,
 						);
 						spawn.spawnCreep(body, new_name, {
-							memory: { role: role.name },
+							memory: { renew:false, role: role.name },
 						});
 						break;
 					}
+				}
+			}
+
+			// Renew Creeps
+			for (let name in Game.creeps) {
+				let creep = Game.creeps[name];
+				if (creep.memory.renew) {
+					if (spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
+						creep.moveTo(target, {
+							visualizePathStyle: { stroke: "#000000" },
+						});
+					}
+				}
+				if (creep.ticksToLive > 1200) {
+					creep.memory.renew = false
 				}
 			}
 
