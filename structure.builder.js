@@ -41,10 +41,14 @@ function place_road_around(
 	respect_walls = true,
 	radius = 1,
 ) {
+	let sides = [0 - radius, radius];
 	for (let n = 0 - radius; n <= radius; n++) {
 		for (let m = 0 - radius; m <= radius; m++) {
-			if ((n == 0 && m == 0) || (!square && n != 0 && m != 0)) {
-				// Don't place a road on the position we're surrounding
+			if (
+				(!sides.includes(n) && !sides.includes(m)) ||
+				(!square && n != 0 && m != 0)
+			) {
+				// Only place road in the radius zone
 				// Don't place road in the corners unless flagged as square
 				continue;
 			}
