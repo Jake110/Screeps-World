@@ -26,5 +26,6 @@ module.exports.loop = function () {
 
 		// Construction
 		builder.place_towers(room);
+		console.log("CPU this tick: "+Game.cpu.getUsed() +"/"+Game.cpu.tickLimit)
 	}
 };
