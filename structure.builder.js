@@ -178,6 +178,13 @@ module.exports = {
 		place_road_around(spawn.room, spawn.room.controller.pos);
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
+				if (
+					_source.pos.findInRange(FIND_HOSTILE_STRUCTURES, 20)
+						.length != 0 &&
+					Memory[room.name].towers.length == 0
+				) {
+					return false;
+				}
 				return !Memory[spawn.id].roads.includes(_source.id);
 			},
 		});
