@@ -82,6 +82,9 @@ module.exports = {
 			for (let name in Game.creeps) {
 				let creep = Game.creeps[name];
 				if (Game.time % 11 == 0) {
+					if (spawn.memory.recycling == null) {
+						spawn.memory.recycling = false;
+					}
 					let role = creep.memory.role;
 					let body = [];
 					creep.body.forEach(function (part) {
@@ -90,10 +93,12 @@ module.exports = {
 					let spawn_body = creeper.body(role, energy);
 					if (
 						body.join("-") != spawn_body.join("-") &&
-						spawn_body.length > body.length
+						spawn_body.length > body.length &&
+						!spawn.memory.recycling
 					) {
-						creep.memory.recycle = true;
 						console.log("Recycling " + role + ": " + creep.name);
+						creep.memory.recycle = true;
+						spawn.memory.recycling = true;
 					}
 					if (creep.ticksToLive < 200 && !body.includes(CLAIM)) {
 						// If a creep has less than 200 ticks left
@@ -102,10 +107,13 @@ module.exports = {
 					}
 				}
 				if (creep.memory.recycle) {
-					if (spawn.recycleCreep(creep) == ERR_NOT_IN_RANGE) {
+					let result = spawn.recycleCreep(creep);
+					if (result == ERR_NOT_IN_RANGE) {
 						creep.moveTo(spawn, {
 							visualizePathStyle: { stroke: "#000000" },
 						});
+					} else if (result == OK) {
+						spawn.memory.recycling = false;
 					}
 				}
 				if (creep.memory.renew) {
