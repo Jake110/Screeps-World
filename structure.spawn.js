@@ -115,7 +115,7 @@ module.exports = {
 						});
 					}
 				}
-				if (creep.ticksToLive >= 1450) {
+				if (creep.ticksToLive >= 1300) {
 					creep.memory.renew = false;
 				}
 			}
