@@ -15,11 +15,11 @@ module.exports = {
 			let roles = creeper.roles(room);
 
 			// Get Energy Capacity
-			let capacity = 300;
+			let energy = spawn.store[RESOURCE_ENERGY];
 			room.find(FIND_MY_STRUCTURES, {
 				filter: { structureType: STRUCTURE_EXTENSION },
 			}).forEach(function (extension) {
-				capacity += extension.store.getCapacity();
+				energy += extension.store[RESOURCE_ENERGY];
 			});
 
 			// Spawn Creeps
@@ -45,7 +45,7 @@ module.exports = {
 						);
 
 						if (role_creeps.length < max) {
-							let body = creeper.body(role.name, capacity);
+							let body = creeper.body(role.name, energy);
 							if (
 								spawn.spawnCreep(body, "Test", {
 									dryRun: true,
@@ -87,7 +87,7 @@ module.exports = {
 					creep.body.forEach(function (part) {
 						body.push(part.type);
 					});
-					let spawn_body = creeper.body(role, capacity);
+					let spawn_body = creeper.body(role, energy);
 					if (
 						body.join("-") != spawn_body.join("-") &&
 						spawn_body.length > body.length

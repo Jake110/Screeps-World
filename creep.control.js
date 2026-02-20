@@ -2,12 +2,12 @@ var role_harvester = require("role.harvester");
 var role_worker = require("role.worker");
 
 module.exports = {
-	body: function (role, capacity) {
+	body: function (role, energy) {
 		if (role == "harvester") {
 			role = "worker";
 		}
 		switch (true) {
-			case capacity >= 800:
+			case energy >= 800:
 				return [
 					WORK,
 					WORK,
@@ -22,9 +22,9 @@ module.exports = {
 					MOVE,
 					MOVE,
 				];
-			case capacity >= 500:
+			case energy >= 500:
 				return [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
-			case capacity >= 250:
+			case energy >= 250:
 				return [WORK, CARRY, MOVE, MOVE];
 		}
 	},
