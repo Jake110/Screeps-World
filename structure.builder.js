@@ -7,7 +7,7 @@ var memory = require("utility.memory");
  * @param {RoomPosition} target
  */
 function place_road(room, origin, target, range = 0) {
-	let pathing_options = {
+	/*steps = origin.findPathTo(target, {
 		ignoreCreeps: true,
 		ignoreRoads: true,
 		costCallback: function adjust_cost_matrix(roomName, costMatrix) {
@@ -24,11 +24,53 @@ function place_road(room, origin, target, range = 0) {
 		},
 		range: range,
 		swampCost: 1,
-	};
-	steps = origin.findPathTo(target, pathing_options);
+	});
 	steps.pop();
 	steps.forEach(function (step) {
 		save_road(room.name, step.x + ":" + step.y);
+	});*/
+	let x = origin.x;
+	let y = origin.y;
+	let route = [];
+	while (x != target.x && y != target.y) {
+		let pos = room.getPositionAt(x, y);
+		switch (pos.getDirectionTo(target)) {
+			case 1:
+				y--;
+				break;
+			case 2:
+				x++;
+				y--;
+				break;
+			case 3:
+				x++;
+				break;
+			case 4:
+				x++;
+				y++;
+				break;
+			case 5:
+				y++;
+				break;
+			case 6:
+				x--;
+				y++;
+				break;
+			case 7:
+				x--;
+				break;
+			case 8:
+				x--;
+				y--;
+				break;
+		}
+		route.push(x + ":" + y);
+	}
+	for (; range > 0; range--) {
+		route.pop();
+	}
+	route.forEach(function (coord) {
+		place_road(room.name, coord);
 	});
 	place_road_around(room, origin, true, false);
 	place_road_around(room, origin, true, false, 2);
