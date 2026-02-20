@@ -5,6 +5,7 @@ var spawn = require("structure.spawn");
 var tower = require("structure.tower");
 
 module.exports.loop = function () {
+	console.log("Tick: " + Game.time);
 	// Memory Cleanup
 	memory.clear();
 
@@ -26,6 +27,8 @@ module.exports.loop = function () {
 
 		// Construction
 		builder.place_towers(room);
-		console.log("CPU this tick: "+Game.cpu.getUsed() +"/"+Game.cpu.tickLimit)
+		console.log(
+			"CPU this tick: " + Game.cpu.getUsed() + "/" + Game.cpu.tickLimit,
+		);
 	}
 };
