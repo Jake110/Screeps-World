@@ -27,6 +27,7 @@ module.exports = {
 			case energy >= 250:
 				return [WORK, CARRY, MOVE, MOVE];
 		}
+		return [];
 	},
 	main: function () {
 		for (let name in Game.creeps) {
