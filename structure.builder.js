@@ -70,7 +70,7 @@ function place_road(room, origin, target, range = 0) {
 		route.pop();
 	}
 	route.forEach(function (coord) {
-		place_road(room.name, coord);
+		save_road(room.name, coord);
 	});
 	place_road_around(room, origin, true, false);
 	place_road_around(room, origin, true, false, 2);
