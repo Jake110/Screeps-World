@@ -47,18 +47,19 @@ module.exports = {
 						if (role_creeps.length < max) {
 							let body = creeper.body(role.name, capacity);
 							if (
-								spawn.spawnCreep(body, "Test", { dryRun: true }) !=
-								OK
+								spawn.spawnCreep(body, "Test", {
+									dryRun: true,
+								}) != OK
 							) {
 								// If we can't spawn the creep for this role, move on
 								continue;
 							}
 							console.log(
 								role_cap +
-								" count: " +
-								role_creeps.length +
-								"/" +
-								max,
+									" count: " +
+									role_creeps.length +
+									"/" +
+									max,
 							);
 							let new_name = role_cap + Game.time;
 							console.log(
@@ -94,9 +95,9 @@ module.exports = {
 						creep.memory.recycle = true;
 						console.log("Recycling " + role + ": " + creep.name);
 					}
-					if (creep.ticksToLive < 200 && !body.includes(CARRY)) {
+					if (creep.ticksToLive < 200 && !body.includes(CLAIM)) {
 						// If a creep has less than 200 ticks left
-						// and doesn't have a CARRY part, trigger renew process
+						// and doesn't have a CLAIM part, trigger renew process
 						creep.memory.renew = true;
 					}
 				}
