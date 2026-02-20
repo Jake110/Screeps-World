@@ -16,6 +16,16 @@ function place_road(room, origin, target, range = 0) {
 				_room = Game.rooms[roomName];
 			} catch {}
 			if (_room != null) {
+				let x_max = Math.max(origin.x, target.x);
+				let x_min = Math.min(origin.x, target.x);
+				let y_max = Math.max(origin.y, target.y);
+				let y_min = Math.min(origin.y, target.y);
+				for (let x = x_min; x <= x_max; x++) {
+					for (let y = y_min; y <= y_max; y++) {
+						// Set all terrain costs to 0 for direct routes
+						costMatrix.set(x, y, 0);
+					}
+				}
 				memory.build_pos(_room).forEach(function (pos) {
 					// Set all building positions to be non-walkable
 					costMatrix.set(pos.x, pos.y, 0xff);
