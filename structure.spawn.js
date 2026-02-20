@@ -7,7 +7,9 @@ module.exports = {
 			filter: { structureType: STRUCTURE_SPAWN },
 		}).forEach(function (spawn) {
 			// Extension Construction
-			builder.place_extensions(room, spawn);
+			if (Game.time % 42 == 0) {
+				builder.place_extensions(room, spawn);
+			}
 
 			// Get Creep Roles
 			let roles = creeper.roles(room);
@@ -30,45 +32,47 @@ module.exports = {
 					{ color: "#2bff00", opacity: 0.8 },
 				);
 			} else {
-				for (let n in roles) {
-					let role = roles[n];
-					let role_cap = role.name;
-					role_cap[0] = role_cap[0].toUpperCase();
-					let max = role.count;
+				if (Game.time % 21 == 0) {
+					for (let n in roles) {
+						let role = roles[n];
+						let role_cap = role.name;
+						role_cap[0] = role_cap[0].toUpperCase();
+						let max = role.count;
 
-					let role_creeps = _.filter(
-						Game.creeps,
-						(creep) => creep.memory.role == role.name,
-					);
+						let role_creeps = _.filter(
+							Game.creeps,
+							(creep) => creep.memory.role == role.name,
+						);
 
-					if (role_creeps.length < max) {
-						let body = creeper.body(role.name, capacity);
-						if (
-							spawn.spawnCreep(body, "Test", { dryRun: true }) !=
-							OK
-						) {
-							// If we can't spawn the creep for this role, move on
-							continue;
-						}
-						console.log(
-							role_cap +
+						if (role_creeps.length < max) {
+							let body = creeper.body(role.name, capacity);
+							if (
+								spawn.spawnCreep(body, "Test", { dryRun: true }) !=
+								OK
+							) {
+								// If we can't spawn the creep for this role, move on
+								continue;
+							}
+							console.log(
+								role_cap +
 								" count: " +
 								role_creeps.length +
 								"/" +
 								max,
-						);
-						let new_name = role_cap + Game.time;
-						console.log(
-							"Spawning new " + role.name + ": " + new_name,
-						);
-						spawn.spawnCreep(body, new_name, {
-							memory: {
-								recycle: false,
-								renew: false,
-								role: role.name,
-							},
-						});
-						break;
+							);
+							let new_name = role_cap + Game.time;
+							console.log(
+								"Spawning new " + role.name + ": " + new_name,
+							);
+							spawn.spawnCreep(body, new_name, {
+								memory: {
+									recycle: false,
+									renew: false,
+									role: role.name,
+								},
+							});
+							break;
+						}
 					}
 				}
 			}
@@ -76,24 +80,32 @@ module.exports = {
 			// Renew Creeps
 			for (let name in Game.creeps) {
 				let creep = Game.creeps[name];
-				let role = creep.memory.role;
-				let body = [];
-				creep.body.forEach(function (part) {
-					body.push(part.type);
-				});
-				if (body.join("-") != creeper.body(role, capacity).join("-")) {
-					creep.memory.recycle = true;
-					console.log("Recycling " + role + ": " + creep.name);
+				if (Game.time % 50 == 0) {
+					let role = creep.memory.role;
+					let body = [];
+					creep.body.forEach(function (part) {
+						body.push(part.type);
+					});
+					let spawn_body = creeper.body(role, capacity);
+					if (
+						body.join("-") != spawn_body.join("-") &&
+						spawn_body.length > body.length
+					) {
+						creep.memory.recycle = true;
+						console.log("Recycling " + role + ": " + creep.name);
+					}
+					if (creep.ticksToLive < 200 && !body.includes(CARRY)) {
+						// If a creep has less than 200 ticks left
+						// and doesn't have a CARRY part, trigger renew process
+						creep.memory.renew = true;
+					}
+				}
+				if (creep.memory.recycle) {
 					if (spawn.recycleCreep(creep) == ERR_NOT_IN_RANGE) {
 						creep.moveTo(spawn, {
 							visualizePathStyle: { stroke: "#000000" },
 						});
 					}
-				}
-				if (creep.ticksToLive < 200 && !body.includes(CARRY)) {
-					// If a creep has less than 200 ticks left
-					// and doesn't have a CARRY part, trigger renew process
-					creep.memory.renew = true;
 				}
 				if (creep.memory.renew) {
 					if (spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
@@ -108,15 +120,17 @@ module.exports = {
 			}
 
 			// Road Consruction
-			// Get a count for how many unfinished roads there are
-			let unfinished_road = builder.create_construction_sites(
-				room,
-				"roads",
-				STRUCTURE_ROAD,
-			);
-			// If all roads have been built, map the next batch
-			if (unfinished_road == 0) {
-				builder.place_source_roads(spawn);
+			if (Game.time % 88 == 0) {
+				// Get a count for how many unfinished roads there are
+				let unfinished_road = builder.create_construction_sites(
+					room,
+					"roads",
+					STRUCTURE_ROAD,
+				);
+				// If all roads have been built, map the next batch
+				if (unfinished_road == 0) {
+					builder.place_source_roads(spawn);
+				}
 			}
 		});
 	},
