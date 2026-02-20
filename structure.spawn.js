@@ -7,7 +7,7 @@ module.exports = {
 			filter: { structureType: STRUCTURE_SPAWN },
 		}).forEach(function (spawn) {
 			// Extension Construction
-			if (Game.time % 42 == 0) {
+			if (Game.time % 17 == 0) {
 				builder.place_extensions(room, spawn);
 			}
 
@@ -32,7 +32,7 @@ module.exports = {
 					{ color: "#2bff00", opacity: 0.8 },
 				);
 			} else {
-				if (Game.time % 21 == 0) {
+				if (Game.time % 7 == 0) {
 					for (let n in roles) {
 						let role = roles[n];
 						let role_cap = role.name;
@@ -80,7 +80,7 @@ module.exports = {
 			// Renew Creeps
 			for (let name in Game.creeps) {
 				let creep = Game.creeps[name];
-				if (Game.time % 50 == 0) {
+				if (Game.time % 11 == 0) {
 					let role = creep.memory.role;
 					let body = [];
 					creep.body.forEach(function (part) {
@@ -120,7 +120,7 @@ module.exports = {
 			}
 
 			// Road Consruction
-			if (Game.time % 88 == 0) {
+			if (Game.time % 13 == 0) {
 				// Get a count for how many unfinished roads there are
 				let unfinished_road = builder.create_construction_sites(
 					room,
