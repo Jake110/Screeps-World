@@ -181,7 +181,7 @@ module.exports = {
 				if (
 					_source.pos.findInRange(FIND_HOSTILE_STRUCTURES, 20)
 						.length != 0 &&
-					Memory[room.name].towers.length == 0
+					Memory[spawn.room.name].towers.length == 0
 				) {
 					return false;
 				}
