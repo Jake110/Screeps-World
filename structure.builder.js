@@ -137,7 +137,7 @@ function can_build_here(pos, respect_walls = false) {
 function get_next_adjacent(room, pos, layer = 1) {
 	let avoid_pos = memory.build_coords(room.name);
 	let next;
-	for (; next == null; layer++) {
+	for (; !next; layer++) {
 		let l = parseInt(layer);
 		let options = [];
 		for (let n = 0 - layer; n <= layer - 2; n += 2) {
@@ -221,7 +221,6 @@ module.exports = {
 		this.create_construction_sites(room, "extensions", STRUCTURE_EXTENSION);
 	},
 	place_source_roads: function (spawn) {
-		memory.set_up_memory(spawn.id, {});
 		memory.set_up_memory(spawn.id, [], "roads");
 		memory.set_up_memory(spawn.id, [], "tunnels");
 		let mode = "roads";

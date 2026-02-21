@@ -22,7 +22,7 @@ module.exports = {
 				);
 			},
 		});
-		if (target == null) {
+		if (!target) {
 			target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
 				filter: function (tomb) {
 					return (
@@ -32,7 +32,7 @@ module.exports = {
 				},
 			});
 		}
-		if (target == null) {
+		if (!target) {
 			target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
 				filter: function (structure) {
 					return (
@@ -44,7 +44,7 @@ module.exports = {
 				},
 			});
 		}
-		if (target == null) {
+		if (!target) {
 			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 				filter: function (harvester) {
 					return (
@@ -56,9 +56,9 @@ module.exports = {
 		}
 		if (target) {
 			let result;
-			if (target.store == null) {
+			if (!target.store) {
 				result = creep.pickup(target);
-			} else if (target.body == null) {
+			} else if (!target.body) {
 				result = creep.withdraw(target, RESOURCE_ENERGY);
 			} else {
 				result = target.transfer(creep, RESOURCE_ENERGY);

@@ -6,9 +6,11 @@ module.exports = {
 		if (role == "harvester") {
 			role = "worker";
 		}
+		let parts = [];
+		let cost = 0;
 		switch (true) {
 			case energy >= 800:
-				return [
+				parts = [
 					WORK,
 					WORK,
 					WORK,
@@ -22,12 +24,18 @@ module.exports = {
 					MOVE,
 					MOVE,
 				];
+				cost = 800;
 			case energy >= 500:
-				return [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+				parts = [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
+				cost = 500;
 			case energy >= 250:
-				return [WORK, CARRY, MOVE, MOVE];
+				parts = [WORK, CARRY, MOVE, MOVE];
+				cost = 250;
 		}
-		return [];
+		return {
+			parts: parts,
+			cost: cost,
+		};
 	},
 	main: function () {
 		for (let name in Game.creeps) {
@@ -55,11 +63,11 @@ module.exports = {
 		return [
 			{
 				name: "harvester",
-				count: 2 * source_count,
+				max: 2 * source_count,
 			},
 			{
 				name: "worker",
-				count: 4,
+				max: 4,
 			},
 		];
 	},

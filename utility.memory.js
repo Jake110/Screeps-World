@@ -2,10 +2,11 @@ let structure_names = ["extensions", "towers"];
 
 function set_up_memory(path, value, sub_path = null) {
 	if (sub_path) {
-		if (Memory[path][sub_path] == null) {
+		set_up_memory(path, {});
+		if (!Memory[path][sub_path]) {
 			Memory[path][sub_path] = value;
 		}
-	} else if (Memory[path] == null) {
+	} else if (!Memory[path]) {
 		Memory[path] = value;
 	}
 }
@@ -35,7 +36,6 @@ module.exports = {
 		}
 	},
 	set_up: function (room_name) {
-		set_up_memory(room_name, {});
 		this.tracker_names.forEach(function (name) {
 			set_up_memory(room_name, [], name);
 		});

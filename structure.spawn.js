@@ -1,11 +1,90 @@
 const builder = require("structure.builder");
 const creeper = require("creep.control");
 
+function get_spawn(room, recycle_check = false) {
+	let spawn = null;
+	let energy = -1;
+	room.find(FIND_MY_STRUCTURES, {
+		filter: function (structure) {
+			return (
+				structure.structureType == STRUCTURE_SPAWN &&
+				!structure.spawning && (!recycle_check || recycle_check != structure.memory.recycling)
+			);
+		},
+	}).forEach(function (_spawn) {
+		let spawn_energy = _spawn.store[RESOURCE_ENERGY];
+		if (spawn_energy > energy) {
+			spawn = _spawn;
+			energy = spawn_energy;
+		}
+	});
+	return spawn;
+}
+
 module.exports = {
 	main: function (room) {
 		// Get Creep Roles
 		let roles = creeper.roles(room);
 
+		// Get Extension Energy
+		let extension_energy = 0;
+		room.find(FIND_MY_STRUCTURES, {
+			filter: { structureType: STRUCTURE_EXTENSION },
+		}).forEach(function (extension) {
+			extension_energy += extension.store[RESOURCE_ENERGY];
+		});
+
+		// Spawn Creeps
+		if (Game.time % 7 == 0) {
+			roles.forEach(function (role) {
+				let spawn = get_spawn(room);
+				if (!spawn) {
+					// No spawn was available
+					return null;
+				}
+				let role_count = room.find(FIND_MY_CREEPS, {
+					filter: function (creep) {
+						return creep.memory.role == role.name;
+					},
+				}).length;
+				if (role_count < role.max) {
+					let creep = creeper.body(
+						role.name,
+						spawn.store[RESOURCE_ENERGY] + extension_energy,
+					);
+					if (creep.cost == 0) {
+						// Not enough energy for this roles cheapest creep
+						return null;
+					}
+					console.log(
+						room.name +
+							" - " +
+							role.name +
+							" count: " +
+							role_count +
+							"/" +
+							role.max,
+					);
+					let new_name = role_cap + Game.time;
+					console.log("Spawning new " + role.name + ": " + new_name);
+					extension_energy +=
+						spawn.store[RESOURCE_ENERGY] - creep.cost;
+					spawn.spawnCreep(creep.parts, new_name, {
+						memory: {
+							recycle: false,
+							renew: false,
+							role: role.name,
+						},
+					});
+					if (spawn.memory.recycling) {
+						Memory.creeps[spawn.memory.recycling].recycle = false;
+						spawn.memory.recycling = false;
+					}
+				}
+			});
+		}
+
+		// Per Spawn Section
 		room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_SPAWN },
 		}).forEach(function (spawn) {
@@ -14,15 +93,7 @@ module.exports = {
 				builder.place_extensions(room, spawn);
 			}
 
-			// Get Available Energy
-			let energy = spawn.store[RESOURCE_ENERGY];
-			room.find(FIND_MY_STRUCTURES, {
-				filter: { structureType: STRUCTURE_EXTENSION },
-			}).forEach(function (extension) {
-				energy += extension.store[RESOURCE_ENERGY];
-			});
-
-			// Spawn Creeps
+			// Spawning Creep Text
 			if (spawn.spawning) {
 				let spawning_creep = Game.creeps[spawn.spawning.name];
 				spawn.room.visual.text(
@@ -31,100 +102,12 @@ module.exports = {
 					spawn.pos.y + 1,
 					{ color: "#2bff00", opacity: 0.8 },
 				);
-			} else {
-				if (Game.time % 7 == 0) {
-					for (let n in roles) {
-						let role = roles[n];
-						let role_cap = role.name;
-						role_cap[0] = role_cap[0].toUpperCase();
-						let max = role.count;
-
-						let role_creeps = _.filter(
-							Game.creeps,
-							(creep) => creep.memory.role == role.name,
-						);
-
-						if (role_creeps.length < max) {
-							let body = creeper.body(role.name, energy);
-							if (
-								spawn.spawnCreep(body, "Test", {
-									dryRun: true,
-								}) != OK
-							) {
-								// If we can't spawn the creep for this role, move on
-								continue;
-							}
-							console.log(
-								role_cap +
-									" count: " +
-									role_creeps.length +
-									"/" +
-									max,
-							);
-							let new_name = role_cap + Game.time;
-							console.log(
-								"Spawning new " + role.name + ": " + new_name,
-							);
-							spawn.spawnCreep(body, new_name, {
-								memory: {
-									recycle: false,
-									renew: false,
-									role: role.name,
-								},
-							});
-							break;
-						}
-					}
-				}
 			}
 
-			// Renew Creeps
-			for (let name in Game.creeps) {
-				let creep = Game.creeps[name];
-				if (Game.time % 11 == 0) {
-					if (spawn.memory.recycling == null) {
-						spawn.memory.recycling = false;
-					}
-					let role = creep.memory.role;
-					let body = [];
-					creep.body.forEach(function (part) {
-						body.push(part.type);
-					});
-					let spawn_body = creeper.body(role, energy);
-					if (
-						body.join("-") != spawn_body.join("-") &&
-						spawn_body.length > body.length &&
-						!spawn.memory.recycling
-					) {
-						console.log("Recycling " + role + ": " + creep.name);
-						creep.memory.recycle = true;
-						spawn.memory.recycling = true;
-					}
-					if (creep.ticksToLive < 200 && !body.includes(CLAIM)) {
-						// If a creep has less than 200 ticks left
-						// and doesn't have a CLAIM part, trigger renew process
-						creep.memory.renew = true;
-					}
-				}
-				if (creep.memory.recycle) {
-					let result = spawn.recycleCreep(creep);
-					if (result == ERR_NOT_IN_RANGE) {
-						creep.moveTo(spawn, {
-							visualizePathStyle: { stroke: "#000000" },
-						});
-					} else if (result == OK) {
-						spawn.memory.recycling = false;
-					}
-				}
-				if (creep.memory.renew) {
-					if (spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
-						creep.moveTo(spawn, {
-							visualizePathStyle: { stroke: "#000000" },
-						});
-					}
-				}
-				if (creep.ticksToLive >= 1300) {
-					creep.memory.renew = false;
+			// Creep Recycling Check
+			if (spawn.memory.recycling) {
+				if (!Game.creeps[spawn.memory.recycling]) {
+					spawn.memory.recycling = false;
 				}
 			}
 
@@ -140,6 +123,55 @@ module.exports = {
 				if (unfinished_road == 0) {
 					builder.place_source_roads(spawn);
 				}
+			}
+		});
+
+		// Renew & Recycle Creeps
+		spawn = get_spawn(room, true)
+		room.find(FIND_MY_CREEPS).forEach(function (creep) {
+			if (Game.time % 11 == 0) {
+				let role = creep.memory.role;
+				let creep_body = [];
+				creep.body.forEach(function (part) {
+					creep_body.push(part.type);
+				});
+				if (spawn) {
+					let spawn_body = creeper.body(role, energy);
+					if (
+						creep_body.join("-") != spawn_body.join("-") &&
+						spawn_body.length > creep_body.length &&
+						!spawn.memory.recycling
+					) {
+						console.log(room.name + " - Recycling " + role + ": " + creep.name);
+						creep.memory.recycle = true;
+						spawn.memory.recycling = creep.name;
+					}
+				}
+				if (creep.ticksToLive < 200 && !creep_body.includes(CLAIM)) {
+					// If a creep has less than 200 ticks left
+					// and doesn't have a CLAIM part, trigger renew process
+					creep.memory.renew = true;
+				}
+			}
+			if (creep.memory.recycle) {
+				let result = spawn.recycleCreep(creep);
+				if (result == ERR_NOT_IN_RANGE) {
+					creep.moveTo(spawn, {
+						visualizePathStyle: { stroke: "#000000" },
+					});
+				} else if (result == OK) {
+					spawn.memory.recycling = false;
+				}
+			}
+			if (creep.memory.renew) {
+				if (spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
+					creep.moveTo(spawn, {
+						visualizePathStyle: { stroke: "#000000" },
+					});
+				}
+			}
+			if (creep.ticksToLive >= 1300) {
+				creep.memory.renew = false;
 			}
 		});
 	},
