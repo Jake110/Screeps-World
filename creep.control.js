@@ -1,5 +1,5 @@
-var role_harvester = require("role.harvester");
-var role_worker = require("role.worker");
+const role_harvester = require("role.harvester");
+const role_worker = require("role.worker");
 
 module.exports = {
 	body: function (role, energy) {

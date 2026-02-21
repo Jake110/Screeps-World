@@ -1,26 +1,12 @@
-var harvest = require("creep.harvest");
+const harvest = require("creep.harvest");
+const hauler = require("creep.hauler")
 
 module.exports = {
 	/** @param {Creep} creep **/
 	run: function (creep) {
-		if (creep.memory.full && creep.store[RESOURCE_ENERGY] == 0) {
-			creep.memory.full = false;
-		}
-		if (!creep.memory.full && creep.store.getFreeCapacity() == 0) {
-			creep.memory.full = true;
-		}
-
+		hauler.capacity_check(creep, RESOURCE_ENERGY)
 		if (creep.memory.full) {
-			if (!harvest.recharge(creep)) {
-				if (
-					creep.upgradeController(creep.room.controller) ==
-					ERR_NOT_IN_RANGE
-				) {
-					creep.moveTo(creep.room.controller, {
-						visualizePathStyle: { stroke: "#7b00ac" },
-					});
-				}
-			}
+			harvest.deposit(creep);
 		} else {
 			harvest.harvest(creep);
 		}

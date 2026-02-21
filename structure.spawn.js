@@ -1,5 +1,5 @@
-var builder = require("structure.builder");
-var creeper = require("creep.control");
+const builder = require("structure.builder");
+const creeper = require("creep.control");
 
 module.exports = {
 	main: function (room) {

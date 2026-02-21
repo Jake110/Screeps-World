@@ -1,8 +1,8 @@
-var builder = require("structure.builder");
-var creep = require("creep.control");
-var memory = require("utility.memory");
-var spawn = require("structure.spawn");
-var tower = require("structure.tower");
+const builder = require("structure.builder");
+const creep = require("creep.control");
+const memory = require("utility.memory");
+const spawn = require("structure.spawn");
+const tower = require("structure.tower");
 
 module.exports.loop = function () {
 	//console.log("Tick: " + Game.time);

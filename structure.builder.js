@@ -1,4 +1,4 @@
-var memory = require("utility.memory");
+const memory = require("utility.memory");
 
 /**
  * Map a road from the origin to the target
@@ -225,10 +225,10 @@ module.exports = {
 		memory.set_up_memory(spawn.id, [], "roads");
 		memory.set_up_memory(spawn.id, [], "tunnels");
 		let mode = "roads";
-		let respect_walls = true
+		let respect_walls = true;
 		if (spawn.room.controller.level > 4) {
 			mode = "tunnels";
-			respect_walls = false
+			respect_walls = false;
 		}
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {

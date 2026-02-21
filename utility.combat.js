@@ -34,17 +34,29 @@ function weigh_targets(hostiles) {
 		// Health weight: +50% for nearly dead, -50% for full health
 		weight *= 0.5 + (1 - hostile.hits / hostile.hitsMax);
 		// Range weight: +50% for point blank, -50% for max range
-        weight *= 0.5 + (1 - pos.getRangeTo(hostile) / range);
-        if (weight > max_weight) {
-            target = hostile
-        }
-    });
-    return target
+		weight *= 0.5 + (1 - pos.getRangeTo(hostile) / range);
+		if (weight > max_weight) {
+			target = hostile;
+		}
+	});
+	return target;
 }
 
 module.exports = {
-    ranged_target: function (pos, range = 50) {
-        let hostiles = pos.findInRange(FIND_HOSTILE_CREEPS, range);
-        return weigh_targets(hostiles)
-    },
+	avoid_filter: function (target) {
+		return (
+			target.pos.findInRange(FIND_HOSTILE_CREEPS, 10, {
+				filter: function (object) {
+					return (
+						object.getActiveBodyparts(ATTACK) != 0 ||
+						object.getActiveBodyparts(RANGED_ATTACK) != 0
+					);
+				},
+			}).length == 0
+		);
+	},
+	ranged_target: function (pos, range = 50) {
+		let hostiles = pos.findInRange(FIND_HOSTILE_CREEPS, range);
+		return weigh_targets(hostiles);
+	},
 };

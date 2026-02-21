@@ -1,29 +1,20 @@
-var harvest = require("creep.harvest");
-var role_harvester = require("role.harvester");
+const hauler = require("creep.hauler")
+const worker = require("creep.worker");
 
 module.exports = {
 	/** @param {Creep} creep **/
 	run: function (creep) {
-		if (creep.memory.full && creep.store[RESOURCE_ENERGY] == 0) {
-			creep.memory.full = false;
-		}
-		if (!creep.memory.full && creep.store.getFreeCapacity() == 0) {
-			creep.memory.full = true;
-		}
-
+		hauler.capacity_check(creep, RESOURCE_ENERGY)
 		if (creep.memory.full) {
-			let target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-			if (target) {
-				if (creep.build(target) == ERR_NOT_IN_RANGE) {
-					creep.moveTo(target, {
-						visualizePathStyle: { stroke: "#00ffff" },
-					});
-				}
-			} else {
-				role_harvester.run(creep);
+			if (worker.recharge(creep)) {
+				return null
 			}
+			if (worker.build(creep)) {
+				return null
+			}
+			worker.upgrade(creep)
 		} else {
-			harvest.harvest(creep);
+			worker.collect(creep);
 		}
 	},
 };
