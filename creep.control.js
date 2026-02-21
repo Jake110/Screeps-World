@@ -44,15 +44,22 @@ module.exports = {
 		}
 	},
 	roles: function (room) {
-		let source_count = room.find(FIND_SOURCES).length;
+		let source_count = room.find(FIND_SOURCES, {
+			filter: function (_source) {
+				return (
+					_source.pos.findInRange(FIND_HOSTILE_STRUCTURES, 20)
+						.length == 0 || Memory[room.name].towers.length > 0
+				);
+			},
+		}).length;
 		return [
 			{
 				name: "harvester",
-				count: Math.ceil(source_count * 0.75),
+				count: 2 * source_count,
 			},
 			{
 				name: "worker",
-				count: Math.ceil(source_count * 1.5),
+				count: 4,
 			},
 		];
 	},
