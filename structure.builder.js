@@ -6,74 +6,77 @@ var memory = require("utility.memory");
  * @param {RoomPosition} origin
  * @param {RoomPosition} target
  */
-function place_road(room, origin, target, range = 0) {
-	/*steps = origin.findPathTo(target, {
-		ignoreCreeps: true,
-		ignoreRoads: true,
-		costCallback: function adjust_cost_matrix(roomName, costMatrix) {
-			let _room = null;
-			try {
-				_room = Game.rooms[roomName];
-			} catch {}
-			if (_room != null) {
-				memory.build_pos(_room).forEach(function (pos) {
-					// Set all building positions to be non-walkable
-					costMatrix.set(pos.x, pos.y, 0xff);
-				});
+function place_road(room, origin, target, respect_walls, range = 0) {
+	if (respect_walls) {
+		steps = origin.findPathTo(target, {
+			ignoreCreeps: true,
+			ignoreRoads: true,
+			costCallback: function adjust_cost_matrix(roomName, costMatrix) {
+				let _room = null;
+				try {
+					_room = Game.rooms[roomName];
+				} catch {}
+				if (_room != null) {
+					memory.build_pos(_room).forEach(function (pos) {
+						// Set all building positions to be non-walkable
+						costMatrix.set(pos.x, pos.y, 0xff);
+					});
+				}
+			},
+			range: range,
+			swampCost: 1,
+		});
+		steps.pop();
+		steps.forEach(function (step) {
+			save_road(room.name, step.x + ":" + step.y);
+		});
+	} else {
+		let x = origin.x;
+		let y = origin.y;
+		let route = [];
+		while (x != target.x && y != target.y) {
+			let pos = room.getPositionAt(x, y);
+			switch (pos.getDirectionTo(target)) {
+				case 1:
+					y--;
+					break;
+				case 2:
+					x++;
+					y--;
+					break;
+				case 3:
+					x++;
+					break;
+				case 4:
+					x++;
+					y++;
+					break;
+				case 5:
+					y++;
+					break;
+				case 6:
+					x--;
+					y++;
+					break;
+				case 7:
+					x--;
+					break;
+				case 8:
+					x--;
+					y--;
+					break;
 			}
-		},
-		range: range,
-		swampCost: 1,
-	});
-	steps.pop();
-	steps.forEach(function (step) {
-		save_road(room.name, step.x + ":" + step.y);
-	});*/
-	let x = origin.x;
-	let y = origin.y;
-	let route = [];
-	while (x != target.x && y != target.y) {
-		let pos = room.getPositionAt(x, y);
-		switch (pos.getDirectionTo(target)) {
-			case 1:
-				y--;
-				break;
-			case 2:
-				x++;
-				y--;
-				break;
-			case 3:
-				x++;
-				break;
-			case 4:
-				x++;
-				y++;
-				break;
-			case 5:
-				y++;
-				break;
-			case 6:
-				x--;
-				y++;
-				break;
-			case 7:
-				x--;
-				break;
-			case 8:
-				x--;
-				y--;
-				break;
+			route.push(x + ":" + y);
 		}
-		route.push(x + ":" + y);
+		for (; range > 0; range--) {
+			route.pop();
+		}
+		route.forEach(function (coord) {
+			save_road(room.name, coord);
+		});
 	}
-	for (; range > 0; range--) {
-		route.pop();
-	}
-	route.forEach(function (coord) {
-		save_road(room.name, coord);
-	});
-	place_road_around(room, origin, true, false);
-	place_road_around(room, origin, true, false, 2);
+	place_road_around(room, origin, true, respect_walls);
+	place_road_around(room, origin, true, respect_walls, 2);
 }
 
 function place_road_around(
@@ -220,9 +223,13 @@ module.exports = {
 	place_source_roads: function (spawn) {
 		memory.set_up_memory(spawn.id, {});
 		memory.set_up_memory(spawn.id, [], "roads");
-		place_road_around(spawn.room, spawn.pos, true);
-		place_road_around(spawn.room, spawn.room.controller.pos, true, true, 3);
-		place_road_around(spawn.room, spawn.room.controller.pos, true, true, 4);
+		memory.set_up_memory(spawn.id, [], "tunnels");
+		let mode = "roads";
+		let respect_walls = true
+		if (spawn.room.controller.level > 4) {
+			mode = "tunnels";
+			respect_walls = false
+		}
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				if (
@@ -232,10 +239,26 @@ module.exports = {
 				) {
 					return false;
 				}
-				return !Memory[spawn.id].roads.includes(_source.id);
+				return !Memory[spawn.id][mode].includes(_source.id);
 			},
 		});
 		if (_source) {
+			place_road_around(spawn.room, spawn.pos, true, respect_walls);
+			place_road_around(
+				spawn.room,
+				spawn.room.controller.pos,
+				true,
+				respect_walls,
+				3,
+			);
+			place_road_around(
+				spawn.room,
+				spawn.room.controller.pos,
+				true,
+				respect_walls,
+				4,
+			);
+
 			place_road(spawn.room, _source.pos, spawn.pos);
 			place_road(spawn.room, _source.pos, spawn.room.controller.pos, 4);
 			Memory[spawn.id].roads.push(_source.id);
