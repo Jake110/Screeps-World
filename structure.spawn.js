@@ -3,6 +3,9 @@ var creeper = require("creep.control");
 
 module.exports = {
 	main: function (room) {
+		// Get Creep Roles
+		let roles = creeper.roles(room);
+
 		room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_SPAWN },
 		}).forEach(function (spawn) {
@@ -11,10 +14,7 @@ module.exports = {
 				builder.place_extensions(room, spawn);
 			}
 
-			// Get Creep Roles
-			let roles = creeper.roles(room);
-
-			// Get Energy Capacity
+			// Get Available Energy
 			let energy = spawn.store[RESOURCE_ENERGY];
 			room.find(FIND_MY_STRUCTURES, {
 				filter: { structureType: STRUCTURE_EXTENSION },
