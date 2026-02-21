@@ -68,6 +68,41 @@ module.exports = {
 					visualizePathStyle: { stroke: "#fff23e" },
 				});
 			}
+		} else if (
+			creep.room.find(FIND_MY_CREEPS, {
+				filter: function (harvester) {
+					return harvester.memory.role == "harvester";
+				},
+			}).length == 0
+		) {
+			// No Harvesters found in room
+			if (
+				creep.room.find(FIND_MY_STRUCTURES, {
+					filter: function (structure) {
+						if (!structure.spawning) {
+							return false;
+						}
+						return (
+							Memory.creeps[structure.spawning.name].role ==
+							"harvester"
+						);
+					},
+				}).length > 0
+			) {
+				// A Harvester Is Being Spawned
+				return null;
+			}
+			if (
+				creep.room.find(FIND_MY_CREEPS, {
+					filter: function (_creep) {
+						return _creep.memory.recycle;
+					},
+				}).length == 0
+			) {
+				// No Creeps are being recycled
+				// Recycle this creep so we can spawn a Harvester
+				creep.memory.recycle = true;
+			}
 		}
 	},
 	recharge: function (creep) {
