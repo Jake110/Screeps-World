@@ -8,10 +8,10 @@ module.exports = {
 				creep.moveTo(target, {
 					visualizePathStyle: { stroke: "#00ffff" },
 				});
-            }
-            return true
-        }
-        return false
+			}
+			return true;
+		}
+		return false;
 	},
 	collect: function (creep) {
 		let target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
@@ -34,7 +34,7 @@ module.exports = {
 		}
 		if (target == null) {
 			target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-				filter: (structure) => {
+				filter: function (structure) {
 					return (
 						[STRUCTURE_CONTAINER, STRUCTURE_STORAGE].includes(
 							structure.structureType,
@@ -44,19 +44,24 @@ module.exports = {
 				},
 			});
 		}
+		if (target == null) {
+			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+				filter: function (harvester) {
+					return (
+						harvester.memory.role == "harvester" &&
+						harvester.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+					);
+				},
+			});
+		}
 		if (target) {
 			let result;
 			if (target.store == null) {
 				result = creep.pickup(target);
+			} else if (target.body == null) {
+				result = creep.withdraw(target, RESOURCE_ENERGY);
 			} else {
-				result = creep.withdraw(
-					target,
-					RESOURCE_ENERGY,
-					Math.min(
-						creep.store.getFreeCapacity(),
-						target.store.getUsedCapacity(),
-					),
-				);
+				result = target.transfer(creep, RESOURCE_ENERGY);
 			}
 			if (result == ERR_NOT_IN_RANGE) {
 				creep.moveTo(target, {
