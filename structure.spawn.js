@@ -65,7 +65,7 @@ module.exports = {
 							"/" +
 							role.max,
 					);
-					let new_name = role_cap + Game.time;
+					let new_name = role.name + Game.time;
 					console.log("Spawning new " + role.name + ": " + new_name);
 					extension_energy +=
 						spawn.store[RESOURCE_ENERGY] - creep.cost;
