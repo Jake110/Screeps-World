@@ -12,7 +12,7 @@ module.exports = {
 					return null;
 				}
 				let damaged_structure = tower.pos.findClosestByRange(
-					FIND_STRUCTURES,
+					FIND_MY_STRUCTURES,
 					{
 						filter: function (structure) {
 							if (tower.inRangeTo(structure, range)) {

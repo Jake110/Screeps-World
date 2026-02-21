@@ -18,7 +18,7 @@ module.exports = {
 
 	/** @param {Creep} creep **/
 	deposit: function (creep) {
-		let target = creep.pos.findInRange(FIND_STRUCTURES, 4, {
+		let target = creep.pos.findInRange(FIND_MY_STRUCTURES, 4, {
 			filter: { structureType: STRUCTURE_CONTAINER },
 		});
 		if (target.length == 0) {
