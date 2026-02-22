@@ -107,6 +107,11 @@ module.exports = {
 					creep.memory.recycle = memory.pos_to_coord(
 						nearest_spawn.pos,
 					);
+					console.log(
+						creep.room.name +
+							" - No Harvesters present, recycling: " +
+							creep.name,
+					);
 				}
 			}
 		}

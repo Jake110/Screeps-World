@@ -54,7 +54,6 @@ module.exports = {
 						// No spawn was available
 						return null;
 					}
-					console.log("Chosen spawn: " + spawn.id);
 					let creep = creeper.body(
 						role.name,
 						spawn.store[RESOURCE_ENERGY] + extension_energy,
