@@ -1,5 +1,67 @@
 const memory = require("utility.memory");
 
+function step_with_coord(
+	x,
+	y,
+	target,
+	room,
+	pos_return = false,
+	leave = false,
+) {
+	let pass_room = false;
+	if (pos_return) {
+		pass_room = room;
+	}
+	return step_with_pos(room.getPositionAt(x, y), target, pass_room, leave);
+}
+
+function step_with_pos(pos, target, pos_return = false, leave = false) {
+	let x = pos.x;
+	let y = pos.y;
+	let direction = pos.getDirectionTo(target);
+	if (leave) {
+		if (direction > 4) {
+			direction -= 4;
+		} else {
+			direction += 4;
+		}
+	}
+	switch (direction) {
+		case 1:
+			y--;
+			break;
+		case 2:
+			x++;
+			y--;
+			break;
+		case 3:
+			x++;
+			break;
+		case 4:
+			x++;
+			y++;
+			break;
+		case 5:
+			y++;
+			break;
+		case 6:
+			x--;
+			y++;
+			break;
+		case 7:
+			x--;
+			break;
+		case 8:
+			x--;
+			y--;
+			break;
+	}
+	if (pos_return) {
+		return pos_return.getPositionAt(x, y);
+	}
+	return x + ":" + y;
+}
+
 /**
  * Map a road from the origin to the target
  * @param {Room} room
@@ -35,38 +97,7 @@ function place_road(room, origin, target, respect_walls, range = 0) {
 		let y = origin.y;
 		let route = [];
 		while (x != target.x && y != target.y) {
-			let pos = room.getPositionAt(x, y);
-			switch (pos.getDirectionTo(target)) {
-				case 1:
-					y--;
-					break;
-				case 2:
-					x++;
-					y--;
-					break;
-				case 3:
-					x++;
-					break;
-				case 4:
-					x++;
-					y++;
-					break;
-				case 5:
-					y++;
-					break;
-				case 6:
-					x--;
-					y++;
-					break;
-				case 7:
-					x--;
-					break;
-				case 8:
-					x--;
-					y--;
-					break;
-			}
-			route.push(x + ":" + y);
+			route.push(step_with_coord(x, y, target, room));
 		}
 		for (; range > 0; range--) {
 			route.pop();
@@ -75,8 +106,6 @@ function place_road(room, origin, target, respect_walls, range = 0) {
 			save_road(room.name, coord);
 		});
 	}
-	place_road_around(room, origin, true, respect_walls);
-	place_road_around(room, origin, true, respect_walls, 2);
 }
 
 function place_road_around(
@@ -85,6 +114,7 @@ function place_road_around(
 	square = false,
 	respect_walls = true,
 	radius = 1,
+	thickness = 1,
 ) {
 	let sides = [0 - radius, radius];
 	for (let n = 0 - radius; n <= radius; n++) {
@@ -97,12 +127,20 @@ function place_road_around(
 				// Don't place road in the corners unless flagged as square
 				continue;
 			}
-			origin_adjacent = room.getPositionAt(
+			pos_adjacent = room.getPositionAt(
 				pos.x + parseInt(n),
 				pos.y + parseInt(m),
 			);
-			if (can_build_here(origin_adjacent, respect_walls)) {
+			if (can_build_here(pos_adjacent, respect_walls)) {
 				save_road(room.name, pos.x + n + ":" + (pos.y + m));
+				// Add additional ring roads if required
+				let step_pos = pos_adjacent;
+				for (let thick = 1; thick < thickness; thick++) {
+					save_road(
+						room.name,
+						step_with_pos(step_pos, pos, false, true),
+					);
+				}
 			}
 		}
 	}
@@ -199,8 +237,23 @@ module.exports = {
 		});
 		return unfinished_count;
 	},
-	place_extensions: function (room, spawn) {
-		const room_level = room.controller.level;
+	place_controller_road: function (spawn, mode, respect_walls) {
+		if (!Memory[spawn.id][mode].includes("controller")) {
+			place_road_around(spawn.room, spawn.pos, true, respect_walls);
+			place_road_around(
+				spawn.room,
+				spawn.room.controller.pos,
+				true,
+				respect_walls,
+				3,
+				2,
+			);
+			place_road(spawn.room, spawn.pos, spawn.room.controller.pos, 4);
+			Memory[spawn.id].roads.push("controller");
+		}
+	},
+	place_extensions: function (spawn) {
+		const room_level = spawn.room.controller.level;
 		let max_entensions;
 		if (room_level < 2) {
 			max_entensions = 0;
@@ -212,23 +265,21 @@ module.exports = {
 		if (max_entensions > 20) {
 			max_entensions = 20;
 		}
-		if (Memory[room.name].extensions.length < max_entensions) {
-			let new_site = get_next_adjacent(room, spawn.pos, 2);
+		if (Memory[spawn.room.name].extensions.length < max_entensions) {
+			let new_site = get_next_adjacent(spawn.room, spawn.pos, 2);
 			remove_road(new_site);
-			place_road_around(room, new_site);
-			Memory[room.name].extensions.push(new_site.x + ":" + new_site.y);
+			place_road_around(spawn.room, new_site);
+			Memory[spawn.room.name].extensions.push(
+				new_site.x + ":" + new_site.y,
+			);
 		}
-		this.create_construction_sites(room, "extensions", STRUCTURE_EXTENSION);
+		this.create_construction_sites(
+			spawn.room,
+			"extensions",
+			STRUCTURE_EXTENSION,
+		);
 	},
-	place_source_roads: function (spawn) {
-		memory.set_up_memory(spawn.id, [], "roads");
-		memory.set_up_memory(spawn.id, [], "tunnels");
-		let mode = "roads";
-		let respect_walls = true;
-		if (spawn.room.controller.level > 4) {
-			mode = "tunnels";
-			respect_walls = false;
-		}
+	place_source_roads: function (spawn, mode, respect_walls) {
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				if (
@@ -242,24 +293,8 @@ module.exports = {
 			},
 		});
 		if (_source) {
-			place_road_around(spawn.room, spawn.pos, true, respect_walls);
-			place_road_around(
-				spawn.room,
-				spawn.room.controller.pos,
-				true,
-				respect_walls,
-				3,
-			);
-			place_road_around(
-				spawn.room,
-				spawn.room.controller.pos,
-				true,
-				respect_walls,
-				4,
-			);
-
+			place_road_around(room, _source.pos, true, respect_walls, 1, 2);
 			place_road(spawn.room, _source.pos, spawn.pos);
-			place_road(spawn.room, _source.pos, spawn.room.controller.pos, 4);
 			Memory[spawn.id].roads.push(_source.id);
 		}
 	},

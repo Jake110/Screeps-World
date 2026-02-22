@@ -1,5 +1,6 @@
 const builder = require("structure.builder");
 const creeper = require("creep.control");
+const memory = require("utility.memory");
 
 function get_spawn(room, recycle_check = false) {
 	let spawn = null;
@@ -8,7 +9,8 @@ function get_spawn(room, recycle_check = false) {
 		filter: function (structure) {
 			return (
 				structure.structureType == STRUCTURE_SPAWN &&
-				!structure.spawning && (!recycle_check || recycle_check != structure.memory.recycling)
+				!structure.spawning &&
+				(!recycle_check || recycle_check != structure.memory.recycling)
 			);
 		},
 	}).forEach(function (_spawn) {
@@ -90,7 +92,7 @@ module.exports = {
 		}).forEach(function (spawn) {
 			// Extension Construction
 			if (Game.time % 17 == 0) {
-				builder.place_extensions(room, spawn);
+				builder.place_extensions(spawn);
 			}
 
 			// Spawning Creep Text
@@ -121,13 +123,21 @@ module.exports = {
 				);
 				// If all roads have been built, map the next batch
 				if (unfinished_road == 0) {
-					builder.place_source_roads(spawn);
+					memory.set_up_memory(spawn.id, [], "roads");
+					memory.set_up_memory(spawn.id, [], "tunnels");
+					let mode = "roads";
+					if (spawn.room.controller.level > 4) {
+						mode = "tunnels";
+					}
+					let respect_walls = mode == "roads"
+					builder.place_controller_road(spawn, mode, respect_walls);
+					builder.place_source_roads(spawn, mode, respect_walls);
 				}
 			}
 		});
 
 		// Renew & Recycle Creeps
-		spawn = get_spawn(room, true)
+		spawn = get_spawn(room, true);
 		room.find(FIND_MY_CREEPS).forEach(function (creep) {
 			if (Game.time % 11 == 0) {
 				let role = creep.memory.role;
@@ -142,7 +152,13 @@ module.exports = {
 						spawn_body.length > creep_body.length &&
 						!spawn.memory.recycling
 					) {
-						console.log(room.name + " - Recycling " + role + ": " + creep.name);
+						console.log(
+							room.name +
+								" - Recycling " +
+								role +
+								": " +
+								creep.name,
+						);
 						creep.memory.recycle = true;
 						spawn.memory.recycling = creep.name;
 					}
