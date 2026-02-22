@@ -171,7 +171,13 @@ module.exports = {
 				if (creep.ticksToLive < 200 && !creep_body.includes(CLAIM)) {
 					// If a creep has less than 200 ticks left
 					// and doesn't have a CLAIM part, trigger renew process
-					creep.memory.renew = memory.pos_to_coord(spawn.pos);
+					let nearest_spawn =
+						creep.pos.findClosestByPath(FIND_MY_SPAWNS);
+					if (nearest_spawn) {
+						creep.memory.renew = memory.pos_to_coord(
+							nearest_spawn.pos,
+						);
+					}
 				}
 			}
 			if (creep.memory.recycle) {
