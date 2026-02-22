@@ -4,9 +4,11 @@ function set_up_list(path) {
 	if (path.constructor != Array) {
 		path = [path]
 	}
+	console.log("Setting Memory List: "+path)
 	let position = Memory
 	while (path.length > 0) {
 		let next = path.shift()
+		console.log("\tNext: " + next)
 		if (!position[next]) {
 			if (path.length > 0) {
 				position[next] = {}
