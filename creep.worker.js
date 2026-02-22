@@ -77,6 +77,10 @@ module.exports = {
 			}).length == 0
 		) {
 			// No Harvesters found in room
+			if (creep.room.find(FIND_SOURCES).length == 0) {
+				// No Harvesters required in this room
+				return null;
+			}
 			if (
 				creep.room.find(FIND_MY_STRUCTURES, {
 					filter: function (structure) {
@@ -90,7 +94,7 @@ module.exports = {
 					},
 				}).length > 0
 			) {
-				// A Harvester Is Being Spawned
+				// A Harvester is being spawned
 				return null;
 			}
 			if (
