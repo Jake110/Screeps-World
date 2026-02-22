@@ -85,10 +85,11 @@ function place_road(room, origin, target, mode, range = 0) {
 					});
 				}
 			},
-			range: range,
 			swampCost: 1,
 		});
-		steps.pop();
+		for (; range >= 0; range--) {
+			steps.pop();
+		}
 		steps.forEach(function (step) {
 			save_road(room.name, memory.pos_to_coord(step), mode);
 		});
