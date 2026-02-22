@@ -11,9 +11,11 @@ function set_up_list(path) {
 		console.log("\tNext: " + next)
 		if (!position[next]) {
 			if (path.length > 0) {
+				console.log("Move to next")
 				position[next] = {}
 				position = position[next]
 			} else {
+				console.log("End of path")
 				position[next] = []
 			}
 		}
