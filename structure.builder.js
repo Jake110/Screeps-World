@@ -136,7 +136,7 @@ function place_road_around(
 				if (thick > 0) {
 					pos_step = step_with_pos(pos_step, pos, true);
 				}
-				if (!can_build_here(pos_adjacent, mode == "roads")) {
+				if (!can_build_here(pos_step, mode == "roads")) {
 					break;
 				}
 				steps.push(pos_step);
