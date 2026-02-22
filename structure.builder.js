@@ -90,7 +90,9 @@ function place_road(room, origin, target, mode, range = 0) {
 		for (; range >= 0; range--) {
 			steps.pop();
 		}
+		console.log("-----")
 		steps.forEach(function (step) {
+			console.log(step)
 			save_road(room.name, memory.pos_to_coord(step), mode);
 		});
 	} else {
