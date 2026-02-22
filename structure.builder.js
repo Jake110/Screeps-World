@@ -134,7 +134,7 @@ function place_road_around(
 			let steps = [];
 			for (let thick = 0; thick < thickness; thick++) {
 				if (thick > 0) {
-					pos_step = step_with_pos(pos_step, pos, true);
+					pos_step = step_with_pos(pos_step, pos, room);
 				}
 				if (!can_build_here(pos_step, mode == "roads")) {
 					break;
