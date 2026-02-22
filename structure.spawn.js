@@ -77,6 +77,8 @@ module.exports = {
 					console.log(
 						"\tSpawning new " + role.name + ": " + new_name,
 					);
+					console.log("Body: " + creep.parts)
+					console.log("Cost: "+creep.cost)
 					extension_energy +=
 						spawn.store[RESOURCE_ENERGY] - creep.cost;
 					spawn.spawnCreep(creep.parts, new_name, {
