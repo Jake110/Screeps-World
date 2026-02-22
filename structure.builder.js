@@ -87,6 +87,7 @@ function place_road(room, origin, target, mode, range = 0) {
 			},
 			swampCost: 1,
 		});
+		steps.shift()
 		for (; range >= 0; range--) {
 			steps.pop();
 		}
@@ -102,6 +103,7 @@ function place_road(room, origin, target, mode, range = 0) {
 		while (x != target.x && y != target.y) {
 			route.push(step_with_coord(x, y, target, room));
 		}
+		route.shift()
 		for (; range > 0; range--) {
 			route.pop();
 		}
