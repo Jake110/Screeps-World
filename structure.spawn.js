@@ -160,7 +160,10 @@ module.exports = {
 					creep_body.push(part.type);
 				});
 				if (spawn) {
-					let spawn_body = creeper.body(role, energy);
+					let spawn_body = creeper.body(
+						role,
+						spawn.store[RESOURCE_ENERGY] + extension_energy,
+					);
 					if (
 						creep_body.join("-") != spawn_body.join("-") &&
 						spawn_body.length > creep_body.length &&
