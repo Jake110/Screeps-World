@@ -62,23 +62,18 @@ module.exports = {
 						// Not enough energy for this roles cheapest creep
 						return null;
 					}
-					if (role_additions == 0) {
-						console.log(
-							room.name +
-								" - " +
-								role.name +
-								" count: " +
-								role_count +
-								"/" +
-								role.max,
-						);
-					}
 					let new_name = role.name + Game.time;
 					console.log(
-						"\tSpawning new " + role.name + ": " + new_name,
+						room.name +
+							" - Spawning " +
+							role.name +
+							" " +
+							role_count +
+							"/" +
+							role.max +
+							": " +
+							new_name,
 					);
-					console.log("Body: " + creep.parts)
-					console.log("Cost: "+creep.cost)
 					extension_energy +=
 						spawn.store[RESOURCE_ENERGY] - creep.cost;
 					spawn.spawnCreep(creep.parts, new_name, {
