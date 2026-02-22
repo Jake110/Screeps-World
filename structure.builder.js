@@ -240,7 +240,7 @@ module.exports = {
 		return unfinished_count;
 	},
 	place_controller_road: function (spawn, mode) {
-		if (!Memory[spawn.room].spawners[memory.pos_to_coord(spawn.pos)][mode].includes("controller")) {
+		if (!Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][mode].includes("controller")) {
 			place_road_around(spawn.room, spawn.pos,mode, true);
 			place_road_around(
 				spawn.room,
@@ -251,7 +251,7 @@ module.exports = {
 				2,
 			);
 			place_road(spawn.room, spawn.pos, spawn.room.controller.pos, mode,4);
-			Memory[spawn.room].spawners[memory.pos_to_coord(spawn.pos)][mode].push("controller");
+			Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][mode].push("controller");
 		}
 	},
 	place_extensions: function (spawn) {
@@ -291,13 +291,13 @@ module.exports = {
 				) {
 					return false;
 				}
-				return !Memory[spawn.room].spawners[memory.pos_to_coord(spawn.pos)][mode].includes(_source.id);
+				return !Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][mode].includes(_source.id);
 			},
 		});
 		if (_source) {
 			place_road_around(room, _source.pos, mode, true, 1, 2);
 			place_road(spawn.room, _source.pos, spawn.pos, mode);
-			Memory[spawn.room].spawners[memory.pos_to_coord(spawn.pos)][mode].push(_source.id);
+			Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][mode].push(_source.id);
 		}
 	},
 	place_towers: function (room) {
