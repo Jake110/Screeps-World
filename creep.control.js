@@ -9,29 +9,23 @@ module.exports = {
 			case "harvester":
 				if (energy >= 200) {
 					parts = [CARRY, MOVE];
-					cost = 200;
-					let work = 1;
-					while (energy - 200 >= 100) {
-						work++;
-						energy -= 100;
-						if (work == 5) {
-							break;
-						}
-					}
-					for (; work > 0; work--) {
+					cost = 100;
+					while (energy - cost >= 100) {
 						parts = [WORK].concat(parts);
 						cost += 100;
+						if (parts.length == 7) {
+							break;
+						}
 					}
 				}
 				break;
 			case "worker":
 				if (energy >= 250) {
-					let part_set = 1;
-					while (energy - 250 >= 250) {
+					let part_set = 0;
+					while (energy - cost >= 250) {
 						part_set++;
-						energy -= 250;
+						cost += 250;
 					}
-					cost = 250 * part_set;
 					let work = [];
 					let carry = [];
 					let move = [];
