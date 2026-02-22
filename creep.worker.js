@@ -28,7 +28,7 @@ module.exports = {
 				filter: function (tomb) {
 					return (
 						tomb.store.getUsedCapacity(RESOURCE_ENERGY) > 0 &&
-						ccombat.avoid_filter(tomb)
+						combat.avoid_filter(tomb)
 					);
 				},
 			});
