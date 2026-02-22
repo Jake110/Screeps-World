@@ -123,8 +123,12 @@ module.exports = {
 				);
 				// If all roads have been built, map the next batch
 				if (unfinished_road == 0) {
-					let spawn_memory_path = [spawn.room, "spawners", memory.pos_to_coord(spawn.pos)]
-					memory.set_up_list(spawn_memory_path.concat("roads"))
+					let spawn_memory_path = [
+						spawn.room,
+						"spawners",
+						memory.pos_to_coord(spawn.pos),
+					];
+					memory.set_up_list(spawn_memory_path.concat("roads"));
 					memory.set_up_list(spawn_memory_path.concat("tunnels"));
 					let mode = "roads";
 					if (spawn.room.controller.level > 4) {
@@ -137,7 +141,7 @@ module.exports = {
 		});
 
 		// Renew & Recycle Creeps
-		spawn = get_spawn(room, true);
+		let spawn = get_spawn(room, true);
 		room.find(FIND_MY_CREEPS).forEach(function (creep) {
 			if (Game.time % 11 == 0) {
 				let role = creep.memory.role;
@@ -159,35 +163,64 @@ module.exports = {
 								": " +
 								creep.name,
 						);
-						creep.memory.recycle = true;
+						creep.memory.recycle = memory.pos_to_coord(spawn.pos);
 						spawn.memory.recycling = creep.name;
+						spawn = get_spawn(room, true);
 					}
 				}
 				if (creep.ticksToLive < 200 && !creep_body.includes(CLAIM)) {
 					// If a creep has less than 200 ticks left
 					// and doesn't have a CLAIM part, trigger renew process
-					creep.memory.renew = true;
+					creep.memory.renew = memory.pos_to_coord(spawn.pos);
 				}
 			}
 			if (creep.memory.recycle) {
-				let result = spawn.recycleCreep(creep);
-				if (result == ERR_NOT_IN_RANGE) {
-					creep.moveTo(spawn, {
-						visualizePathStyle: { stroke: "#000000" },
-					});
-				} else if (result == OK) {
-					spawn.memory.recycling = false;
+				let structures = memory
+					.coord_to_pos(creep.memory.recycle)
+					.lookFor(LOOK_STRUCTURES);
+				let _spawn;
+				structures.forEach(function (structure) {
+					if (structure.structureType == STRUCTURE_SPAWN) {
+						_spawn = structure;
+					}
+				});
+				if (_spawn) {
+					let result = _spawn.recycleCreep(creep);
+					if (result == ERR_NOT_IN_RANGE) {
+						creep.moveTo(_spawn, {
+							visualizePathStyle: { stroke: "#000000" },
+						});
+					} else if (result == OK) {
+						_spawn.memory.recycling = false;
+					}
+				} else {
+					// The spawn no longer exists, reset recycle
+					creep.memory.recycle = false;
 				}
 			}
 			if (creep.memory.renew) {
-				if (spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
-					creep.moveTo(spawn, {
-						visualizePathStyle: { stroke: "#000000" },
-					});
+				let structures = memory
+					.coord_to_pos(creep.memory.renew)
+					.lookFor(LOOK_STRUCTURES);
+				let _spawn;
+				structures.forEach(function (structure) {
+					if (structure.structureType == STRUCTURE_SPAWN) {
+						_spawn = structure;
+					}
+				});
+				if (_spawn) {
+					if (_spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
+						creep.moveTo(_spawn, {
+							visualizePathStyle: { stroke: "#000000" },
+						});
+					}
+					if (creep.ticksToLive >= 1300) {
+						creep.memory.renew = false;
+					}
+				} else {
+					// The spawn no longer exists, reset renew
+					creep.memory.renew = false;
 				}
-			}
-			if (creep.ticksToLive >= 1300) {
-				creep.memory.renew = false;
 			}
 		});
 	},

@@ -101,7 +101,13 @@ module.exports = {
 			) {
 				// No Creeps are being recycled
 				// Recycle this creep so we can spawn a Harvester
-				creep.memory.recycle = true;
+				let nearest_spawn =
+					creeps.pos.findClosestByPath(FIND_MY_SPAWNS);
+				if (nearest_spawn) {
+					creep.memory.recycle = memory.pos_to_coord(
+						nearest_spawn.pos,
+					);
+				}
 			}
 		}
 	},
