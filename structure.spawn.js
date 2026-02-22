@@ -182,7 +182,7 @@ module.exports = {
 			}
 			if (creep.memory.recycle) {
 				let structures = memory
-					.coord_to_pos(creep.memory.recycle)
+					.coord_to_pos(creep.memory.recycle, room)
 					.lookFor(LOOK_STRUCTURES);
 				let _spawn;
 				structures.forEach(function (structure) {
@@ -206,7 +206,7 @@ module.exports = {
 			}
 			if (creep.memory.renew) {
 				let structures = memory
-					.coord_to_pos(creep.memory.renew)
+					.coord_to_pos(creep.memory.renew, room)
 					.lookFor(LOOK_STRUCTURES);
 				let _spawn;
 				structures.forEach(function (structure) {
