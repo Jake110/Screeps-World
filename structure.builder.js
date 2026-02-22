@@ -316,7 +316,7 @@ module.exports = {
 		});
 		if (_source) {
 			place_road_around(spawn.room, _source.pos, mode, true, 2, 2);
-			place_road(spawn.room, _source.pos, spawn.pos, mode);
+			place_road(spawn.room, spawn.pos, _source.pos, mode, 2);
 			Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][
 				mode
 			].push(_source.id);
