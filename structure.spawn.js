@@ -124,7 +124,7 @@ module.exports = {
 				// If all roads have been built, map the next batch
 				if (unfinished_road == 0) {
 					let spawn_memory_path = [
-						spawn.room,
+						spawn.room.name,
 						"spawners",
 						memory.pos_to_coord(spawn.pos),
 					];
