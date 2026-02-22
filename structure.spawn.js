@@ -2,7 +2,7 @@ const builder = require("structure.builder");
 const creeper = require("creep.control");
 const memory = require("utility.memory");
 
-function get_spawn(room, recycle_check = false) {
+function get_spawn(room, used_spawners, recycle_check = false) {
 	let spawn = null;
 	let energy = -1;
 	room.find(FIND_MY_STRUCTURES, {
@@ -10,7 +10,9 @@ function get_spawn(room, recycle_check = false) {
 			return (
 				structure.structureType == STRUCTURE_SPAWN &&
 				!structure.spawning &&
-				(!recycle_check || recycle_check != structure.memory.recycling)
+				(!recycle_check ||
+					recycle_check != structure.memory.recycling) &&
+				!used_spawners.includes(structure.id)
 			);
 		},
 	}).forEach(function (_spawn) {
@@ -37,20 +39,22 @@ module.exports = {
 		});
 
 		// Spawn Creeps
+		let used_spawners = [];
 		if (Game.time % 7 == 0) {
 			roles.forEach(function (role) {
-				let spawn = get_spawn(room);
-				console.log("Spawning from: "+spawn.id)
-				if (!spawn) {
-					// No spawn was available
-					return null;
-				}
 				let role_count = room.find(FIND_MY_CREEPS, {
 					filter: function (creep) {
 						return creep.memory.role == role.name;
 					},
 				}).length;
-				if (role_count < role.max) {
+				let role_additions = 0;
+				while (role_count + role_additions < role.max) {
+					let spawn = get_spawn(room, used_spawners);
+					if (!spawn) {
+						// No spawn was available
+						return null;
+					}
+					console.log("Chosen spawn: " + spawn.id);
 					let creep = creeper.body(
 						role.name,
 						spawn.store[RESOURCE_ENERGY] + extension_energy,
@@ -59,17 +63,21 @@ module.exports = {
 						// Not enough energy for this roles cheapest creep
 						return null;
 					}
-					console.log(
-						room.name +
-							" - " +
-							role.name +
-							" count: " +
-							role_count +
-							"/" +
-							role.max,
-					);
+					if (role_additions == 0) {
+						console.log(
+							room.name +
+								" - " +
+								role.name +
+								" count: " +
+								role_count +
+								"/" +
+								role.max,
+						);
+					}
 					let new_name = role.name + Game.time;
-					console.log("Spawning new " + role.name + ": " + new_name);
+					console.log(
+						"\tSpawning new " + role.name + ": " + new_name,
+					);
 					extension_energy +=
 						spawn.store[RESOURCE_ENERGY] - creep.cost;
 					spawn.spawnCreep(creep.parts, new_name, {
@@ -79,6 +87,8 @@ module.exports = {
 							role: role.name,
 						},
 					});
+					used_spawners.push(spawn.id);
+					role_additions++;
 					if (spawn.memory.recycling) {
 						Memory.creeps[spawn.memory.recycling].recycle = false;
 						spawn.memory.recycling = false;
@@ -142,7 +152,7 @@ module.exports = {
 		});
 
 		// Renew & Recycle Creeps
-		let spawn = get_spawn(room, true);
+		let spawn = get_spawn(room, used_spawners, true);
 		room.find(FIND_MY_CREEPS).forEach(function (creep) {
 			if (Game.time % 11 == 0) {
 				let role = creep.memory.role;
@@ -166,7 +176,7 @@ module.exports = {
 						);
 						creep.memory.recycle = memory.pos_to_coord(spawn.pos);
 						spawn.memory.recycling = creep.name;
-						spawn = get_spawn(room, true);
+						spawn = get_spawn(room, used_spawners, true);
 					}
 				}
 				if (creep.ticksToLive < 200 && !creep_body.includes(CLAIM)) {
