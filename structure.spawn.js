@@ -40,6 +40,7 @@ module.exports = {
 		if (Game.time % 7 == 0) {
 			roles.forEach(function (role) {
 				let spawn = get_spawn(room);
+				console.log("Spawning from: "+spawn.id)
 				if (!spawn) {
 					// No spawn was available
 					return null;
