@@ -2,22 +2,25 @@ let structure_names = ["extensions", "towers"];
 
 function set_up_list(path) {
 	if (path.constructor != Array) {
-		path = [path]
+		path = [path];
 	}
-	console.log("Setting Memory List: "+path)
-	let position = Memory
+	console.log("Setting Memory List: " + path);
+	let position = Memory;
 	while (path.length > 0) {
-		let next = path.shift()
-		console.log("\tNext: " + next)
+		let next = path.shift();
+		console.log("\tNext: " + next);
 		if (!position[next]) {
 			if (path.length > 0) {
-				console.log("Move to next")
-				position[next] = {}
-				position = position[next]
+				console.log("Adding");
+				position[next] = {};
+				position = position[next];
 			} else {
-				console.log("End of path")
-				position[next] = []
+				console.log("End of path");
+				position[next] = [];
 			}
+		} else {
+			console.log("Exists")
+			position = position[next];
 		}
 	}
 }
@@ -33,9 +36,7 @@ module.exports = {
 	build_pos: function (room) {
 		let pos_list = [];
 		this.build_coords(room.name).forEach(function (coord) {
-			pos_list.push(
-				this.coord_to_pos(coord, room),
-			);
+			pos_list.push(this.coord_to_pos(coord, room));
 		});
 		return pos_list;
 	},
@@ -47,11 +48,11 @@ module.exports = {
 		}
 	},
 	coord_to_pos: function (coord, room) {
-		let split_coord = coord.split(":")
-		return room.getPositionAt(split_coord[0], split_coord[1])
+		let split_coord = coord.split(":");
+		return room.getPositionAt(split_coord[0], split_coord[1]);
 	},
 	pos_to_coord: function (pos) {
-		return pos.x+":"+pos.y
+		return pos.x + ":" + pos.y;
 	},
 	set_up: function (room_name) {
 		this.tracker_names.forEach(function (name) {
