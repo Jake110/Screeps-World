@@ -11,7 +11,7 @@ module.exports = {
 					parts = [CARRY, MOVE];
 					cost = 200;
 					let work = 1;
-					while (energy >= 100) {
+					while (energy - 200 >= 100) {
 						work++;
 						energy -= 100;
 						if (work == 5) {
@@ -27,7 +27,7 @@ module.exports = {
 			case "worker":
 				if (energy >= 250) {
 					let part_set = 1;
-					while (energy >= 250) {
+					while (energy - 250 >= 250) {
 						part_set++;
 						energy -= 250;
 					}
