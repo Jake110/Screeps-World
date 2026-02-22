@@ -295,7 +295,7 @@ module.exports = {
 			},
 		});
 		if (_source) {
-			place_road_around(room, _source.pos, mode, true, 1, 2);
+			place_road_around(spawn.room, _source.pos, mode, true, 1, 2);
 			place_road(spawn.room, _source.pos, spawn.pos, mode);
 			Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][mode].push(_source.id);
 		}
