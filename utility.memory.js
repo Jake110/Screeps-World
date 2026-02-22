@@ -1,13 +1,20 @@
 let structure_names = ["extensions", "towers"];
 
-function set_up_memory(path, value, sub_path = null) {
-	if (sub_path) {
-		set_up_memory(path, {});
-		if (!Memory[path][sub_path]) {
-			Memory[path][sub_path] = value;
+function set_up_list(path) {
+	if (path.constructor != Array) {
+		path = [path]
+	}
+	let position = Memory
+	while (path.length > 0) {
+		let next = path.shift()
+		if (!position[next]) {
+			if (path.length > 0) {
+				position[next] = {}
+				position = position[next]
+			} else {
+				position[next] = []
+			}
 		}
-	} else if (!Memory[path]) {
-		Memory[path] = value;
 	}
 }
 
@@ -23,7 +30,7 @@ module.exports = {
 		let pos_list = [];
 		this.build_coords(room.name).forEach(function (coord) {
 			pos_list.push(
-				room.getPositionAt(coord.split(":")[0], coord.split(":")[1]),
+				this.coord_to_pos(coord, room),
 			);
 		});
 		return pos_list;
@@ -35,12 +42,19 @@ module.exports = {
 			}
 		}
 	},
+	coord_to_pos: function (coord, room) {
+		let split_coord = coord.split(":")
+		return room.getPositionAt(split_coord[0], split_coord[1])
+	},
+	pos_to_coord: function (pos) {
+		return pos.x+":"+pos.y
+	},
 	set_up: function (room_name) {
 		this.tracker_names.forEach(function (name) {
-			set_up_memory(room_name, [], name);
+			set_up_list([room_name, name]);
 		});
 	},
-	set_up_memory: set_up_memory,
+	set_up_list: set_up_list,
 	structure_names: structure_names,
 	tracker_names: structure_names.concat(["roads"]),
 };
