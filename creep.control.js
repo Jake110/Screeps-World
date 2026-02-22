@@ -3,34 +3,46 @@ const role_worker = require("role.worker");
 
 module.exports = {
 	body: function (role, energy) {
-		if (role == "harvester") {
-			role = "worker";
-		}
 		let parts = [];
 		let cost = 0;
-		switch (true) {
-			case energy >= 800:
-				parts = [
-					WORK,
-					WORK,
-					WORK,
-					CARRY,
-					CARRY,
-					CARRY,
-					MOVE,
-					MOVE,
-					MOVE,
-					MOVE,
-					MOVE,
-					MOVE,
-				];
-				cost = 800;
-			case energy >= 500:
-				parts = [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE];
-				cost = 500;
-			case energy >= 250:
-				parts = [WORK, CARRY, MOVE, MOVE];
-				cost = 250;
+		switch (role) {
+			case "harvester":
+				if (energy >= 200) {
+					parts = [CARRY, MOVE];
+					cost = 200;
+					let work = 1;
+					while (energy >= 100) {
+						work++;
+						energy -= 100;
+						if (work == 5) {
+							break;
+						}
+					}
+					for (; work > 0; work--) {
+						parts = [WORK].concat(parts);
+						cost += 100;
+					}
+				}
+				break;
+			case "worker":
+				if (energy >= 250) {
+					let part_set = 1;
+					while (energy >= 250) {
+						part_set++;
+						energy -= 250;
+					}
+					cost = 250 * part_set;
+					let work = [];
+					let carry = [];
+					let move = [];
+					for (; part_set > 0; part_set--) {
+						work = work.concat([WORK]);
+						carry = carry.concat([CARRY]);
+						move = move.concat([MOVE, MOVE]);
+					}
+					parts = work.concat(carry, move);
+				}
+				break;
 		}
 		return {
 			parts: parts,
