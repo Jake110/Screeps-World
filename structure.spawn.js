@@ -122,6 +122,7 @@ module.exports = {
 
 			// Road Consruction
 			if (Game.time % 13 == 0) {
+				console.log("Spawn Construction")
 				// Get a count for how many unfinished roads there are
 				builder.create_construction_sites(
 					room,

@@ -354,6 +354,7 @@ module.exports = {
 				}
 			}
 		});
+		console.log(structure_type+" construction sites places")
 		return unfinished_count;
 	},
 	place_controller_road: function (spawn, mode) {
