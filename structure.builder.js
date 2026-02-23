@@ -124,7 +124,9 @@ function place_road(
 					};
 					memory.build_pos(_room).forEach(adjust_matrix);
 					if (avoid) {
-						avoid.forEach(adjust_matrix);
+						avoid.forEach(function (coord) {
+							adjust_matrix(memory.coord_to_pos(coord, room));
+						});
 					}
 				}
 			},
@@ -132,6 +134,10 @@ function place_road(
 		});
 		for (; range > 0; range--) {
 			route.pop();
+		}
+		if (!avoid) {
+			route.pop();
+			route.shift();
 		}
 		route.forEach(function (step) {
 			if (avoid) {
