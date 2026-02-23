@@ -362,7 +362,9 @@ module.exports = {
 				mode
 			].includes("controller")
 		) {
+			console.log("Placing controller roads")
 			place_road_around(spawn.room, spawn.pos, mode, true);
+			console.log("\tSpawn ring placed")
 			place_road_around(
 				spawn.room,
 				spawn.room.controller.pos,
@@ -371,6 +373,7 @@ module.exports = {
 				4,
 				2,
 			);
+			console.log("\tController ring placed")
 			place_road(
 				spawn.room,
 				spawn.pos,
