@@ -165,8 +165,8 @@ function place_road(
 		link_points.outer.forEach(function (link_point) {
 			place_road(
 				room,
-				target,
 				link_point,
+				target,
 				mode,
 				0,
 				null,
