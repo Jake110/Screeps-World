@@ -1,4 +1,4 @@
-let structure_names = ["extensions", "towers"];
+let structure_names = ["containers", "extensions", "towers"];
 
 function set_up_list(path) {
 	if (path.constructor != Array) {

@@ -62,6 +62,31 @@ function step_with_pos(pos, target, pos_return = false, leave = false) {
 	return x + ":" + y;
 }
 
+function place_container(room, harvest_points, spawn_pos) {
+	let options = [];
+	while (harvest_points.length > 1) {
+		let harvest_point = harvest_points.pop();
+		harvest_points.forEach(function (other_point) {
+			let steps = harvest_point.findPathTo(other_point, {
+				ignoreCreeps: true,
+				swampCost: 1,
+			});
+			if (steps.length == 2) {
+				options.push(room.getPositionAt(steps[1].x, steps[1].y));
+			} else if (steps.length == 1) {
+				[harvest_point, other_point].forEach(function (point) {
+					if (!options.includes(point)) {
+						options.push(point);
+					}
+				});
+			}
+		});
+	}
+	Memory[room.name].containers.push(
+		memory.pos_to_coord(spawn_pos.findClosestByPath(options)),
+	);
+}
+
 /**
  * Map a road from the origin to the target
  * @param {Room} room
@@ -87,7 +112,7 @@ function place_road(room, origin, target, mode, range = 0) {
 			},
 			swampCost: 1,
 		});
-		steps.shift()
+		steps.shift();
 		for (; range >= 0; range--) {
 			steps.pop();
 		}
@@ -101,7 +126,7 @@ function place_road(room, origin, target, mode, range = 0) {
 		while (x != target.x && y != target.y) {
 			route.push(step_with_coord(x, y, target, room));
 		}
-		route.shift()
+		route.shift();
 		for (; range > 0; range--) {
 			route.pop();
 		}
@@ -118,40 +143,70 @@ function place_road_around(
 	square = false,
 	radius = 1,
 	thickness = 1,
+	full_inner_ring = false,
+	return_inner_ring = false,
 ) {
-	let sides = [0 - radius, radius];
+	let outer_edges = [0 - radius, radius];
+	let outer_ring = [];
+	let inner_edges = [-1 - radius + thickness, 1 + radius - thickness];
+	let inner_ring = [];
 	for (let n = 0 - radius; n <= radius; n++) {
 		for (let m = 0 - radius; m <= radius; m++) {
+			let outer_edge = outer_edges.includes(n) || outer_edges.includes(m);
+			let inner_edge = inner_edges.includes(n) || inner_edges.includes(m);
 			if (
-				(!sides.includes(n) && !sides.includes(m)) ||
+				(!full_inner_ring && !outer_edge) ||
+				(full_inner_ring && !outer_edge && !inner_edge) ||
 				(!square && n != 0 && m != 0)
 			) {
 				// Only place road in the radius zone
 				// Don't place road in the corners unless flagged as square
 				continue;
 			}
-			pos_step = room.getPositionAt(
-				pos.x + parseInt(n),
-				pos.y + parseInt(m),
-			);
-			let steps = [];
-			for (let thick = 0; thick < thickness; thick++) {
-				if (thick > 0) {
-					pos_step = step_with_pos(pos_step, pos, room);
+			if (outer_edge) {
+				pos_step = room.getPositionAt(
+					pos.x + n, // parseInt(n),
+					pos.y + m, // parseInt(m),
+				);
+				let steps = [];
+				for (let thick = 0; thick < thickness; thick++) {
+					if (thick > 0) {
+						pos_step = step_with_pos(pos_step, pos, room);
+					}
+					if (!can_build_here(pos_step, mode == "roads")) {
+						break;
+					}
+					steps.push(pos_step);
 				}
-				if (!can_build_here(pos_step, mode == "roads")) {
-					break;
+				if (steps.length != thickness) {
+					continue;
 				}
-				steps.push(pos_step);
+				steps.forEach(function (step) {
+					save_road(room.name, memory.pos_to_coord(step), mode);
+				});
+				outer_ring.push(memory.pos_to_coord(steps[0]));
+				if (return_inner_ring) {
+					let inner_tile = memory.pos_to_coord(
+						steps[steps.length - 1],
+					);
+					if (!inner_ring.includes(inner_tile)) {
+						inner_ring.push(inner_tile);
+					}
+				}
+			} else {
+				let coord = pos.x + n + ":" + (pos.y + m);
+				if (
+					can_build_here(memory.coord_to_pos(coord), mode == "roads")
+				) {
+					save_road(room.name, coord, mode);
+					if (return_inner_ring && !inner_ring.includes(coord)) {
+						inner_ring.push(coord);
+					}
+				}
 			}
-			if (steps.length != thickness) {
-				continue;
-			}
-			steps.forEach(function (step) {
-				save_road(room.name, memory.pos_to_coord(step), mode);
-			});
 		}
 	}
+	return inner_ring;
 }
 
 function save_road(room_name, coord, mode) {
@@ -301,7 +356,7 @@ module.exports = {
 			STRUCTURE_EXTENSION,
 		);
 	},
-	place_source_roads: function (spawn, mode) {
+	place_source_roads: function (spawn) {
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				if (
@@ -313,15 +368,25 @@ module.exports = {
 				}
 				return !Memory[spawn.room.name].spawners[
 					memory.pos_to_coord(spawn.pos)
-				][mode].includes(_source.id);
+				].roads.includes(_source.id);
 			},
 		});
 		if (_source) {
-			place_road_around(spawn.room, _source.pos, mode, true, 2, 2);
-			place_road(spawn.room, spawn.pos, _source.pos, mode, 2);
-			Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][
-				mode
-			].push(_source.id);
+			place_road(spawn.room, spawn.pos, _source.pos, "roads", 2); // return pos of closest road to source
+			let inner_ring = place_road_around(
+				spawn.room,
+				_source.pos,
+				"roads",
+				true,
+				2,
+				2,
+				true,
+				true,
+			);
+			place_container(spawn.room, inner_ring, spawn.pos);
+			Memory[spawn.room.name].spawners[
+				memory.pos_to_coord(spawn.pos)
+			].roads.push(_source.id);
 		}
 	},
 	place_towers: function (room) {
