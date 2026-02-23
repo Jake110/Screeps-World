@@ -1,5 +1,10 @@
 let structure_names = ["containers", "extensions", "towers"];
 
+function coord_to_pos(coord, room) {
+	let split_coord = coord.split(":");
+	return room.getPositionAt(split_coord[0], split_coord[1]);
+}
+
 function set_up_list(path) {
 	if (path.constructor != Array) {
 		path = [path];
@@ -31,7 +36,7 @@ module.exports = {
 	build_pos: function (room) {
 		let pos_list = [];
 		this.build_coords(room.name).forEach(function (coord) {
-			pos_list.push(this.coord_to_pos(coord, room));
+			pos_list.push(coord_to_pos(coord, room));
 		});
 		return pos_list;
 	},
@@ -42,10 +47,7 @@ module.exports = {
 			}
 		}
 	},
-	coord_to_pos: function (coord, room) {
-		let split_coord = coord.split(":");
-		return room.getPositionAt(split_coord[0], split_coord[1]);
-	},
+	coord_to_pos: coord_to_pos,
 	pos_to_coord: function (pos) {
 		return pos.x + ":" + pos.y;
 	},
