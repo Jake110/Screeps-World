@@ -90,8 +90,8 @@ function place_container(room, pos_list, spawn_pos) {
 			}
 		});
 	}
-	let pos = memory.pos_to_coord(spawn_pos.findClosestByPath(options));
-	Memory[room.name].containers.push(pos);
+	let pos = spawn_pos.findClosestByPath(options);
+	Memory[room.name].containers.push(memory.pos_to_coord(pos));
 	return pos;
 }
 
