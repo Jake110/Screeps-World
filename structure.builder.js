@@ -196,7 +196,10 @@ function place_road_around(
 			} else {
 				let coord = pos.x + n + ":" + (pos.y + m);
 				if (
-					can_build_here(memory.coord_to_pos(coord), mode == "roads")
+					can_build_here(
+						memory.coord_to_pos(coord, room),
+						mode == "roads",
+					)
 				) {
 					save_road(room.name, coord, mode);
 					if (return_inner_ring && !inner_ring.includes(coord)) {
