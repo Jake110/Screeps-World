@@ -122,7 +122,9 @@ function place_road(
 						costMatrix.set(pos.x, pos.y, 0xff);
 					};
 					memory.build_pos(_room).forEach(adjust_matrix);
-					avoid.forEach(adjust_matrix);
+					if (avoid) {
+						avoid.forEach(adjust_matrix);
+					}
 				}
 			},
 			swampCost: 1,
