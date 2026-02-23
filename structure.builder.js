@@ -76,10 +76,14 @@ function place_container(room, pos_list, spawn_pos) {
 				swampCost: 1,
 			});
 			if (steps.length == 2) {
+				console.log("2 step point: " + steps[1].x + ":" + steps[1].y);
 				options.push(room.getPositionAt(steps[1].x, steps[1].y));
 			} else if (steps.length == 1) {
 				[harvest_point, other_point].forEach(function (point) {
 					if (!options.includes(point)) {
+						console.log(
+							"Adjacent point: " + point.x + ":" + point.y,
+						);
 						options.push(point);
 					}
 				});
@@ -213,6 +217,7 @@ function place_road_around(
 			}
 		}
 	}
+	console.log("Inner Ring: " + inner_ring);
 	return inner_ring;
 }
 
@@ -378,7 +383,6 @@ module.exports = {
 		});
 		if (_source) {
 			place_road(spawn.room, spawn.pos, _source.pos, "roads", 2); // return pos of closest road to source
-			console.log("Source Road Placed");
 			let inner_ring = place_road_around(
 				spawn.room,
 				_source.pos,
@@ -389,9 +393,7 @@ module.exports = {
 				true,
 				true,
 			);
-			console.log("Source Ring Road Placed");
 			place_container(spawn.room, inner_ring, spawn.pos);
-			console.log("Source Container Placed");
 			Memory[spawn.room.name].spawners[
 				memory.pos_to_coord(spawn.pos)
 			].roads.push(_source.id);
