@@ -65,7 +65,7 @@ function step_with_pos(pos, target, pos_return = false, leave = false) {
 function place_container(room, pos_list, spawn_pos) {
 	let harvest_points = [];
 	pos_list.forEach(function (pos) {
-		harvest_points.push(memory.coord_to_pos(pos));
+		harvest_points.push(memory.coord_to_pos(pos, room));
 	});
 	let options = [];
 	while (harvest_points.length > 1) {
