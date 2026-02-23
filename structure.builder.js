@@ -76,14 +76,10 @@ function place_container(room, pos_list, spawn_pos) {
 				swampCost: 1,
 			});
 			if (steps.length == 2) {
-				console.log("2 step point: " + steps[0].x + ":" + steps[0].y);
 				options.push(room.getPositionAt(steps[0].x, steps[0].y));
 			} else if (steps.length == 1) {
 				[harvest_point, other_point].forEach(function (point) {
 					if (!options.includes(point)) {
-						console.log(
-							"Adjacent point: " + point.x + ":" + point.y,
-						);
 						options.push(point);
 					}
 				});
@@ -143,11 +139,13 @@ function place_road(room, origin, target, mode, range = 0, link_points = null) {
 			save_road(room.name, coord, mode);
 		});
 	}
+	console.log("Road placed")
 	if (link_points) {
 		end_point = route.pop();
 		if (mode != "roads") {
 			end_point = memory.coord_to_pos(end_point, room);
 		}
+		console.log("Linking ["+end_point+"] to link points: "+link_points)
 		link_points.forEach(function (link_point) {
 			place_road(room, end_point, link_point, mode);
 		});
