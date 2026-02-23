@@ -147,7 +147,7 @@ module.exports = {
 						mode = "tunnels";
 					}
 					builder.place_controller_road(spawn, mode);
-					builder.place_source_roads(spawn);
+					builder.place_source_roads(spawn, mode);
 				}
 			}
 		});

@@ -400,7 +400,7 @@ module.exports = {
 			STRUCTURE_EXTENSION,
 		);
 	},
-	place_source_roads: function (spawn) {
+	place_source_roads: function (spawn, mode) {
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				if (
@@ -412,14 +412,14 @@ module.exports = {
 				}
 				return !Memory[spawn.room.name].spawners[
 					memory.pos_to_coord(spawn.pos)
-				].roads.includes(_source.id);
+				][mode].includes(_source.id);
 			},
 		});
 		if (_source) {
 			let ring_roads = place_road_around(
 				spawn.room,
 				_source.pos,
-				"roads",
+				mode,
 				true,
 				2,
 				2,
@@ -430,18 +430,19 @@ module.exports = {
 				spawn.room,
 				ring_roads.inner,
 				spawn.pos,
+				mode,
 			);
 			place_road(
 				spawn.room,
 				spawn.pos,
 				container_pos,
-				"roads",
+				mode,
 				0,
 				ring_roads,
 			);
-			Memory[spawn.room.name].spawners[
-				memory.pos_to_coord(spawn.pos)
-			].roads.push(_source.id);
+			Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][
+				mode
+			].push(_source.id);
 		}
 	},
 	place_towers: function (room) {
