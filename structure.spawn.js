@@ -134,7 +134,7 @@ module.exports = {
 					STRUCTURE_ROAD,
 				);
 				// If all roads have been built, map the next batch
-				//if (unfinished_road == 0) {
+				if (unfinished_road == 0) {
 					let spawn_memory_path = [
 						spawn.room.name,
 						"spawners",
@@ -143,12 +143,12 @@ module.exports = {
 					memory.set_up_list(spawn_memory_path.concat("roads"));
 					memory.set_up_list(spawn_memory_path.concat("tunnels"));
 					let mode = "roads";
-					if (spawn.room.controller.level > 4) {
+					//if (spawn.room.controller.level > 4) {
 						mode = "tunnels";
-					}
+					//}
 					builder.place_controller_road(spawn, mode);
 					builder.place_source_roads(spawn, mode);
-				//}
+				}
 			}
 		});
 
