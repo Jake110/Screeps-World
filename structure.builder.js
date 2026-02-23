@@ -414,6 +414,7 @@ module.exports = {
 				spawn.pos,
 				container_pos,
 				"roads",
+				0,
 				ring_roads.outer,
 			);
 			Memory[spawn.room.name].spawners[
