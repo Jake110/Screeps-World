@@ -203,6 +203,7 @@ function place_road_around(
 			}
 		}
 	}
+	console.log(inner_ring);
 	return inner_ring;
 }
 
