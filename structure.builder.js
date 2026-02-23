@@ -107,6 +107,7 @@ function place_road(
 	avoid = null,
 ) {
 	let route = [];
+	console.log("Avoid: "+avoid)
 	if (mode == "roads") {
 		route = origin.findPathTo(target, {
 			ignoreCreeps: true,
