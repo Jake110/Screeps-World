@@ -134,6 +134,9 @@ function place_road(
 			route.pop();
 		}
 		route.forEach(function (step) {
+			if (avoid) {
+				console.log("Branch Road step: "+memory.pos_to_coord(step))
+			}
 			save_road(room.name, memory.pos_to_coord(step), mode);
 		});
 	} else {
@@ -150,11 +153,8 @@ function place_road(
 			save_road(room.name, coord, mode);
 		});
 	}
-	console.log("Road placed");
+	console.log("Road Placed")
 	if (link_points) {
-		console.log(
-			"Linking [" + target + "] to link points: " + link_points.outer,
-		);
 		link_points.outer.forEach(function (link_point) {
 			place_road(
 				room,
