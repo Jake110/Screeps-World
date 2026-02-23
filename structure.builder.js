@@ -97,29 +97,39 @@ function place_container(room, pos_list, spawn_pos) {
  * @param {RoomPosition} origin
  * @param {RoomPosition} target
  */
-function place_road(room, origin, target, mode, range = 0, link_points = null) {
+function place_road(
+	room,
+	origin,
+	target,
+	mode,
+	range = 0,
+	link_points = null,
+	avoid = null,
+) {
 	let end_point;
 	let route = [];
 	if (mode == "roads") {
+		let adjust_matrix = function (pos) {
+			// Set all positions to be non-walkable
+			costMatrix.set(pos.x, pos.y, 0xff);
+		};
 		route = origin.findPathTo(target, {
 			ignoreCreeps: true,
 			ignoreRoads: true,
-			costCallback: function adjust_cost_matrix(roomName, costMatrix) {
+			costCallback: function (roomName, costMatrix) {
 				let _room = null;
 				try {
 					_room = Game.rooms[roomName];
 				} catch {}
 				if (_room != null) {
-					memory.build_pos(_room).forEach(function (pos) {
-						// Set all building positions to be non-walkable
-						costMatrix.set(pos.x, pos.y, 0xff);
-					});
+					memory.build_pos(_room).forEach(adjust_matrix);
+					link_points.outer.forEach(adjust_matrix);
 				}
 			},
 			swampCost: 1,
 		});
 		route.shift();
-		for (; range >= 0; range--) {
+		for (; range > 0; range--) {
 			route.pop();
 		}
 		route.forEach(function (step) {
@@ -140,18 +150,20 @@ function place_road(room, origin, target, mode, range = 0, link_points = null) {
 		});
 	}
 	console.log("Road placed");
-	console.log("Link points: " + link_points);
 	if (link_points) {
-		end_point = route.pop();
-		if (mode == "roads") {
-			end_point = end_point.x + ":" + end_point.y;
-		}
-		end_point = memory.coord_to_pos(end_point, room);
 		console.log(
-			"Linking [" + end_point + "] to link points: " + link_points,
+			"Linking [" + target + "] to link points: " + link_points.outer,
 		);
-		link_points.forEach(function (link_point) {
-			place_road(room, end_point, link_point, mode);
+		link_points.outer.forEach(function (link_point) {
+			place_road(
+				room,
+				target,
+				link_point,
+				mode,
+				0,
+				null,
+				link_points.inner,
+			);
 		});
 	}
 }
@@ -229,7 +241,6 @@ function place_road_around(
 			}
 		}
 	}
-	console.log("Outer Ring Road: " + outer_ring);
 	return {
 		outer: outer_ring,
 		inner: inner_ring,
@@ -418,7 +429,7 @@ module.exports = {
 				container_pos,
 				"roads",
 				0,
-				ring_roads.outer,
+				ring_roads,
 			);
 			Memory[spawn.room.name].spawners[
 				memory.pos_to_coord(spawn.pos)
