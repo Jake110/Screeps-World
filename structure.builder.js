@@ -106,13 +106,8 @@ function place_road(
 	link_points = null,
 	avoid = null,
 ) {
-	let end_point;
 	let route = [];
 	if (mode == "roads") {
-		let adjust_matrix = function (pos) {
-			// Set all positions to be non-walkable
-			costMatrix.set(pos.x, pos.y, 0xff);
-		};
 		route = origin.findPathTo(target, {
 			ignoreCreeps: true,
 			ignoreRoads: true,
@@ -122,8 +117,12 @@ function place_road(
 					_room = Game.rooms[roomName];
 				} catch {}
 				if (_room != null) {
+					let adjust_matrix = function (pos) {
+						// Set all positions to be non-walkable
+						costMatrix.set(pos.x, pos.y, 0xff);
+					};
 					memory.build_pos(_room).forEach(adjust_matrix);
-					link_points.outer.forEach(adjust_matrix);
+					avoid.forEach(adjust_matrix);
 				}
 			},
 			swampCost: 1,
