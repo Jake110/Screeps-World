@@ -140,6 +140,7 @@ function place_road(room, origin, target, mode, range = 0, link_points = null) {
 		});
 	}
 	console.log("Road placed")
+	console.log("Link points: "+link_points)
 	if (link_points) {
 		end_point = route.pop();
 		if (mode != "roads") {
