@@ -107,7 +107,7 @@ function place_road(
 	avoid = null,
 ) {
 	let route = [];
-	console.log("Avoid: "+avoid)
+	console.log("Avoid: " + avoid);
 	if (mode == "roads") {
 		route = origin.findPathTo(target, {
 			ignoreCreeps: true,
@@ -130,13 +130,14 @@ function place_road(
 			},
 			swampCost: 1,
 		});
-		route.shift();
 		for (; range > 0; range--) {
 			route.pop();
 		}
 		route.forEach(function (step) {
 			if (avoid) {
-				console.log("Branch Road step: "+memory.pos_to_coord(step))
+				console.log("Branch Road step: " + memory.pos_to_coord(step));
+			} else {
+				console.log("Main Road Step: " + memory.pos_to_coord(step));
 			}
 			save_road(room.name, memory.pos_to_coord(step), mode);
 		});
@@ -146,7 +147,6 @@ function place_road(
 		while (x != target.x && y != target.y) {
 			route.push(step_with_coord(x, y, target, room));
 		}
-		route.shift();
 		for (; range > 0; range--) {
 			route.pop();
 		}
@@ -154,7 +154,7 @@ function place_road(
 			save_road(room.name, coord, mode);
 		});
 	}
-	console.log("Road Placed")
+	console.log("Road Placed");
 	if (link_points) {
 		link_points.outer.forEach(function (link_point) {
 			place_road(
