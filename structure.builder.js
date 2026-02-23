@@ -76,8 +76,8 @@ function place_container(room, pos_list, spawn_pos) {
 				swampCost: 1,
 			});
 			if (steps.length == 2) {
-				console.log("2 step point: " + steps[1].x + ":" + steps[1].y);
-				options.push(room.getPositionAt(steps[1].x, steps[1].y));
+				console.log("2 step point: " + steps[0].x + ":" + steps[0].y);
+				options.push(room.getPositionAt(steps[0].x, steps[0].y));
 			} else if (steps.length == 1) {
 				[harvest_point, other_point].forEach(function (point) {
 					if (!options.includes(point)) {
