@@ -159,19 +159,19 @@ function place_road_around(
 			let outer_edge = outer_edges.includes(n) || outer_edges.includes(m);
 			let inner_edge = inner_edges.includes(n) || inner_edges.includes(m);
 			if (
-				(!full_inner_ring && !outer_edge) ||
+				(!full_inner_ring &&
+					!outer_edge &&
+					(!inner_edge ||
+						inner_edges.includes(n) != inner_edges.includes(m))) ||
 				(full_inner_ring && !outer_edge && !inner_edge) ||
-				(!square && n != 0 && m != 0)
+				(!square && outer_edges.includes(n) && outer_edges.includes(m))
 			) {
 				// Only place road in the radius zone
 				// Don't place road in the corners unless flagged as square
 				continue;
 			}
 			if (outer_edge) {
-				pos_step = room.getPositionAt(
-					pos.x + n,
-					pos.y + m,
-				);
+				pos_step = room.getPositionAt(pos.x + n, pos.y + m);
 				let steps = [];
 				for (let thick = 0; thick < thickness; thick++) {
 					if (thick > 0) {
@@ -318,7 +318,7 @@ module.exports = {
 				spawn.room,
 				spawn.room.controller.pos,
 				mode,
-				true,
+				false,
 				4,
 				2,
 			);
