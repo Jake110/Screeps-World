@@ -145,7 +145,7 @@ function place_road(
 			} else {
 				console.log("Main Road Step: " + memory.pos_to_coord(step));
 			}
-			save_road(room.name, memory.pos_to_coord(step), mode);
+			save_road(room.name, memory.pos_to_coord(step));
 		});
 	} else {
 		let x = origin.x;
@@ -157,7 +157,7 @@ function place_road(
 			route.pop();
 		}
 		route.forEach(function (coord) {
-			save_road(room.name, coord, mode);
+			save_road(room.name, coord);
 		});
 	}
 	console.log("Road Placed");
@@ -222,7 +222,7 @@ function place_road_around(
 					continue;
 				}
 				steps.forEach(function (step) {
-					save_road(room.name, memory.pos_to_coord(step), mode);
+					save_road(room.name, memory.pos_to_coord(step));
 				});
 				outer_ring.push(steps[0]);
 				if (return_inner_ring) {
@@ -241,7 +241,7 @@ function place_road_around(
 						mode == "roads",
 					)
 				) {
-					save_road(room.name, coord, mode);
+					save_road(room.name, coord);
 					if (return_inner_ring && !inner_ring.includes(coord)) {
 						inner_ring.push(coord);
 					}
@@ -255,7 +255,16 @@ function place_road_around(
 	};
 }
 
-function save_road(room_name, coord, mode) {
+function save_road(room_name, coord) {
+	let mode = "roads";
+	if (
+		new Room.Terrain(room_name).get(
+			coord.split(":")[0],
+			coord.split(":")[1],
+		) == TERRAIN_MASK_WALL
+	) {
+		mode = "tunnels";
+	}
 	if (!Memory[room_name][mode].includes(coord)) {
 		Memory[room_name][mode].push(coord);
 	}
