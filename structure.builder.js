@@ -225,6 +225,7 @@ function place_road_around(
 			}
 		}
 	}
+	console.log("Outer Ring Road: "+outer_ring)
 	return {
 		outer: outer_ring,
 		inner: inner_ring,
