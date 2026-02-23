@@ -169,8 +169,8 @@ function place_road_around(
 			}
 			if (outer_edge) {
 				pos_step = room.getPositionAt(
-					pos.x + n, // parseInt(n),
-					pos.y + m, // parseInt(m),
+					pos.x + n,
+					pos.y + m,
 				);
 				let steps = [];
 				for (let thick = 0; thick < thickness; thick++) {
@@ -246,15 +246,13 @@ function get_next_adjacent(room, pos, layer = 1) {
 	let avoid_pos = memory.build_coords(room.name);
 	let next;
 	for (; !next; layer++) {
-		let l = parseInt(layer);
 		let options = [];
 		for (let n = 0 - layer; n <= layer - 2; n += 2) {
-			let m = parseInt(n);
 			options.push(
-				room.getPositionAt(pos.x - l, pos.y + m),
-				room.getPositionAt(pos.x + l, pos.y + m),
-				room.getPositionAt(pos.x + m, pos.y - l),
-				room.getPositionAt(pos.x + m, pos.y + l),
+				room.getPositionAt(pos.x - layer, pos.y + n),
+				room.getPositionAt(pos.x + layer, pos.y + n),
+				room.getPositionAt(pos.x + n, pos.y - layer),
+				room.getPositionAt(pos.x + n, pos.y + layer),
 			);
 		}
 		options = options.filter(function (option) {
