@@ -373,6 +373,7 @@ module.exports = {
 		});
 		if (_source) {
 			place_road(spawn.room, spawn.pos, _source.pos, "roads", 2); // return pos of closest road to source
+			console.log("Source Road Placed");
 			let inner_ring = place_road_around(
 				spawn.room,
 				_source.pos,
@@ -383,7 +384,9 @@ module.exports = {
 				true,
 				true,
 			);
+			console.log("Source Ring Road Placed");
 			place_container(spawn.room, inner_ring, spawn.pos);
+			console.log("Source Container Placed");
 			Memory[spawn.room.name].spawners[
 				memory.pos_to_coord(spawn.pos)
 			].roads.push(_source.id);
