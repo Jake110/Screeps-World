@@ -123,6 +123,11 @@ module.exports = {
 			// Road Consruction
 			if (Game.time % 13 == 0) {
 				// Get a count for how many unfinished roads there are
+				builder.create_construction_sites(
+					room,
+					"containers",
+					STRUCTURE_CONTAINER,
+				);
 				let unfinished_road = builder.create_construction_sites(
 					room,
 					"roads",
