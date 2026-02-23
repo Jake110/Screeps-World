@@ -41,6 +41,7 @@ module.exports = {
 		// Spawn Creeps
 		let used_spawners = [];
 		if (Game.time % 7 == 0) {
+			console.log("Creep spawning")
 			roles.forEach(function (role) {
 				let role_count = room.find(FIND_MY_CREEPS, {
 					filter: function (creep) {
@@ -99,6 +100,7 @@ module.exports = {
 		}).forEach(function (spawn) {
 			// Extension Construction
 			if (Game.time % 17 == 0) {
+				console.log("Placing Extensions")
 				builder.place_extensions(spawn);
 			}
 
@@ -122,7 +124,7 @@ module.exports = {
 
 			// Road Consruction
 			if (Game.time % 13 == 0) {
-				console.log("Spawn Construction")
+				console.log("Spawn Road Placement")
 				// Get a count for how many unfinished roads there are
 				builder.create_construction_sites(
 					room,
