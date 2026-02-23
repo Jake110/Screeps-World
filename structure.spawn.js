@@ -145,7 +145,7 @@ module.exports = {
 					];
 					memory.set_up_list(spawn_memory_path.concat("roads"));
 					memory.set_up_list(spawn_memory_path.concat("tunnels"));
-					let mode = "roads";
+					let mode = "tunnels";
 					if (spawn.room.controller.level > 4) {
 						mode = "tunnels";
 					}
