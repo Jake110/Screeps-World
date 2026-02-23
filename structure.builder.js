@@ -143,13 +143,15 @@ function place_road(room, origin, target, mode, range = 0, link_points = null) {
 			save_road(room.name, coord, mode);
 		});
 	}
-	end_point = route.pop();
-	if (mode != "roads") {
-		end_point = memory.coord_to_pos(end_point, room);
+	if (link_points) {
+		end_point = route.pop();
+		if (mode != "roads") {
+			end_point = memory.coord_to_pos(end_point, room);
+		}
+		link_points.forEach(function (link_point) {
+			place_road(room, end_point, link_point, mode);
+		});
 	}
-	link_points.forEach(function (link_point) {
-		place_road(room, end_point, link_point, mode);
-	});
 }
 
 function place_road_around(
