@@ -185,25 +185,19 @@ function place_road_around(
 					save_road(room.name, memory.pos_to_coord(step), mode);
 				});
 				outer_ring.push(memory.pos_to_coord(steps[0]));
-				if (return_inner_ring) {
-					let inner_tile = memory.pos_to_coord(
-						steps[steps.length - 1],
-					);
-					if (!inner_ring.includes(inner_tile)) {
-						inner_ring.push(inner_tile);
-					}
+				if (
+					return_inner_ring &&
+					!inner_ring.includes(steps[steps.length - 1])
+				) {
+					inner_ring.push(steps[steps.length - 1]);
 				}
 			} else {
 				let coord = pos.x + n + ":" + (pos.y + m);
-				if (
-					can_build_here(
-						memory.coord_to_pos(coord, room),
-						mode == "roads",
-					)
-				) {
+				let new_pos = memory.coord_to_pos(coord, room);
+				if (can_build_here(new_pos, mode == "roads")) {
 					save_road(room.name, coord, mode);
-					if (return_inner_ring && !inner_ring.includes(coord)) {
-						inner_ring.push(coord);
+					if (return_inner_ring && !inner_ring.includes(new_pos)) {
+						inner_ring.push(new_pos);
 					}
 				}
 			}
