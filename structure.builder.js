@@ -139,14 +139,17 @@ function place_road(room, origin, target, mode, range = 0, link_points = null) {
 			save_road(room.name, coord, mode);
 		});
 	}
-	console.log("Road placed")
-	console.log("Link points: "+link_points)
+	console.log("Road placed");
+	console.log("Link points: " + link_points);
 	if (link_points) {
 		end_point = route.pop();
-		if (mode != "roads") {
-			end_point = memory.coord_to_pos(end_point, room);
+		if (mode == "roads") {
+			end_point = end_point.x + ":" + end_point.y;
 		}
-		console.log("Linking ["+end_point+"] to link points: "+link_points)
+		end_point = memory.coord_to_pos(end_point, room);
+		console.log(
+			"Linking [" + end_point + "] to link points: " + link_points,
+		);
 		link_points.forEach(function (link_point) {
 			place_road(room, end_point, link_point, mode);
 		});
@@ -226,7 +229,7 @@ function place_road_around(
 			}
 		}
 	}
-	console.log("Outer Ring Road: "+outer_ring)
+	console.log("Outer Ring Road: " + outer_ring);
 	return {
 		outer: outer_ring,
 		inner: inner_ring,
