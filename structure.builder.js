@@ -406,7 +406,7 @@ module.exports = {
 			);
 			let container_pos = place_container(
 				spawn.room,
-				ring_roads.inner_ring,
+				ring_roads.inner,
 				spawn.pos,
 			);
 			place_road(
