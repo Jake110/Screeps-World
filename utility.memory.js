@@ -1,4 +1,4 @@
-let structure_names = ["containers", "extensions", "towers"];
+let structure_names = ["containers", "extensions", "spawns", "towers"];
 
 function coord_to_pos(coord, room) {
 	let split_coord = coord.split(":");
