@@ -74,8 +74,7 @@ module.exports = {
 							" - Spawning " +
 							role.name +
 							" " +
-							role_count +
-							role_additions +
+							(role_count + role_additions) +
 							"/" +
 							role.max +
 							": " +
