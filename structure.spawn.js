@@ -68,12 +68,14 @@ module.exports = {
 						return null;
 					}
 					let new_name = role.name + Game.time;
+					role_additions++;
 					console.log(
 						room.name +
 							" - Spawning " +
 							role.name +
 							" " +
 							role_count +
+							role_additions +
 							"/" +
 							role.max +
 							": " +
@@ -89,7 +91,6 @@ module.exports = {
 						},
 					});
 					used_spawners.push(spawn.id);
-					role_additions++;
 					if (spawn.memory.recycling) {
 						Memory.creeps[spawn.memory.recycling].recycle = false;
 						spawn.memory.recycling = false;
