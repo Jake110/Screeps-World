@@ -27,11 +27,18 @@ module.exports = {
 								creep_memory.full
 							);
 						}
+						if (options.deathTime) {
+							return option.store[RESOURCE_ENERGY] > 0;
+						}
+						let structure = STRUCTURE_CONTAINER;
+						if (
+							creep.memory.role == "worker" &&
+							creep.room.storage
+						) {
+							structure = STRUCTURE_STORAGE;
+						}
 						return (
-							([STRUCTURE_CONTAINER, STRUCTURE_STORAGE].includes(
-								option.structureType,
-							) ||
-								option.deathTime) &&
+							option.structureType == structure &&
 							option.store[RESOURCE_ENERGY] > 0
 						);
 					},
