@@ -107,7 +107,7 @@ function place_road(
 	avoid = null,
 ) {
 	let route = [];
-	console.log("Avoid: " + avoid);
+	//console.log("Avoid: " + avoid);
 	if (mode == "roads") {
 		route = origin.findPathTo(target, {
 			ignoreCreeps: true,
@@ -140,18 +140,18 @@ function place_road(
 			route.shift();
 		}
 		route.forEach(function (step) {
-			if (avoid) {
+			/*if (avoid) {
 				console.log("Branch Road step: " + memory.pos_to_coord(step));
 			} else {
 				console.log("Main Road Step: " + memory.pos_to_coord(step));
-			}
+			}*/
 			save_road(room, memory.pos_to_coord(step));
 		});
 	} else {
 		let x = origin.x;
 		let y = origin.y;
 		while (x != target.x && y != target.y) {
-			console.log(x+":"+y)
+			//console.log(x+":"+y)
 			route.push(step_with_coord(x, y, target, room));
 		}
 		for (; range > 0; range--) {
@@ -161,7 +161,7 @@ function place_road(
 			save_road(room, coord);
 		});
 	}
-	console.log("Road Placed");
+	//console.log("Road Placed");
 	if (link_points) {
 		link_points.outer.forEach(function (link_point) {
 			place_road(
@@ -364,9 +364,9 @@ module.exports = {
 		if (
 			!memory_list.includes("controller")
 		) {
-			console.log("Placing controller roads")
+			//console.log("Placing controller roads")
 			place_road_around(spawn.room, spawn.pos, mode, true);
-			console.log("\tSpawn ring placed")
+			//console.log("\tSpawn ring placed")
 			place_road_around(
 				spawn.room,
 				spawn.room.controller.pos,
@@ -375,7 +375,7 @@ module.exports = {
 				4,
 				2,
 			);
-			console.log("\tController ring placed")
+			//console.log("\tController ring placed")
 			place_road(
 				spawn.room,
 				spawn.pos,
