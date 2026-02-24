@@ -5,6 +5,10 @@ function coord_to_pos(coord, room) {
 	return room.getPositionAt(split_coord[0], split_coord[1]);
 }
 
+function pos_to_coord(pos) {
+	return pos.x + ":" + pos.y;
+}
+
 function set_up_list(room, path) {
 	if (path.constructor != Array) {
 		path = [path];
@@ -48,19 +52,17 @@ module.exports = {
 		}
 	},
 	coord_to_pos: coord_to_pos,
-	pos_to_coord: function (pos) {
-		return pos.x + ":" + pos.y;
-	},
+	pos_to_coord: pos_to_coord,
 	set_up: function (room) {
 		let spawns = room.find(FIND_MY_SPAWNS);
 		let room_memory = room.memory;
 		if (!room_memory.core && spawns.length > 0) {
-			room_memory.core = this.pos_to_coord(spawns[0].pos);
+			room_memory.core = pos_to_coord(spawns[0].pos);
 			this.tracker_names.forEach(function (name) {
 				set_up_list(room, [name]);
 			});
 			spawns.forEach(function (spawn) {
-				room_memory.spawns.push(this.pos_to_coord(spawn.pos));
+				room_memory.spawns.push(pos_to_coord(spawn.pos));
 			});
 			memory.set_up_list(room, ["source_connections", "roads"]);
 			memory.set_up_list(room, ["source_connections", "tunnels"]);
