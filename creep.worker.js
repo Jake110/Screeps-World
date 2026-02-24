@@ -101,29 +101,6 @@ module.exports = {
 			}
 		}
 	},
-	recharge: function (creep) {
-		let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-			filter: (structure) => {
-				return (
-					[
-						STRUCTURE_EXTENSION,
-						STRUCTURE_SPAWN,
-						STRUCTURE_TOWER,
-					].includes(structure.structureType) &&
-					structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-				);
-			},
-		});
-		if (target) {
-			if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(target, {
-					visualizePathStyle: { stroke: "#2bff00" },
-				});
-			}
-			return true;
-		}
-		return false;
-	},
 	upgrade: function (creep) {
 		if (
 			creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE
