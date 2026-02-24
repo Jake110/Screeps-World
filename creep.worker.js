@@ -1,4 +1,3 @@
-const combat = require("utility.combat");
 const hauler = require("creep.hauler");
 const memory = require("utility.memory");
 

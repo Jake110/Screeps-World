@@ -1,3 +1,5 @@
+const combat = require("utility.combat");
+
 module.exports = {
 	capacity_check: function (creep, resource) {
 		if (creep.memory.full && creep.store[resource] == 0) {
