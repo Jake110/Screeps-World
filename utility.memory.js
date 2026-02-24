@@ -52,9 +52,11 @@ module.exports = {
 		return pos.x + ":" + pos.y;
 	},
 	set_up: function (room_name) {
-		this.tracker_names.forEach(function (name) {
-			set_up_list([room_name, name]);
-		});
+		if (!Memory[room_name][this.structure_names[0]]) {
+			this.tracker_names.forEach(function (name) {
+				Memory[room_name][name] = [];
+			});
+		}
 	},
 	set_up_list: set_up_list,
 	structure_names: structure_names,
