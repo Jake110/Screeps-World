@@ -3,7 +3,18 @@ const memory = require("utility.memory");
 
 module.exports = {
 	build: function (creep) {
-		let target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+		let target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
+			filter: function (site) {
+				return site.structureType != STRUCTURE_ROAD;
+			},
+		});
+		if (!target) {
+			target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
+				filter: function (site) {
+					return site.structureType == STRUCTURE_ROAD;
+				},
+			});
+		}
 		if (target) {
 			if (creep.build(target) == ERR_NOT_IN_RANGE) {
 				creep.moveTo(target, {
