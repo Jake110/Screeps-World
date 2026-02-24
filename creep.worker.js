@@ -61,8 +61,8 @@ module.exports = {
 				filter: function (harvester) {
 					return (
 						harvester.memory.role == "harvester" &&
-						harvester.store.getUsedCapacity(RESOURCE_ENERGY) >
-							harvester.store.getCapacity() / 2
+						harvester.store.getUsedCapacity(RESOURCE_ENERGY) &&
+						harvester.store.getFreeCapacity() == 0
 					);
 				},
 			});
