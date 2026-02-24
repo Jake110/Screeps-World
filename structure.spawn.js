@@ -158,7 +158,7 @@ module.exports = {
 		// Renew & Recycle Creeps
 		let spawn = get_spawn(room, used_spawners, true);
 		room.find(FIND_MY_CREEPS).forEach(function (creep) {
-			if (Game.time % 11 == 0) {
+			if (Game.time % 7 == 0) {
 				//console.log("Creep recycle / renew check");
 				let role = creep.memory.role;
 				let creep_body = [];
