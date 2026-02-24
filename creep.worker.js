@@ -59,10 +59,10 @@ module.exports = {
 		if (!target) {
 			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 				filter: function (harvester) {
+					let harvester_memory = harvester.memory;
 					return (
-						harvester.memory.role == "harvester" &&
-						harvester.store.getUsedCapacity(RESOURCE_ENERGY) &&
-						harvester.store.getFreeCapacity() == 0
+						harvester_memory.role == "harvester" &&
+						harvester_memory.full
 					);
 				},
 			});
