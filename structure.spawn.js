@@ -5,24 +5,34 @@ const memory = require("utility.memory");
 function get_spawn(room, used_spawners, recycle_check = false) {
 	let spawn = null;
 	let energy = -1;
-	room.find(FIND_MY_STRUCTURES, {
-		filter: function (structure) {
+	room.find(FIND_MY_SPAWNS, {
+		filter: function (spawner) {
 			return (
-				structure.structureType == STRUCTURE_SPAWN &&
-				!structure.spawning &&
-				(!recycle_check ||
-					recycle_check != structure.memory.recycling) &&
-				!used_spawners.includes(structure.id)
+				!spawner.spawning &&
+				(!recycle_check || recycle_check != spawner.memory.recycling) &&
+				!used_spawners.includes(spawner.id)
 			);
 		},
-	}).forEach(function (_spawn) {
-		let spawn_energy = _spawn.store[RESOURCE_ENERGY];
+	}).forEach(function (spawner) {
+		let spawn_energy = spawner.store[RESOURCE_ENERGY];
 		if (spawn_energy > energy) {
-			spawn = _spawn;
+			spawn = spawner;
 			energy = spawn_energy;
 		}
 	});
 	return spawn;
+}
+
+function saved_spawn(room, creep, mode) {
+	let structures = memory
+		.coord_to_pos(creep.memory[mode], room)
+		.lookFor(LOOK_STRUCTURES);
+	let _spawn;
+	structures.forEach(function (structure) {
+		if (structure.structureType == STRUCTURE_SPAWN) {
+			_spawn = structure;
+		}
+	});
 }
 
 module.exports = {
@@ -41,7 +51,7 @@ module.exports = {
 		// Spawn Creeps
 		let used_spawners = [];
 		if (Game.time % 7 == 0) {
-			console.log("Creep spawning")
+			console.log("Creep spawning");
 			roles.forEach(function (role) {
 				let role_count = room.find(FIND_MY_CREEPS, {
 					filter: function (creep) {
@@ -94,13 +104,13 @@ module.exports = {
 			});
 		}
 
+		spawns = room.find(FIND_MY_SPAWNS);
+
 		// Per Spawn Section
-		room.find(FIND_MY_STRUCTURES, {
-			filter: { structureType: STRUCTURE_SPAWN },
-		}).forEach(function (spawn) {
+		spawns.forEach(function (spawn) {
 			// Extension Construction
 			if (Game.time % 17 == 0) {
-				console.log("Placing Extensions")
+				console.log("Placing Extensions");
 				builder.place_extensions(spawn);
 			}
 
@@ -124,7 +134,7 @@ module.exports = {
 
 			// Road Consruction
 			if (Game.time % 13 == 0) {
-				console.log("Spawn Road Placement")
+				console.log("Spawn Road Placement");
 				// Get a count for how many unfinished roads there are
 				builder.create_construction_sites(
 					room,
@@ -159,7 +169,7 @@ module.exports = {
 		let spawn = get_spawn(room, used_spawners, true);
 		room.find(FIND_MY_CREEPS).forEach(function (creep) {
 			if (Game.time % 11 == 0) {
-				console.log("Creep recycle / renew check")
+				console.log("Creep recycle / renew check");
 				let role = creep.memory.role;
 				let creep_body = [];
 				creep.body.forEach(function (part) {
@@ -200,15 +210,7 @@ module.exports = {
 				}
 			}
 			if (creep.memory.recycle) {
-				let structures = memory
-					.coord_to_pos(creep.memory.recycle, room)
-					.lookFor(LOOK_STRUCTURES);
-				let _spawn;
-				structures.forEach(function (structure) {
-					if (structure.structureType == STRUCTURE_SPAWN) {
-						_spawn = structure;
-					}
-				});
+				let _spawn = saved_spawn(room, creep, "recycle");
 				if (_spawn) {
 					let result = _spawn.recycleCreep(creep);
 					if (result == ERR_NOT_IN_RANGE) {
@@ -224,15 +226,7 @@ module.exports = {
 				}
 			}
 			if (creep.memory.renew) {
-				let structures = memory
-					.coord_to_pos(creep.memory.renew, room)
-					.lookFor(LOOK_STRUCTURES);
-				let _spawn;
-				structures.forEach(function (structure) {
-					if (structure.structureType == STRUCTURE_SPAWN) {
-						_spawn = structure;
-					}
-				});
+				let _spawn = saved_spawn(room, creep, "renew");
 				if (_spawn) {
 					if (_spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
 						creep.moveTo(_spawn, {
