@@ -7,4 +7,71 @@ module.exports = {
 			creep.memory.full = true;
 		}
 	},
+
+	get_collection_target: function (creep, find_list) {
+		let options = [];
+		find_list.forEach(function (find_name) {
+			options = options.concat(
+				creep.room.find(find_name, {
+					filter: function (option) {
+						if (!combat.avoid_filter(option)) {
+							return false;
+						}
+						if (!option.store) {
+							return option.resourceType == RESOURCE_ENERGY;
+						}
+						if (option.body) {
+							let creep_memory = option.memory;
+							return (
+								creep_memory.role == "harvester" &&
+								creep_memory.full
+							);
+						}
+						return (
+							([STRUCTURE_CONTAINER, STRUCTURE_STORAGE].includes(
+								option.structureType,
+							) ||
+								option.deathTime) &&
+							option.store[RESOURCE_ENERGY] > 0
+						);
+					},
+				}),
+			);
+		});
+		let chosen = null;
+		let chosen_distance = 999;
+		options.forEach(function (option) {
+			let energy;
+			if (option.store) {
+				energy = option.store[RESOURCE_ENERGY];
+			} else {
+				energy = option.amount;
+			}
+			creep.room
+				.find(FIND_MY_CREEPS, {
+					filter: function (_creep) {
+						let creep_memory = _creep.memory;
+						let dest = creep_memory._move.dest;
+						return (
+							dest.x == option.pos.x &&
+							dest.y == option.pos.y &&
+							dest.room == option.pos.roomName &&
+							["hauler", "worker"].includes(creep_memory.role) &&
+							!creep_memory.full
+						);
+					},
+				})
+				.forEach(function (_creep) {
+					energy -= _creep.store.getFreeCapacity();
+				});
+			if (energy > 0) {
+				let distance = creep.pos.findPathTo(option).length;
+				if (distance < chosen_distance) {
+					chosen = option;
+					chosen_distance = distance;
+				}
+			}
+		});
+		return chosen;
+	},
 };

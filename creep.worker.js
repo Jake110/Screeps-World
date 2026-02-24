@@ -1,4 +1,5 @@
 const combat = require("utility.combat");
+const hauler = require("creep.hauler");
 const memory = require("utility.memory");
 
 module.exports = {
@@ -26,46 +27,15 @@ module.exports = {
 		return false;
 	},
 	collect: function (creep) {
-		let target = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-			filter: function (drop) {
-				return (
-					drop.resourceType == RESOURCE_ENERGY &&
-					combat.avoid_filter(drop)
-				);
-			},
-		});
+		let target = hauler.get_collection_target(creep, [
+			FIND_DROPPED_RESOURCES,
+			FIND_TOMBSTONES,
+		]);
 		if (!target) {
-			target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-				filter: function (tomb) {
-					return (
-						tomb.store.getUsedCapacity(RESOURCE_ENERGY) > 0 &&
-						combat.avoid_filter(tomb)
-					);
-				},
-			});
+			target = hauler.get_collection_target(creep, [FIND_STRUCTURES]);
 		}
 		if (!target) {
-			target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-				filter: function (structure) {
-					return (
-						[STRUCTURE_CONTAINER, STRUCTURE_STORAGE].includes(
-							structure.structureType,
-						) &&
-						structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0
-					);
-				},
-			});
-		}
-		if (!target) {
-			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-				filter: function (harvester) {
-					let harvester_memory = harvester.memory;
-					return (
-						harvester_memory.role == "harvester" &&
-						harvester_memory.full
-					);
-				},
-			});
+			target = hauler.get_collection_target(creep, [FIND_MY_CREEPS]);
 		}
 		if (target) {
 			let result;
