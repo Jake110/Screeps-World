@@ -87,7 +87,7 @@ function place_container(room, pos_list, spawn_pos) {
 		});
 	}
 	let pos = spawn_pos.findClosestByPath(options);
-	Memory[room.name].containers.push(memory.pos_to_coord(pos));
+	room.memory.containers.push(memory.pos_to_coord(pos));
 	return pos;
 }
 
@@ -145,7 +145,7 @@ function place_road(
 			} else {
 				console.log("Main Road Step: " + memory.pos_to_coord(step));
 			}
-			save_road(room.name, memory.pos_to_coord(step));
+			save_road(room, memory.pos_to_coord(step));
 		});
 	} else {
 		let x = origin.x;
@@ -158,7 +158,7 @@ function place_road(
 			route.pop();
 		}
 		route.forEach(function (coord) {
-			save_road(room.name, coord);
+			save_road(room, coord);
 		});
 	}
 	console.log("Road Placed");
@@ -223,7 +223,7 @@ function place_road_around(
 					continue;
 				}
 				steps.forEach(function (step) {
-					save_road(room.name, memory.pos_to_coord(step));
+					save_road(room, memory.pos_to_coord(step));
 				});
 				outer_ring.push(steps[0]);
 				if (return_inner_ring) {
@@ -242,7 +242,7 @@ function place_road_around(
 						mode == "roads",
 					)
 				) {
-					save_road(room.name, coord);
+					save_road(room, coord);
 					if (return_inner_ring && !inner_ring.includes(coord)) {
 						inner_ring.push(coord);
 					}
@@ -256,18 +256,19 @@ function place_road_around(
 	};
 }
 
-function save_road(room_name, coord) {
+function save_road(room, coord) {
 	let mode = "roads";
 	if (
-		new Room.Terrain(room_name).get(
+		new Room.Terrain(room.name).get(
 			coord.split(":")[0],
 			coord.split(":")[1],
 		) == TERRAIN_MASK_WALL
 	) {
 		mode = "tunnels";
 	}
-	if (!Memory[room_name][mode].includes(coord)) {
-		Memory[room_name][mode].push(coord);
+	let current = room.memory[mode]
+	if (!current.includes(coord)) {
+		current.push(coord);
 	}
 }
 
@@ -277,9 +278,10 @@ function save_road(room_name, coord) {
  **/
 function can_build_here(pos, respect_walls = false) {
 	coord = memory.pos_to_coord(pos);
+	let room_memory = Memory.rooms[pos.roomName]
 	if (
-		Memory[pos.roomName].towers.includes(coord) ||
-		Memory[pos.roomName].extensions.includes(coord)
+		room_memory.towers.includes(coord) ||
+		room_memory.extensions.includes(coord)
 	) {
 		return false;
 	}
@@ -292,7 +294,7 @@ function can_build_here(pos, respect_walls = false) {
 }
 
 function get_next_adjacent(room, pos, layer = 1) {
-	let avoid_pos = memory.build_coords(room.name);
+	let avoid_pos = memory.build_coords(room);
 	let next;
 	for (; !next; layer++) {
 		let options = [];
@@ -323,9 +325,10 @@ function remove_road(pos) {
 		mode = "tunnels";
 	}
 	coord = memory.pos_to_coord(pos);
-	index = Memory[pos.roomName][mode].indexOf(coord);
+	let memory_list = Memory.rooms[pos.roomName][mode]
+	index = memory_list.indexOf(coord);
 	if (index != -1) {
-		Memory[pos.roomName][mode].splice(index, 1);
+		memory_list.splice(index, 1);
 
 		pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
 			structure.destroy();
@@ -339,7 +342,7 @@ function remove_road(pos) {
 module.exports = {
 	create_construction_sites: function (room, path, structure_type) {
 		let unfinished_count = 0;
-		Memory[room.name][path].forEach(function (coord) {
+		room.memory[path].forEach(function (coord) {
 			pos = memory.coord_to_pos(coord, room);
 			let unfinished = true;
 			pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
@@ -357,10 +360,9 @@ module.exports = {
 		return unfinished_count;
 	},
 	place_controller_road: function (spawn, mode) {
+		let memory_list = spawn.room.memory.source_connections[mode]
 		if (
-			!Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][
-				mode
-			].includes("controller")
+			!memory_list.includes("controller")
 		) {
 			console.log("Placing controller roads")
 			place_road_around(spawn.room, spawn.pos, mode, true);
@@ -381,9 +383,7 @@ module.exports = {
 				mode,
 				4,
 			);
-			Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][
-				mode
-			].push("controller");
+			memory_list.push("controller");
 		}
 	},
 	place_extensions: function (spawn) {
@@ -399,11 +399,12 @@ module.exports = {
 		if (max_entensions > 20) {
 			max_entensions = 20;
 		}
-		if (Memory[spawn.room.name].extensions.length < max_entensions) {
+		let extension_list = spawn.room.memory.extensions
+		if (extension_list.length < max_entensions) {
 			let new_site = get_next_adjacent(spawn.room, spawn.pos, 2);
 			remove_road(new_site);
 			place_road_around(spawn.room, new_site, "roads");
-			Memory[spawn.room.name].extensions.push(
+			extension_list.push(
 				memory.pos_to_coord(new_site),
 			);
 		}
@@ -414,18 +415,17 @@ module.exports = {
 		);
 	},
 	place_source_roads: function (spawn, mode) {
+		let room_memory = spawn.room.memory
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				if (
 					_source.pos.findInRange(FIND_HOSTILE_STRUCTURES, 20)
 						.length != 0 &&
-					Memory[spawn.room.name].towers.length == 0
+					room_memory.towers.length == 0
 				) {
 					return false;
 				}
-				return !Memory[spawn.room.name].spawners[
-					memory.pos_to_coord(spawn.pos)
-				][mode].includes(_source.id);
+				return !room_memory.source_connections[mode].includes(_source.id);
 			},
 		});
 		if (_source) {
@@ -453,7 +453,7 @@ module.exports = {
 				0,
 				ring_roads,
 			);
-			Memory[spawn.room.name].spawners[memory.pos_to_coord(spawn.pos)][
+			room_memory.source_connections[
 				mode
 			].push(_source.id);
 		}
@@ -471,15 +471,16 @@ module.exports = {
 			case [3, 4].includes(room_level):
 				max_towers += 1;
 		}
+		let towers_list = room.memory.towers
 		for (
-			let tower_sites = Memory[room.name].towers.length;
+			let tower_sites = towers_list.length;
 			tower_sites < max_towers;
 			tower_sites++
 		) {
 			let new_site = get_next_adjacent(room, room.controller.pos);
 			remove_road(new_site);
 			place_road_around(room, new_site, "roads");
-			Memory[room.name].towers.push(memory.pos_to_coord(new_site));
+			towers_list.push(memory.pos_to_coord(new_site));
 		}
 		this.create_construction_sites(room, "towers", STRUCTURE_TOWER);
 	},

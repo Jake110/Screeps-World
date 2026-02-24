@@ -16,8 +16,8 @@ module.exports.loop = function () {
 	for (let name in Game.rooms) {
 		let room = Game.rooms[name];
 
-		// Memory Variables
-		memory.set_up(room.name);
+		// Setup Room Memory
+		memory.set_up(room);
 
 		// Tower Control
 		tower.fire(room);

@@ -24,15 +24,9 @@ function get_spawn(room, used_spawners, recycle_check = false) {
 }
 
 function saved_spawn(room, creep, mode) {
-	let structures = memory
+	return memory
 		.coord_to_pos(creep.memory[mode], room)
-		.lookFor(LOOK_STRUCTURES);
-	let _spawn;
-	structures.forEach(function (structure) {
-		if (structure.structureType == STRUCTURE_SPAWN) {
-			_spawn = structure;
-		}
-	});
+		.lookFor(LOOK_STRUCTURES)[0];
 }
 
 module.exports = {
@@ -104,6 +98,34 @@ module.exports = {
 			});
 		}
 
+		// Road Construction
+		if (Game.time % 13 == 0) {
+			console.log("Spawn Road Placement");
+			// Get a count for how many unfinished roads there are
+			builder.create_construction_sites(
+				room,
+				"containers",
+				STRUCTURE_CONTAINER,
+			);
+			let unfinished_road = builder.create_construction_sites(
+				room,
+				"roads",
+				STRUCTURE_ROAD,
+			);
+			// If all roads have been built, map the next batch
+			if (unfinished_road == 0) {
+				let mode = "roads";
+				if (room.controller.level > 4) {
+					mode = "tunnels";
+				}
+				let core_spawn = memory
+					.coord_to_pos(room.memory.core, room)
+					.lookFor(LOOK_STRUCTURES)[0];
+				builder.place_controller_road(core_spawn, mode);
+				builder.place_source_roads(core_spawn, mode);
+			}
+		}
+
 		spawns = room.find(FIND_MY_SPAWNS);
 
 		// Per Spawn Section
@@ -129,38 +151,6 @@ module.exports = {
 			if (spawn.memory.recycling) {
 				if (!Game.creeps[spawn.memory.recycling]) {
 					spawn.memory.recycling = false;
-				}
-			}
-
-			// Road Consruction
-			if (Game.time % 13 == 0) {
-				console.log("Spawn Road Placement");
-				// Get a count for how many unfinished roads there are
-				builder.create_construction_sites(
-					room,
-					"containers",
-					STRUCTURE_CONTAINER,
-				);
-				let unfinished_road = builder.create_construction_sites(
-					room,
-					"roads",
-					STRUCTURE_ROAD,
-				);
-				// If all roads have been built, map the next batch
-				if (unfinished_road == 0) {
-					let spawn_memory_path = [
-						spawn.room.name,
-						"spawners",
-						memory.pos_to_coord(spawn.pos),
-					];
-					memory.set_up_list(spawn_memory_path.concat("roads"));
-					memory.set_up_list(spawn_memory_path.concat("tunnels"));
-					let mode = "roads";
-					if (spawn.room.controller.level > 4) {
-						mode = "tunnels";
-					}
-					builder.place_controller_road(spawn, mode);
-					builder.place_source_roads(spawn, mode);
 				}
 			}
 		});
@@ -200,8 +190,7 @@ module.exports = {
 				if (creep.ticksToLive < 200 && !creep_body.includes(CLAIM)) {
 					// If a creep has less than 200 ticks left
 					// and doesn't have a CLAIM part, trigger renew process
-					let nearest_spawn =
-						creep.pos.findClosestByPath(FIND_MY_SPAWNS);
+					let nearest_spawn = creep.pos.findClosestByPath(spawns);
 					if (nearest_spawn) {
 						creep.memory.renew = memory.pos_to_coord(
 							nearest_spawn.pos,

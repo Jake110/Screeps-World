@@ -5,11 +5,11 @@ function coord_to_pos(coord, room) {
 	return room.getPositionAt(split_coord[0], split_coord[1]);
 }
 
-function set_up_list(path) {
+function set_up_list(room, path) {
 	if (path.constructor != Array) {
 		path = [path];
 	}
-	let position = Memory;
+	let position = room.memory;
 	while (path.length > 0) {
 		let next = path.shift();
 		if (!position[next]) {
@@ -26,16 +26,16 @@ function set_up_list(path) {
 }
 
 module.exports = {
-	build_coords: function (room_name) {
+	build_coords: function (room) {
 		positions = [];
 		this.structure_names.forEach(function (name) {
-			positions = positions.concat(Memory[room_name][name]);
+			positions = positions.concat(room.memory[name]);
 		});
 		return positions;
 	},
 	build_pos: function (room) {
 		let pos_list = [];
-		this.build_coords(room.name).forEach(function (coord) {
+		this.build_coords(room).forEach(function (coord) {
 			pos_list.push(coord_to_pos(coord, room));
 		});
 		return pos_list;
@@ -51,11 +51,19 @@ module.exports = {
 	pos_to_coord: function (pos) {
 		return pos.x + ":" + pos.y;
 	},
-	set_up: function (room_name) {
-		if (!Memory[room_name][this.structure_names[0]]) {
+	set_up: function (room) {
+		let spawns = room.find(FIND_MY_SPAWNS);
+		let room_memory = room.memory;
+		if (!room_memory.core && spawns.length > 0) {
+			room_memory.core = this.pos_to_coord(spawns[0].pos);
 			this.tracker_names.forEach(function (name) {
-				Memory[room_name][name] = [];
+				set_up_list(room, [name]);
 			});
+			spawns.forEach(function (spawn) {
+				room_memory.spawns.push(this.pos_to_coord(spawn.pos));
+			});
+			memory.set_up_list(room, ["source_connections", "roads"]);
+			memory.set_up_list(room, ["source_connections", "tunnels"]);
 		}
 	},
 	set_up_list: set_up_list,

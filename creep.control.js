@@ -62,7 +62,7 @@ module.exports = {
 			filter: function (_source) {
 				return (
 					_source.pos.findInRange(FIND_HOSTILE_STRUCTURES, 20)
-						.length == 0 || Memory[room.name].towers.length > 0
+						.length == 0 || room.memory.towers.length > 0
 				);
 			},
 		}).length;
