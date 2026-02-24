@@ -64,8 +64,8 @@ module.exports = {
 			spawns.forEach(function (spawn) {
 				room_memory.spawns.push(pos_to_coord(spawn.pos));
 			});
-			memory.set_up_list(room, ["source_connections", "roads"]);
-			memory.set_up_list(room, ["source_connections", "tunnels"]);
+			set_up_list(room, ["source_connections", "roads"]);
+			set_up_list(room, ["source_connections", "tunnels"]);
 		}
 	},
 	set_up_list: set_up_list,
