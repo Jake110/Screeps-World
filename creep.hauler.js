@@ -113,6 +113,10 @@ module.exports = {
 			}
 			return true;
 		}
+		let creep_memory = creep.memory;
+		if (creep_memory.role == "hauler" && creep.store[RESOURCE_ENERGY] > 0) {
+			creep_memory.full = true;
+		}
 		return false;
 	},
 	get_collection_target: get_collection_target,
