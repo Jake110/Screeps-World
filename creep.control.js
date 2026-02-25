@@ -1,4 +1,5 @@
 const role_harvester = require("role.harvester");
+const role_hauler = require("role.hauler");
 const role_worker = require("role.worker");
 
 module.exports = {
@@ -19,12 +20,34 @@ module.exports = {
 					}
 				}
 				break;
+			case "hauler":
+				if (energy >= 100) {
+					let part_set = 0;
+					while (energy - cost >= 100) {
+						part_set++;
+						cost += 100;
+						if (part_set == 10) {
+							break;
+						}
+					}
+					let carry = [];
+					let move = [];
+					for (; part_set > 0; part_set--) {
+						carry = carry.concat([CARRY]);
+						move = move.concat([MOVE]);
+					}
+					parts = carry.concat(move);
+				}
+				break;
 			case "worker":
 				if (energy >= 250) {
 					let part_set = 0;
 					while (energy - cost >= 250) {
 						part_set++;
 						cost += 250;
+						if (part_set == 10) {
+							break;
+						}
 					}
 					let work = [];
 					let carry = [];
@@ -46,18 +69,26 @@ module.exports = {
 	main: function () {
 		for (let name in Game.creeps) {
 			let creep = Game.creeps[name];
-
-			if (!creep.memory.recycle && !creep.memory.renew) {
-				if (creep.memory.role == "harvester") {
-					role_harvester.run(creep);
-				}
-				if (creep.memory.role == "worker") {
-					role_worker.run(creep);
+			let creep_memory = creep.memory;
+			if (!creep_memory.recycle && !creep_memory.renew) {
+				switch (creep_memory.role) {
+					case "harvester":
+						role_harvester.run(creep);
+						break;
+					case "hauler":
+						role_hauler.run(creep);
+						break;
+					case "worker":
+						role_worker.run(creep);
+						break;
 				}
 			}
 		}
 	},
 	roles: function (room) {
+		let container_count = room.find(FIND_MY_STRUCTURES, {
+			filter: { structureType: STRUCTURE_CONTAINER },
+		}).length;
 		let source_count = room.find(FIND_SOURCES, {
 			filter: function (_source) {
 				return (
@@ -69,7 +100,11 @@ module.exports = {
 		return [
 			{
 				name: "harvester",
-				max: 2 * source_count,
+				max: Math.ceil(1.5 * source_count),
+			},
+			{
+				name: "hauler",
+				max: Math.ceil(1.5 * container_count),
 			},
 			{
 				name: "worker",

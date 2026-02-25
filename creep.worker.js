@@ -26,77 +26,56 @@ module.exports = {
 		return false;
 	},
 	collect: function (creep) {
-		let target = hauler.get_collection_target(creep, [
-			FIND_DROPPED_RESOURCES,
-			FIND_TOMBSTONES,
-		]);
-		if (!target) {
-			target = hauler.get_collection_target(creep, [FIND_STRUCTURES]);
-		}
-		if (!target) {
-			target = hauler.get_collection_target(creep, [FIND_MY_CREEPS]);
-		}
-		if (target) {
-			let result;
-			if (!target.store) {
-				result = creep.pickup(target);
-			} else if (!target.body) {
-				result = creep.withdraw(target, RESOURCE_ENERGY);
-			} else {
-				result = target.transfer(creep, RESOURCE_ENERGY);
-			}
-			if (result == ERR_NOT_IN_RANGE) {
-				creep.moveTo(target, {
-					visualizePathStyle: { stroke: "#fff23e" },
-				});
-			}
-		} else if (
-			creep.room.find(FIND_MY_CREEPS, {
-				filter: function (harvester) {
-					return harvester.memory.role == "harvester";
-				},
-			}).length == 0
-		) {
-			// No Harvesters found in room
-			if (creep.room.find(FIND_SOURCES).length == 0) {
-				// No Harvesters required in this room
-				return null;
-			}
-			if (
-				creep.room.find(FIND_MY_STRUCTURES, {
-					filter: function (structure) {
-						if (!structure.spawning) {
-							return false;
-						}
-						return (
-							Memory.creeps[structure.spawning.name].role ==
-							"harvester"
-						);
-					},
-				}).length > 0
-			) {
-				// A Harvester is being spawned
-				return null;
-			}
+		if (!hauler.collect(creep)) {
 			if (
 				creep.room.find(FIND_MY_CREEPS, {
-					filter: function (_creep) {
-						return _creep.memory.recycle;
+					filter: function (harvester) {
+						return harvester.memory.role == "harvester";
 					},
 				}).length == 0
 			) {
-				// No Creeps are being recycled
-				// Recycle this creep so we can spawn a Harvester
-				let nearest_spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
-				if (nearest_spawn) {
-					creep.memory.recycle = memory.pos_to_coord(
-						nearest_spawn.pos,
-					);
-					console.log(
-						creep.room.name +
-							" - No Harvesters present, recycling: " +
-							creep.name,
-					);
+				// No Harvesters found in room
+				if (creep.room.find(FIND_SOURCES).length == 0) {
+					// No Harvesters required in this room
+					return null;
+				}
+				if (
+					creep.room.find(FIND_MY_STRUCTURES, {
+						filter: function (structure) {
+							if (!structure.spawning) {
+								return false;
+							}
+							return (
+								Memory.creeps[structure.spawning.name].role ==
+								"harvester"
+							);
+						},
+					}).length > 0
+				) {
+					// A Harvester is being spawned
+					return null;
+				}
+				if (
+					creep.room.find(FIND_MY_CREEPS, {
+						filter: function (_creep) {
+							return _creep.memory.recycle;
+						},
+					}).length == 0
+				) {
+					// No Creeps are being recycled
+					// Recycle this creep so we can spawn a Harvester
+					let nearest_spawn =
+						creep.pos.findClosestByPath(FIND_MY_SPAWNS);
+					if (nearest_spawn) {
+						creep.memory.recycle = memory.pos_to_coord(
+							nearest_spawn.pos,
+						);
+						console.log(
+							creep.room.name +
+								" - No Harvesters present, recycling: " +
+								creep.name,
+						);
+					}
 				}
 			}
 		}
