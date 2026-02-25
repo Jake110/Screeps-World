@@ -100,7 +100,7 @@ module.exports = {
 		return [
 			{
 				name: "harvester",
-				max: Math.ceil(1.5 * source_count),
+				max: source_count,
 			},
 			{
 				name: "hauler",
