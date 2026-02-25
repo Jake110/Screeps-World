@@ -357,7 +357,7 @@ module.exports = {
 		let memory_list = spawn.room.memory.source_connections[mode];
 		if (!memory_list.includes("controller")) {
 			//console.log("Placing controller roads")
-			place_road_around(spawn.room, spawn.pos, mode, true);
+			place_road_around(spawn.room, spawn.pos, mode);
 			//console.log("\tSpawn ring placed")
 			place_road_around(
 				spawn.room,
