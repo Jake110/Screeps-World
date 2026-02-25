@@ -86,7 +86,7 @@ module.exports = {
 		}
 	},
 	roles: function (room) {
-		let container_count = room.find(FIND_MY_STRUCTURES, {
+		let container_count = room.find(FIND_STRUCTURES, {
 			filter: { structureType: STRUCTURE_CONTAINER },
 		}).length;
 		let source_count = room.find(FIND_SOURCES, {
