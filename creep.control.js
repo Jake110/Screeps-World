@@ -86,7 +86,7 @@ module.exports = {
 		}
 	},
 	roles: function (room) {
-		let container_count = room.find(FIND_MY_STRUCTURES, {
+		let container_count = room.find(FIND_STRUCTURES, {
 			filter: { structureType: STRUCTURE_CONTAINER },
 		}).length;
 		let source_count = room.find(FIND_SOURCES, {
@@ -100,7 +100,7 @@ module.exports = {
 		return [
 			{
 				name: "harvester",
-				max: Math.ceil(1.5 * source_count),
+				max: source_count,
 			},
 			{
 				name: "hauler",

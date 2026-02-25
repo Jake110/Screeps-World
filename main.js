@@ -5,7 +5,7 @@ const spawn = require("structure.spawn");
 const tower = require("structure.tower");
 
 module.exports.loop = function () {
-	//console.log("Tick: " + Game.time);
+	//console.log("<-----| Tick [" + Game.time + "] |----->");
 	// Memory Cleanup
 	memory.clear();
 
