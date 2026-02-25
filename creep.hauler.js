@@ -47,6 +47,9 @@ function get_collection_target(creep, find_list) {
 			.find(FIND_MY_CREEPS, {
 				filter: function (_creep) {
 					let creep_memory = _creep.memory;
+					if (_creep.name == creep.name || !creep_memory._move) {
+						return false;
+					}
 					let dest = creep_memory._move.dest;
 					return (
 						dest.x == option.pos.x &&
@@ -105,9 +108,9 @@ module.exports = {
 					visualizePathStyle: { stroke: "#fff23e" },
 				});
 			}
-			return true
+			return true;
 		}
-		return false
+		return false;
 	},
 	get_collection_target: get_collection_target,
 	recharge: function (creep) {
