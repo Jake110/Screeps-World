@@ -1,6 +1,6 @@
 const combat = require("utility.combat");
 
-function get_collection_target(creep, find_list) {
+function get_collection_target(creep, find_list, storage_override = false) {
 	let creep_memory = creep.memory;
 	let options = [];
 	find_list.forEach(function (find_name) {
@@ -28,8 +28,8 @@ function get_collection_target(creep, find_list) {
 					}
 					let structure = STRUCTURE_CONTAINER;
 					if (
-						creep_memory.role == "worker" &&
-						creep.room.memory.storage
+						creep.room.memory.storage &&
+						(creep_memory.role == "worker" || storage_override)
 					) {
 						structure = STRUCTURE_STORAGE;
 					}
@@ -105,6 +105,10 @@ module.exports = {
 		if (!target) {
 			target = get_collection_target(creep, [FIND_MY_CREEPS]);
 		}
+		let creep_memory = creep.memory;
+		if (!target && creep_memory.role == "hauler") {
+			target = get_collection_target(creep, [FIND_STRUCTURES], true);
+		}
 		if (target) {
 			let result;
 			if (!target.store) {
@@ -121,7 +125,6 @@ module.exports = {
 			}
 			return true;
 		}
-		let creep_memory = creep.memory;
 		if (creep_memory.role == "hauler" && creep.store[RESOURCE_ENERGY] > 0) {
 			creep_memory.full = true;
 		}
@@ -130,7 +133,7 @@ module.exports = {
 	get_collection_target: get_collection_target,
 	recharge: function (creep) {
 		let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-			filter: function(structure) {
+			filter: function (structure) {
 				return (
 					[
 						STRUCTURE_EXTENSION,
