@@ -1,4 +1,5 @@
 const combat = require("utility.combat");
+const hauler = require("creep.hauler")
 const worker = require("creep.worker");
 
 module.exports = {
@@ -22,7 +23,7 @@ module.exports = {
 			filter: { structureType: STRUCTURE_CONTAINER },
 		});
 		if (target.length == 0) {
-			if (worker.recharge(creep)) {
+			if (hauler.recharge(creep)) {
 				return null;
 			}
 			worker.upgrade(creep);
