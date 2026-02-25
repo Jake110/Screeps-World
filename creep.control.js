@@ -71,7 +71,6 @@ module.exports = {
 			let creep = Game.creeps[name];
 			let creep_memory = creep.memory;
 			if (!creep_memory.recycle && !creep_memory.renew) {
-				console.log("Controlling: " + creep.name);
 				switch (creep_memory.role) {
 					case "harvester":
 						role_harvester.run(creep);
