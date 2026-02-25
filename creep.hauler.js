@@ -141,16 +141,28 @@ module.exports = {
 				);
 			},
 		});
-		if (!target && creep.memory.role == "hauler") {
+		let creep_memory = creep.memory;
+		if (!target && creep_memory.role == "harvester") {
+			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+				filter: function (_creep) {
+					let _creep_memory = _creep.memory;
+					return (
+						_creep_memory.role == "hauler" && !_creep_memory.full
+					);
+				},
+			});
+		}
+		if (!target && ["harvester", "hauler"].includes(creep_memory.role)) {
 			target = creep.room.find(FIND_MY_STRUCTURES, {
 				filter: { structureType: STRUCTURE_STORAGE },
 			})[0];
 			if (!target) {
 				target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 					filter: function (_creep) {
-						let creep_memory = _creep.memory;
+						let _creep_memory = _creep.memory;
 						return (
-							creep_memory.role == "worker" && !creep_memory.full
+							_creep_memory.role == "worker" &&
+							!_creep_memory.full
 						);
 					},
 				});
