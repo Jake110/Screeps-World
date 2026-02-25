@@ -420,7 +420,7 @@ module.exports = {
 			},
 		});
 		if (_source) {
-			let container = _source.findInRange(FIND_STRUCTURES, 1, {
+			let container = _source.pos.findInRange(FIND_STRUCTURES, 1, {
 				filter: { structureType: STRUCTURE_CONTAINER },
 			})[0];
 			let container_pos;
