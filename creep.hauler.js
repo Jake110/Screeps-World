@@ -106,7 +106,11 @@ module.exports = {
 			target = get_collection_target(creep, [FIND_MY_CREEPS]);
 		}
 		let creep_memory = creep.memory;
-		if (!target && creep_memory.role == "hauler") {
+		if (
+			!target &&
+			creep_memory.role == "hauler" &&
+			creep.room.memory.storage
+		) {
 			target = get_collection_target(creep, [FIND_STRUCTURES], true);
 		}
 		if (target) {
