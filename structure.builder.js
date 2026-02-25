@@ -16,7 +16,6 @@ function step_with_coord(
 }
 
 function step_with_pos(pos, target, pos_return = false, leave = false) {
-	console.log("step_with_pos() pos: " + pos);
 	let x = pos.x;
 	let y = pos.y;
 	let direction = pos.getDirectionTo(target);
@@ -98,7 +97,6 @@ function place_road(
 	avoid = null,
 ) {
 	let route = [];
-	console.log("Avoid: " + avoid);
 	if (mode == "roads") {
 		route = origin.findPathTo(target, {
 			ignoreCreeps: true,
@@ -131,18 +129,12 @@ function place_road(
 			route.shift();
 		}
 		route.forEach(function (step) {
-			if (avoid) {
-				console.log("Branch Road step: " + memory.pos_to_coord(step));
-			} else {
-				console.log("Main Road Step: " + memory.pos_to_coord(step));
-			}
 			save_road(room, memory.pos_to_coord(step));
 		});
 	} else {
 		let x = origin.x;
 		let y = origin.y;
 		while (x != target.x && y != target.y) {
-			//console.log(x+":"+y)
 			route.push(step_with_coord(x, y, target, room));
 		}
 		for (; range > 0; range--) {
@@ -152,7 +144,6 @@ function place_road(
 			save_road(room, coord);
 		});
 	}
-	console.log("Road Placed");
 	if (link_points) {
 		link_points.outer.forEach(function (link_point) {
 			place_road(
@@ -178,14 +169,12 @@ function place_road_around(
 	full_inner_ring = false,
 	return_inner_ring = false,
 ) {
-	console.log("place_road_around() pos: " + pos);
 	let outer_edges = [0 - radius, radius];
 	let outer_ring = [];
 	let inner_edges = [-1 - radius + thickness, 1 + radius - thickness];
 	let inner_ring = [];
 	for (let n = 0 - radius; n <= radius; n++) {
 		for (let m = 0 - radius; m <= radius; m++) {
-			console.log("tile [" + n + ", " + m + "]");
 			let outer_edge = outer_edges.includes(n) || outer_edges.includes(m);
 			let inner_edge = inner_edges.includes(n) || inner_edges.includes(m);
 			if (
@@ -270,7 +259,6 @@ function save_road(room, coord) {
  * @param {boolean} respect_walls
  **/
 function can_build_here(pos, respect_walls = false) {
-	console.log("can_build_here() pos" + pos);
 	coord = memory.pos_to_coord(pos);
 	let room_memory = Memory.rooms[pos.roomName];
 	if (
@@ -356,9 +344,7 @@ module.exports = {
 	place_controller_road: function (spawn, mode) {
 		let memory_list = spawn.room.memory.source_connections[mode];
 		if (!memory_list.includes("controller")) {
-			//console.log("Placing controller roads")
 			place_road_around(spawn.room, spawn.pos, mode);
-			//console.log("\tSpawn ring placed")
 			place_road_around(
 				spawn.room,
 				spawn.room.controller.pos,
@@ -366,7 +352,6 @@ module.exports = {
 				false,
 				3,
 			);
-			//console.log("\tController ring placed")
 			place_road(
 				spawn.room,
 				spawn.pos,

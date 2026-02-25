@@ -6,7 +6,6 @@ function coord_to_pos(coord, room) {
 }
 
 function pos_to_coord(pos) {
-	console.log("pos_to_coord() pos: " + pos);
 	return pos.x + ":" + pos.y;
 }
 
