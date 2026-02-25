@@ -6,58 +6,77 @@ module.exports = {
 	body: function (role, energy) {
 		let parts = [];
 		let cost = 0;
+		let set_cost;
 		switch (role) {
+			case "grunt":
+				set_cost = 60;
+				if (energy >= 130) {
+					parts = [ATTACK, MOVE];
+					cost = 130;
+					while (energy - cost >= set_cost) {
+						parts = [TOUGH].concat(parts, [MOVE]);
+						cost += set_cost;
+						if (parts.length == 50) {
+							break;
+						}
+					}
+				}
+				break;
 			case "harvester":
-				if (energy >= 200) {
+				set_cost = 100;
+				if (energy >= set_cost * 2) {
 					parts = [CARRY, MOVE];
-					cost = 100;
-					while (energy - cost >= 100) {
+					cost = set_cost;
+					while (energy - cost >= set_cost) {
 						parts = [WORK].concat(parts);
-						cost += 100;
+						cost += set_cost;
 						if (parts.length == 7) {
+							// A single harvester with 5 WORK parts
+							// can fully mine a source node by itself
 							break;
 						}
 					}
 				}
 				break;
 			case "hauler":
-				if (energy >= 100) {
-					let part_set = 0;
-					while (energy - cost >= 100) {
-						part_set++;
-						cost += 100;
-						if (part_set == 10) {
+				set_cost = 100;
+				if (energy >= set_cost) {
+					while (energy - cost >= set_cost) {
+						parts = [CARRY].concat(parts, [MOVE]);
+						cost += set_cost;
+						if (parts.length == 50) {
 							break;
 						}
 					}
-					let carry = [];
-					let move = [];
-					for (; part_set > 0; part_set--) {
-						carry = carry.concat([CARRY]);
-						move = move.concat([MOVE]);
+				}
+				break;
+			case "medic":
+				set_cost = 300;
+				if (energy >= set_cost) {
+					while (energy - cost >= set_cost) {
+						parts = [MOVE].concat(parts, [HEAL]);
+						cost += set_cost;
+						if (parts.length == 50) {
+							break;
+						}
 					}
-					parts = carry.concat(move);
 				}
 				break;
 			case "worker":
-				if (energy >= 250) {
-					let part_set = 0;
-					while (energy - cost >= 250) {
-						part_set++;
-						cost += 250;
-						if (part_set == 10) {
+				set_cost = 200;
+				if (energy >= set_cost) {
+					let work = [];
+					let move = [];
+					while (energy - cost >= set_cost) {
+						work = work.concat([WORK]);
+						parts = parts.concat([CARRY]);
+						move = move.concat([MOVE]);
+						cost += set_cost;
+						if (parts.length == 48) {
 							break;
 						}
 					}
-					let work = [];
-					let carry = [];
-					let move = [];
-					for (; part_set > 0; part_set--) {
-						work = work.concat([WORK]);
-						carry = carry.concat([CARRY]);
-						move = move.concat([MOVE, MOVE]);
-					}
-					parts = work.concat(carry, move);
+					parts = work.concat(parts, move);
 				}
 				break;
 		}
