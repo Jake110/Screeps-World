@@ -11,7 +11,10 @@ module.exports = {
 					combat.avoid_filter &&
 					_source.pos.findInRange(FIND_MY_CREEPS, 5, {
 						filter: function (_creep) {
-							return _creep.memory.role == "harvester";
+							return (
+								_creep.memory.role == "harvester" &&
+								_creep.name != creep.name
+							);
 						},
 					}).length == 0
 				);
