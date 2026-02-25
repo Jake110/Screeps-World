@@ -1,18 +1,20 @@
-const hauler = require("creep.hauler")
+const hauler = require("creep.hauler");
 const worker = require("creep.worker");
 
 module.exports = {
 	/** @param {Creep} creep **/
 	run: function (creep) {
-		hauler.capacity_check(creep, RESOURCE_ENERGY)
+		hauler.capacity_check(creep, RESOURCE_ENERGY);
 		if (creep.memory.full) {
-			if (hauler.recharge(creep)) {
-				return null
+			if (!creep.room.memory.storage) {
+				if (hauler.recharge(creep)) {
+					return null;
+				}
 			}
 			if (worker.build(creep)) {
-				return null
+				return null;
 			}
-			worker.upgrade(creep)
+			worker.upgrade(creep);
 		} else {
 			worker.collect(creep);
 		}
