@@ -81,15 +81,15 @@ module.exports = {
 		}
 	},
 	collect: function (creep) {
-		let target = hauler.get_collection_target(creep, [
+		let target = get_collection_target(creep, [
 			FIND_DROPPED_RESOURCES,
 			FIND_TOMBSTONES,
 		]);
 		if (!target) {
-			target = hauler.get_collection_target(creep, [FIND_STRUCTURES]);
+			target = get_collection_target(creep, [FIND_STRUCTURES]);
 		}
 		if (!target) {
-			target = hauler.get_collection_target(creep, [FIND_MY_CREEPS]);
+			target = get_collection_target(creep, [FIND_MY_CREEPS]);
 		}
 		if (target) {
 			let result;
