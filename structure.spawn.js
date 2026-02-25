@@ -199,6 +199,7 @@ module.exports = {
 				}
 			}
 			if (creep.memory.recycle) {
+				console.log("Recycling: " + creep.name);
 				let _spawn = saved_spawn(room, creep, "recycle");
 				if (_spawn) {
 					let result = _spawn.recycleCreep(creep);
@@ -215,6 +216,7 @@ module.exports = {
 				}
 			}
 			if (creep.memory.renew) {
+				console.log("Renewing: " + creep.name);
 				let _spawn = saved_spawn(room, creep, "renew");
 				if (_spawn) {
 					if (_spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
