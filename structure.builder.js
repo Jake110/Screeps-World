@@ -16,6 +16,7 @@ function step_with_coord(
 }
 
 function step_with_pos(pos, target, pos_return = false, leave = false) {
+	console.log("step_with_pos() pos: " + pos);
 	let x = pos.x;
 	let y = pos.y;
 	let direction = pos.getDirectionTo(target);
@@ -187,12 +188,14 @@ function place_road_around(
 	full_inner_ring = false,
 	return_inner_ring = false,
 ) {
+	console.log("place_road_around() pos: " + pos);
 	let outer_edges = [0 - radius, radius];
 	let outer_ring = [];
 	let inner_edges = [-1 - radius + thickness, 1 + radius - thickness];
 	let inner_ring = [];
 	for (let n = 0 - radius; n <= radius; n++) {
 		for (let m = 0 - radius; m <= radius; m++) {
+			console.log("tile [" + n + ", " + m + "]");
 			let outer_edge = outer_edges.includes(n) || outer_edges.includes(m);
 			let inner_edge = inner_edges.includes(n) || inner_edges.includes(m);
 			if (
@@ -277,6 +280,7 @@ function save_road(room, coord) {
  * @param {boolean} respect_walls
  **/
 function can_build_here(pos, respect_walls = false) {
+	console.log("can_build_here() pos" + pos);
 	coord = memory.pos_to_coord(pos);
 	let room_memory = Memory.rooms[pos.roomName];
 	if (
@@ -427,6 +431,7 @@ module.exports = {
 			},
 		});
 		if (_source) {
+			console.log("Placing Road to Source: " + _source);
 			let ring_roads = place_road_around(
 				spawn.room,
 				_source.pos,
@@ -437,12 +442,14 @@ module.exports = {
 				true,
 				true,
 			);
+			console.log("Source Ring Road Placed");
 			let container_pos = place_container(
 				spawn.room,
 				ring_roads.inner,
 				spawn.pos,
 				mode,
 			);
+			console.log("Container Placed");
 			place_road(
 				spawn.room,
 				spawn.pos,
