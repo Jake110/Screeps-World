@@ -63,10 +63,14 @@ function step_with_pos(pos, target, pos_return = false, leave = false) {
 	return x + ":" + y;
 }
 
-function place_container(room, pos_list, spawn_pos) {
+function place_container(room, coord_list, spawn_pos) {
+	console.log("place_container() args");
+	console.log("\troom: " + room);
+	console.log("\tcoord_list: " + coord_list);
+	console.log("\tspawn_pos: " + spawn_pos);
 	let harvest_points = [];
-	pos_list.forEach(function (pos) {
-		harvest_points.push(memory.coord_to_pos(pos, room));
+	coord_list.forEach(function (coord) {
+		harvest_points.push(memory.coord_to_pos(coord, room));
 	});
 	let options = [];
 	while (harvest_points.length > 1) {
