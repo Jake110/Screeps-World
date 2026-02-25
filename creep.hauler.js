@@ -46,20 +46,25 @@ function get_collection_target(creep, find_list) {
 		} else {
 			energy = option.amount;
 		}
+		let distance = creep.pos.findPathTo(option).length;
 		creep.room
 			.find(FIND_MY_CREEPS, {
 				filter: function (_creep) {
 					let creep_memory = _creep.memory;
-					if (_creep.name == creep.name || !creep_memory._move) {
+					if (
+						_creep.name == creep.name ||
+						!creep_memory._move ||
+						!["hauler", "worker"].includes(creep_memory.role) ||
+						creep_memory.full ||
+						distance < _creep.pos.findPathTo(option).length
+					) {
 						return false;
 					}
 					let dest = creep_memory._move.dest;
 					return (
 						dest.x == option.pos.x &&
 						dest.y == option.pos.y &&
-						dest.room == option.pos.roomName &&
-						["hauler", "worker"].includes(creep_memory.role) &&
-						!creep_memory.full
+						dest.room == option.pos.roomName
 					);
 				},
 			})
@@ -67,7 +72,6 @@ function get_collection_target(creep, find_list) {
 				energy -= _creep.store.getFreeCapacity();
 			});
 		if (energy > 0) {
-			let distance = creep.pos.findPathTo(option).length;
 			if (distance < chosen_distance) {
 				chosen = option;
 				chosen_distance = distance;
