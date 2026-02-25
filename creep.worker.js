@@ -37,6 +37,9 @@ module.exports = {
 				// No Harvesters found in room
 				if (creep.room.find(FIND_SOURCES).length == 0) {
 					// No Harvesters required in this room
+					if (creep.store[RESOURCE_ENERGY] > 0) {
+						creep.memory.full = true;
+					}
 					return null;
 				}
 				if (
