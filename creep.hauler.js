@@ -130,7 +130,7 @@ module.exports = {
 	get_collection_target: get_collection_target,
 	recharge: function (creep) {
 		let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-			filter: (structure) => {
+			filter: function(structure) {
 				return (
 					[
 						STRUCTURE_EXTENSION,
