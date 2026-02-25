@@ -7,17 +7,19 @@ module.exports = {
 	harvest: function (creep) {
 		let target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
 			filter: function (_source) {
-				return (
-					combat.avoid_filter &&
-					_source.pos.findInRange(FIND_MY_CREEPS, 5, {
-						filter: function (_creep) {
-							return (
-								_creep.memory.role == "harvester" &&
-								_creep.name != creep.name
-							);
-						},
-					}).length == 0
-				);
+				let no_rivals = true;
+				if (creep.body.length > 4) {
+					no_rivals =
+						_source.pos.findInRange(FIND_MY_CREEPS, 5, {
+							filter: function (_creep) {
+								return (
+									_creep.memory.role == "harvester" &&
+									_creep.name != creep.name
+								);
+							},
+						}).length == 0;
+				}
+				return combat.avoid_filter && no_rivals;
 			},
 		});
 		if (target) {
