@@ -6,7 +6,16 @@ module.exports = {
 	/** @param {Creep} creep **/
 	harvest: function (creep) {
 		let target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
-			filter: combat.avoid_filter,
+			filter: function (_source) {
+				return (
+					combat.avoid_filter &&
+					_source.pos.findInRange(FIND_MY_CREEPS, 5, {
+						filter: function (_creep) {
+							return _creep.memory.role == "harvester";
+						},
+					}).length == 0
+				);
+			},
 		});
 		if (target) {
 			if (creep.harvest(target) == ERR_NOT_IN_RANGE) {
