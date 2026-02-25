@@ -1,6 +1,7 @@
 const combat = require("utility.combat");
 
 function get_collection_target(creep, find_list) {
+	let creep_memory = creep.memory;
 	let options = [];
 	find_list.forEach(function (find_name) {
 		options = options.concat(
@@ -13,10 +14,13 @@ function get_collection_target(creep, find_list) {
 						return option.resourceType == RESOURCE_ENERGY;
 					}
 					if (option.body) {
-						let creep_memory = option.memory;
+						let _creep_memory = option.memory;
 						return (
-							creep_memory.role == "harvester" &&
-							creep_memory.full
+							((creep_memory.role == "hauler" &&
+								_creep_memory.role == "harvester") ||
+								(creep_memory.role == "worker" &&
+									_creep_memory.role == "hauler")) &&
+							_creep_memory.full
 						);
 					}
 					if (options.deathTime) {
@@ -24,7 +28,7 @@ function get_collection_target(creep, find_list) {
 					}
 					let structure = STRUCTURE_CONTAINER;
 					if (
-						creep.memory.role == "worker" &&
+						creep_memory.role == "worker" &&
 						creep.room.memory.storage
 					) {
 						structure = STRUCTURE_STORAGE;
