@@ -23,7 +23,10 @@ function get_collection_target(creep, find_list) {
 						return option.store[RESOURCE_ENERGY] > 0;
 					}
 					let structure = STRUCTURE_CONTAINER;
-					if (creep.memory.role == "worker" && creep.room.storage) {
+					if (
+						creep.memory.role == "worker" &&
+						creep.room.memory.storage
+					) {
 						structure = STRUCTURE_STORAGE;
 					}
 					return (
@@ -127,12 +130,9 @@ module.exports = {
 			},
 		});
 		if (!target && creep.memory.role == "hauler") {
-			let storage = creep.room.find(FIND_MY_STRUCTURES, {
+			target = creep.room.find(FIND_MY_STRUCTURES, {
 				filter: { structureType: STRUCTURE_STORAGE },
 			})[0];
-			if (storage.length > 0) {
-				target = storage[0];
-			}
 			if (!target) {
 				target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 					filter: function (_creep) {
