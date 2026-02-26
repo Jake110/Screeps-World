@@ -1,3 +1,4 @@
+const role_grunt = require("role.grunt");
 const role_harvester = require("role.harvester");
 const role_hauler = require("role.hauler");
 const role_worker = require("role.worker");
@@ -91,6 +92,9 @@ module.exports = {
 			let creep_memory = creep.memory;
 			if (!creep_memory.recycle && !creep_memory.renew) {
 				switch (creep_memory.role) {
+					case "grunt":
+						role_grunt.run(creep);
+						break;
 					case "harvester":
 						role_harvester.run(creep);
 						break;
@@ -116,7 +120,12 @@ module.exports = {
 				);
 			},
 		}).length;
+		let hostiles = room.find(FIND_HOSTILE_CREEPS);
 		return [
+			{
+				name: "grunt",
+				max: hostiles * 4,
+			},
 			{
 				name: "harvester",
 				max: source_count,
