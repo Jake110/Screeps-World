@@ -61,6 +61,48 @@ module.exports = {
 			}).length == 0
 		);
 	},
+	melee_target: function (creep) {
+		let target_check = function (hostile, distance, my_stuff) {
+			for (let index = 0; index < my_stuff.length; index++) {
+				let mine = my_stuff[index];
+				let dist = hostile.pos.findPathTo(mine).length;
+				if (dist < distance) {
+					return { target: hostile, distance: dist };
+				}
+			}
+			return false;
+		};
+		let target;
+		let distance = 999;
+		creep.room.find(FIND_HOSTILE_CREEPS).forEach(function (hostile) {
+			new_target = target_check(
+				hostile,
+				distance,
+				hostile.pos.findInRange(FIND_MY_CREEPS, 15),
+			);
+			if (!new_target) {
+				new_target = target_check(
+					hostile,
+					distance,
+					hostile.pos.findInRange(FIND_MY_STRUCTURES, 15),
+				);
+			}
+			if (!new_target) {
+				new_target = target_check(
+					hostile,
+					distance,
+					hostile.pos.findInRange(FIND_STRUCTURES, 15, {
+						filter: { structureType: STRUCTURE_CONTAINER },
+					}),
+				);
+			}
+			if (new_target) {
+				target = new_target.target;
+				distance = new_target.distance;
+			}
+		});
+		return target;
+	},
 	ranged_target: function (pos, range = 50) {
 		let hostiles = pos.findInRange(FIND_HOSTILE_CREEPS, range);
 		let towers = pos.findInRange(FIND_HOSTILE_STRUCTURES, range, {
