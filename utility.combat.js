@@ -112,4 +112,5 @@ module.exports = {
 		});
 		return weigh_targets(hostiles.concat(towers));
 	},
+	stand_down_in: 500,
 };

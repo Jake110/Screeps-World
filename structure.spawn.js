@@ -1,4 +1,5 @@
 const builder = require("structure.builder");
+const combat = require("utility.combat");
 const creeper = require("creep.control");
 const memory = require("utility.memory");
 
@@ -81,12 +82,18 @@ module.exports = {
 					);
 					extension_energy +=
 						spawn.store[RESOURCE_ENERGY] - creep.cost;
+					creep_memory = {
+						rerecycle: false,
+						renew: false,
+						role: role.name,
+					};
+					if (["grunt", "medic"].includes(role.name)) {
+						creep_memory.stand_down_in = combat.stand_down_in;
+					} else {
+						creep_memory.full = false;
+					}
 					spawn.spawnCreep(creep.parts, new_name, {
-						memory: {
-							recycle: false,
-							renew: false,
-							role: role.name,
-						},
+						memory: creep_memory,
 					});
 					used_spawners.push(spawn.id);
 					if (spawn.memory.recycling) {
