@@ -120,7 +120,7 @@ module.exports = {
 				);
 			},
 		}).length;
-		let hostiles = room.find(FIND_HOSTILE_CREEPS);
+		let hostiles = room.find(FIND_HOSTILE_CREEPS).length;
 		return [
 			{
 				name: "grunt",
