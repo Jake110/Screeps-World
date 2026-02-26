@@ -127,6 +127,10 @@ module.exports = {
 				max: hostiles * 4,
 			},
 			{
+				name: "medic",
+				max: hostiles * 2,
+			},
+			{
 				name: "harvester",
 				max: source_count,
 			},
@@ -136,7 +140,7 @@ module.exports = {
 			},
 			{
 				name: "worker",
-				max: 4,
+				max: source_count,
 			},
 		];
 	},

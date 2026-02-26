@@ -61,6 +61,13 @@ module.exports = {
 			}).length == 0
 		);
 	},
+	heal_target: function (creep) {
+		return creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+			filter: function (my_creep) {
+				return my_creep.hits < my_creep.hitsMax;
+			},
+		});
+	},
 	melee_target: function (creep) {
 		let target_check = function (hostile, distance, my_stuff) {
 			for (let index = 0; index < my_stuff.length; index++) {
