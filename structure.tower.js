@@ -15,10 +15,14 @@ module.exports = {
 				}
 				if (energy > capacity / 4) {
 					let damaged_structure = tower.pos.findClosestByRange(
-						FIND_MY_STRUCTURES,
+						FIND_STRUCTURES,
 						{
 							filter: function (structure) {
-								if (tower.pos.inRangeTo(structure, range)) {
+								if (
+									!tower.pos.inRangeTo(structure, range) ||
+									(structure.owner && !structure.my)
+								) {
+									// Ignore structures out of range and owned by another player
 									return false;
 								}
 								return structure.hits < structure.hitsMax;
