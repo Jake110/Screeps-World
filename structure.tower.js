@@ -7,13 +7,18 @@ module.exports = {
 		}).forEach(function (tower) {
 			let energy = tower.store[RESOURCE_ENERGY];
 			let capacity = tower.store.getCapacity();
-			[10, 20, 50].forEach(function (range) {
-				let hostile = combat.ranged_target(tower.pos, range);
-				if (hostile) {
-					tower.attack(hostile);
-					return null;
+			let acted = false;
+			[(10, 20, 50)].forEach(function (range) {
+				if (!acted) {
+					let hostile = combat.ranged_target(tower.pos, range);
+					if (hostile) {
+						tower.attack(hostile);
+						acted = true;
+					}
 				}
-				if (energy > capacity / 4) {
+			});
+			[(10, 20, 50)].forEach(function (range) {
+				if (!acted && energy > capacity / 4) {
 					let damaged_structure = tower.pos.findClosestByRange(
 						FIND_STRUCTURES,
 						{
@@ -31,11 +36,11 @@ module.exports = {
 					);
 					if (damaged_structure) {
 						tower.repair(damaged_structure);
-						return null;
+						acted = true;
 					}
 				}
 			});
-			if (energy > capacity / 3) {
+			if (!acted && energy > capacity / 3) {
 				let damaged_creep = tower.pos.findClosestByRange(
 					FIND_MY_CREEPS,
 					{
@@ -46,7 +51,7 @@ module.exports = {
 				);
 				if (damaged_creep) {
 					tower.heal(damaged_creep);
-					return null;
+					acted = true;
 				}
 			}
 		});
