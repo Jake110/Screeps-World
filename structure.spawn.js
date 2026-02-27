@@ -83,7 +83,7 @@ module.exports = {
 					extension_energy +=
 						spawn.store[RESOURCE_ENERGY] - creep.cost;
 					creep_memory = {
-						rerecycle: false,
+						recycle: false,
 						renew: false,
 						role: role.name,
 					};
