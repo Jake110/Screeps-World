@@ -77,7 +77,9 @@ function place_container(room, source_pos, spawn_pos) {
 		}
 	}
 	let pos = spawn_pos.findClosestByPath(harvest_points);
-	room.memory.containers.push(memory.pos_to_coord(pos));
+	let coord = memory.pos_to_coord(pos);
+	room.memory.containers.push(coord);
+	save_road(room, coord);
 	return pos;
 }
 
