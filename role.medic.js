@@ -5,7 +5,6 @@ module.exports = {
 		let target = combat.heal_target(creep);
 		if (target) {
 			creep_memory.stand_down_in = combat.stand_down_in;
-
 			if (creep.heal(target) == ERR_NOT_IN_RANGE) {
 				creep.moveTo(target, {
 					visualizePathStyle: { stroke: "#008000" },
@@ -15,7 +14,7 @@ module.exports = {
 		} else if (creep_memory.stand_down_in == 0) {
 			let spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
 			if (spawn.recycleCreep(creep) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(_spawn, {
+				creep.moveTo(spawn, {
 					visualizePathStyle: { stroke: "#000000" },
 				});
 			}
