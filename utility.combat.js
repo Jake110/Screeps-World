@@ -1,4 +1,4 @@
-function weigh_targets(pos, hostiles) {
+function weigh_targets(pos, range, hostiles) {
 	let max_weight = 0;
 	let target = null;
 	hostiles.forEach(function (hostile) {
@@ -128,7 +128,7 @@ module.exports = {
 				return structure.structureType == STRUCTURE_TOWER;
 			},
 		});
-		return weigh_targets(pos, hostiles.concat(towers));
+		return weigh_targets(pos, range, hostiles.concat(towers));
 	},
 	stand_down_in: 500,
 };
