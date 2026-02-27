@@ -108,6 +108,17 @@ module.exports = {
 				distance = new_target.distance;
 			}
 		});
+		if (!target && creep.memory.active_defence) {
+			target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+			if (!target) {
+				target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+					filter: { structureType: STRUCTURE_TOWER },
+				});
+			}
+			if (!target) {
+				target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES);
+			}
+		}
 		return target;
 	},
 	ranged_target: function (pos, range = 50) {
