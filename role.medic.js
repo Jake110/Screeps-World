@@ -2,6 +2,7 @@ const combat = require("utility.combat");
 
 module.exports = {
 	run: function (creep) {
+		let creep_memory = creep.memory;
 		let target = combat.heal_target(creep);
 		if (target) {
 			creep_memory.stand_down_in = combat.stand_down_in;
