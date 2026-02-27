@@ -164,7 +164,7 @@ module.exports = {
 			},
 			{
 				name: "worker",
-				max: source_count,
+				max: Math.ceil(1.5 * source_count),
 			},
 		];
 	},
