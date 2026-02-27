@@ -18,7 +18,7 @@ module.exports = {
 						FIND_MY_STRUCTURES,
 						{
 							filter: function (structure) {
-								if (tower.inRangeTo(structure, range)) {
+								if (tower.pos.inRangeTo(structure, range)) {
 									return false;
 								}
 								return structure.hits < structure.hitsMax;
