@@ -144,7 +144,7 @@ module.exports = {
 				);
 			},
 		}).length;
-		let hostiles = room.find(FIND_HOSTILE_CREEPS).length;
+		let hostiles = 0; //room.find(FIND_HOSTILE_CREEPS).length;
 		return [
 			{
 				name: "grunt",
