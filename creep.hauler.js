@@ -174,6 +174,21 @@ module.exports = {
 					},
 				});
 			}
+			if (!target) {
+				if (creep.store.getFreeCapacity() > 0) {
+					creep_memory.full = false;
+				} else {
+					target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+						filter: function (structure) {
+							if (
+								structure.structureType == STRUCTURE_CONTAINER
+							) {
+								return structure.store.getFreeCapacity > 0;
+							}
+						},
+					});
+				}
+			}
 		}
 		if (target) {
 			if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
