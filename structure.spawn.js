@@ -88,8 +88,10 @@ module.exports = {
 						role: role.name,
 					};
 					if (["grunt", "medic"].includes(role.name)) {
-						creep_memory.active_defence = false;
 						creep_memory.stand_down_in = combat.stand_down_in;
+						if (role.name == "grunt") {
+							creep_memory.active_defence = false;
+						}
 					} else {
 						creep_memory.full = false;
 					}

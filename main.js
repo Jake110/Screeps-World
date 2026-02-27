@@ -25,6 +25,9 @@ module.exports.loop = function () {
 		// Spawn Control
 		spawn.main(room);
 
+		// Active Defence Check
+		creep.active_defence_check(room);
+
 		// Construction
 		builder.place_towers(room);
 		/*console.log(
