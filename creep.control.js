@@ -1,6 +1,7 @@
 const role_grunt = require("role.grunt");
 const role_harvester = require("role.harvester");
 const role_hauler = require("role.hauler");
+const role_medic = require("role.medic");
 const role_worker = require("role.worker");
 
 module.exports = {
@@ -100,6 +101,9 @@ module.exports = {
 						break;
 					case "hauler":
 						role_hauler.run(creep);
+						break;
+					case "medic":
+						role_medic.run(creep);
 						break;
 					case "worker":
 						role_worker.run(creep);
