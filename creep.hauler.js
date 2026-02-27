@@ -23,7 +23,7 @@ function get_collection_target(creep, find_list, storage_override = false) {
 							_creep.store.getFreeCapacity() > 0
 						);
 					}
-					if (options.deathTime) {
+					if (option.deathTime) {
 						return option.store[RESOURCE_ENERGY] > 0;
 					}
 					let structure = STRUCTURE_CONTAINER;
