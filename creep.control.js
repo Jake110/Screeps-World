@@ -6,7 +6,8 @@ const role_worker = require("role.worker");
 
 module.exports = {
 	active_defence_check: function (room) {
-		if (room.find(FIND_HOSTILE_CREEPS).length > 0) {
+		let hostiles = room.find(FIND_HOSTILE_CREEPS).length;
+		if (hostiles > 0) {
 			let grunts = room.find(FIND_MY_CREEPS, {
 				filter: function (creep) {
 					return creep.memory.role == "grunt";
