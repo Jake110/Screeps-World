@@ -6,7 +6,7 @@ module.exports = {
 	run: function (creep) {
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
 		if (creep.memory.full) {
-			if (!creep.room.memory.storage) {
+			if (creep.room.controller.level < 3) {
 				if (hauler.recharge(creep)) {
 					return null;
 				}
