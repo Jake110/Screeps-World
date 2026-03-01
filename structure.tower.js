@@ -79,7 +79,7 @@ module.exports = {
 			return tower.pos.findClosestByRange(FIND_STRUCTURES, {
 				filter: function (structure) {
 					if (
-						(structure.owner && !strustructure.my) ||
+						(structure.owner && !structure.my) ||
 						![STRUCTURE_RAMPART, STRUCTURE_WALL].includes(
 							structure.structureType,
 						)
