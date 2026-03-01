@@ -92,11 +92,14 @@ module.exports = {
 			});
 		};
 		[emergency_repair, repair, bolster_defence].forEach(function (action) {
-			while (towers.length > 0) {
+			let target = true;
+			while (target) {
 				let tower = towers.pop();
-				let target = action(tower);
+				target = action(tower);
 				if (target) {
 					tower.repair(target);
+				} else {
+					towers.push(target);
 				}
 			}
 		});
