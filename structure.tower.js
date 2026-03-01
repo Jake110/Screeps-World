@@ -94,6 +94,7 @@ module.exports = {
 		[emergency_repair, repair, bolster_defence].forEach(function (action) {
 			let target = true;
 			while (target && towers.length > 0) {
+				console.log(towers)
 				let tower = towers.pop();
 				target = action(tower);
 				if (target) {
