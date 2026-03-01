@@ -17,29 +17,29 @@ module.exports = {
 					}
 				}
 			});
-			[(10, 20, 50)].forEach(function (range) {
-				if (!acted && energy > capacity / 4) {
-					let damaged_structure = tower.pos.findClosestByRange(
-						FIND_STRUCTURES,
-						{
-							filter: function (structure) {
-								if (
-									!tower.pos.inRangeTo(structure, range) ||
-									(structure.owner && !structure.my)
-								) {
-									// Ignore structures out of range and owned by another player
-									return false;
-								}
-								return structure.hits < structure.hitsMax;
-							},
+			if (!acted && energy > capacity / 4) {
+				let damaged_structure = tower.pos.findClosestByRange(
+					FIND_STRUCTURES,
+					{
+						filter: function (structure) {
+							if (structure.owner && !structure.my) {
+								// Ignore structures out of range and owned by another player
+								return false;
+							}
+							return (
+								structure.hits < structure.hitsMax &&
+								![STRUCTURE_RAMPART, STRUCTURE_WALL].includes(
+									structure.structureType,
+								)
+							);
 						},
-					);
-					if (damaged_structure) {
-						tower.repair(damaged_structure);
-						acted = true;
-					}
+					},
+				);
+				if (damaged_structure) {
+					tower.repair(damaged_structure);
+					acted = true;
 				}
-			});
+			}
 			if (!acted && energy > capacity / 3) {
 				let damaged_creep = tower.pos.findClosestByRange(
 					FIND_MY_CREEPS,
