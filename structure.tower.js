@@ -55,7 +55,7 @@ module.exports = {
 						// Ignore ramparts that aren't mine and everything else that isn't a wall
 						return false;
 					}
-					return structure.hits < structure.hitsMax / 4;
+					return structure.hits < 10000;
 				},
 			});
 		};
