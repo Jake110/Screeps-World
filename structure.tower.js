@@ -20,8 +20,10 @@ module.exports = {
 				tower.pos
 					.findInRange(FIND_MY_CREEPS, range)
 					.forEach(function (creep) {
-						if (creep.hits / creep.hitsMax < hit_percentage) {
+						let hit_perc = creep.hits / creep.hitsMax;
+						if (hit_perc < hit_percentage) {
 							most_damaged_creep = creep;
+							hit_percentage = hit_perc;
 						}
 					});
 				if (most_damaged_creep) {
@@ -76,20 +78,27 @@ module.exports = {
 			});
 		};
 		let bolster_defence = function (tower) {
-			return tower.pos.findClosestByRange(FIND_STRUCTURES, {
-				filter: function (structure) {
-					if (
-						(structure.owner && !structure.my) ||
-						![STRUCTURE_RAMPART, STRUCTURE_WALL].includes(
-							structure.structureType,
-						)
-					) {
-						// Ignore ramparts that aren't mine and everything else that isn't a wall
-						return false;
+			let weakest;
+			let hit_percentage = 1;
+			tower.room
+				.find(FIND_STRUCTURES, {
+					filter: function (structure) {
+						return (
+							(!structure.owner || structure.my) &&
+							[STRUCTURE_RAMPART, STRUCTURE_WALL].includes(
+								structure.structureType,
+							)
+						);
+					},
+				})
+				.forEach(function (defence) {
+					let hit_perc = defence.hits / defence.hitsMax;
+					if (hit_perc < hit_percentage) {
+						weakest = defence;
+						hit_percentage = hit_perc;
 					}
-					return structure.hits < structure.hitsMax;
-				},
-			});
+				});
+			return weakest;
 		};
 		[emergency_repair, repair, bolster_defence].forEach(function (action) {
 			let target = true;
