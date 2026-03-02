@@ -40,7 +40,8 @@ module.exports = {
 			});
 			if (
 				!acted &&
-				tower.store[RESOURCE_ENERGY] > tower.store.getCapacity() / 4
+				tower.store[RESOURCE_ENERGY] >
+					tower.store.getCapacity(RESOURCE_ENERGY) / 2
 			) {
 				towers.push(tower);
 			}
