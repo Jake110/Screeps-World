@@ -223,10 +223,18 @@ module.exports = {
 			if (creep.memory.renew) {
 				let _spawn = saved_spawn(room, creep, "renew");
 				if (_spawn) {
-					if (_spawn.renewCreep(creep) == ERR_NOT_IN_RANGE) {
+					let result = _spawn.renewCreep(creep);
+					if (result == ERR_NOT_IN_RANGE) {
 						creep.moveTo(_spawn, {
 							visualizePathStyle: { stroke: "#000000" },
 						});
+					} else if (result == ERR_NOT_ENOUGH_ENERGY) {
+						if (
+							creep.transfer(_spawn, RESOURCE_ENERGY) ==
+							ERR_NOT_ENOUGH_RESOURCES
+						) {
+							creep.memory.renew = false;
+						}
 					}
 					if (creep.ticksToLive >= 1300) {
 						creep.memory.renew = false;
