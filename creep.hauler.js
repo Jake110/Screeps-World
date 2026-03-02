@@ -143,7 +143,7 @@ module.exports = {
 			filter: function (structure) {
 				return (
 					structure.structureType == STRUCTURE_TOWER &&
-					structure.store.getFreeCapacity(RESOURCE_ENERGY) >
+					structure.store[RESOURCE_ENERGY] <
 						structure.store.getCapacity(RESOURCE_ENERGY) / 3
 				);
 			},
