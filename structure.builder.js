@@ -531,17 +531,17 @@ module.exports = {
 			let side_right = [];
 			let side_bottom = [];
 			let side_left = [];
-			let find_exit = function (x, y, side_list) {
+			let find_exit = function (room, x, y, side_list) {
 				let pos = room.getPositionAt(x, y);
 				if (can_build_here(pos, true)) {
 					side_list.push(pos);
 				}
 			};
 			for (let row = 0; row < 50; row++) {
-				find_exit(row, 0, side_top);
-				find_exit(49, row, side_right);
-				find_exit(row, 49, side_bottom);
-				find_exit(0, row, side_left);
+				find_exit(room, row, 0, side_top);
+				find_exit(room, 49, row, side_right);
+				find_exit(room, row, 49, side_bottom);
+				find_exit(room, 0, row, side_left);
 			}
 			side_bottom.reverse();
 			side_left.reverse();
