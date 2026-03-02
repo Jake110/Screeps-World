@@ -345,7 +345,9 @@ function exit_edge_check(room, index, exit_list, clockwise = true) {
 				x++;
 			}
 		}
+		console.log("Getting adjacent position at ["+x+", "+y+"]")
 		let pos_adjacent = room.getPositionAt(x, y);
+		console.log("Position: "+pos_adjacent)
 		place_wall(pos_adjacent, 1);
 		place_wall(pos_adjacent);
 	}
@@ -527,24 +529,26 @@ module.exports = {
 	place_walls: function (room) {
 		let room_memory = room.memory;
 		if (room.controller.level >= 3 && room_memory.walls.length == 0) {
+			console.log("Starting wall placement")
 			let side_top = [];
 			let side_right = [];
 			let side_bottom = [];
 			let side_left = [];
-			let find_exit = function (room, x, y, side_list) {
+			let find_exit = function (x, y, side_list) {
 				let pos = room.getPositionAt(x, y);
 				if (can_build_here(pos, true)) {
 					side_list.push(pos);
 				}
 			};
 			for (let row = 0; row < 50; row++) {
-				find_exit(room, row, 0, side_top);
-				find_exit(room, 49, row, side_right);
-				find_exit(room, row, 49, side_bottom);
-				find_exit(room, 0, row, side_left);
+				find_exit(row, 0, side_top);
+				find_exit(49, row, side_right);
+				find_exit(row, 49, side_bottom);
+				find_exit(0, row, side_left);
 			}
 			side_bottom.reverse();
 			side_left.reverse();
+			console.log("Placing Walls")
 			let exit_list = side_top.concat(side_right, side_bottom, side_left);
 			for (let index = 0; index < exit_list.length; index++) {
 				exit_edge_check(room, index, exit_list, true);
