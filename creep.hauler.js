@@ -144,7 +144,7 @@ module.exports = {
 				return (
 					structure.structureType == STRUCTURE_TOWER &&
 					structure.store.getFreeCapacity(RESOURCE_ENERGY) >
-						structure.store.getCapacity() / 3
+						structure.store.getCapacity(RESOURCE_ENERGY) / 3
 				);
 			},
 		});
