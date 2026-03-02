@@ -100,7 +100,7 @@ module.exports = {
 			FIND_TOMBSTONES,
 		]);
 		if (!target) {
-			target = get_collection_target(creep, [FIND_RUINS])
+			target = get_collection_target(creep, [FIND_RUINS]);
 		}
 		if (!target) {
 			target = get_collection_target(creep, [FIND_STRUCTURES]);
@@ -142,15 +142,26 @@ module.exports = {
 		let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 			filter: function (structure) {
 				return (
-					[
-						STRUCTURE_EXTENSION,
-						STRUCTURE_SPAWN,
-						STRUCTURE_TOWER,
-					].includes(structure.structureType) &&
-					structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+					structure.structureType == STRUCTURE_TOWER &&
+					structure.store.getFreeCapacity(RESOURCE_ENERGY) >
+						structure.getCapacity() / 3
 				);
 			},
 		});
+		if (!target) {
+			target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+				filter: function (structure) {
+					return (
+						[
+							STRUCTURE_EXTENSION,
+							STRUCTURE_SPAWN,
+							STRUCTURE_TOWER,
+						].includes(structure.structureType) &&
+						structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+					);
+				},
+			});
+		}
 		let creep_memory = creep.memory;
 		if (!target && creep_memory.role == "harvester") {
 			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
