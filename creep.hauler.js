@@ -20,10 +20,10 @@ function get_collection_target(creep, find_list, storage_override = false) {
 								_creep_memory.role == "harvester") ||
 								(creep_memory.role == "worker" &&
 									_creep_memory.role == "hauler")) &&
-							_creep.store.getFreeCapacity() > 0
+							option.store.getFreeCapacity() > 0
 						);
 					}
-					if (option.deathTime) {
+					if (option.deathTime || option.destroyTime) {
 						return option.store[RESOURCE_ENERGY] > 0;
 					}
 					let structure = STRUCTURE_CONTAINER;
@@ -99,6 +99,9 @@ module.exports = {
 			FIND_DROPPED_RESOURCES,
 			FIND_TOMBSTONES,
 		]);
+		if (!target) {
+			target = get_collection_target(creep, [FIND_RUINS])
+		}
 		if (!target) {
 			target = get_collection_target(creep, [FIND_STRUCTURES]);
 		}

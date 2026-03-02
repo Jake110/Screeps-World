@@ -10,7 +10,7 @@ module.exports = {
 				let no_rivals = true;
 				if (creep.body.length > 4) {
 					no_rivals =
-						_source.pos.findInRange(FIND_MY_CREEPS, 5, {
+						_source.pos.findInRange(FIND_MY_CREEPS, 2, {
 							filter: function (_creep) {
 								return (
 									_creep.memory.role == "harvester" &&
