@@ -83,6 +83,24 @@ function place_container(room, source_pos, spawn_pos) {
 	return pos;
 }
 
+function place_wall(room, pos, dist = 2) {
+	let x = pos.x;
+	let y = pos.y;
+	if (pos.x == 0) {
+		x = pos.x + dist;
+	} else if (pos.x == 49) {
+		x = pos.x - dist;
+	} else if (pos.y == 0) {
+		y = pos.y + dist;
+	} else {
+		y = pos.y - dist;
+	}
+	let pos_wall = room.getPositionAt(x, y);
+	if (can_build_here(pos_wall, true)) {
+		room.memory.walls.push(x + ":" + y);
+	}
+}
+
 /**
  * Map a road from the origin to the target
  * @param {Room} room
@@ -264,17 +282,73 @@ function can_build_here(pos, respect_walls = false) {
 	coord = memory.pos_to_coord(pos);
 	let room_memory = Memory.rooms[pos.roomName];
 	if (
+		room_memory.extensions.includes(coord) ||
 		room_memory.towers.includes(coord) ||
-		room_memory.extensions.includes(coord)
+		room_memory.walls.includes(coord)
 	) {
 		return false;
 	}
-	return _.every(pos.look(), function (item) {
-		if (respect_walls && item.type == LOOK_TERRAIN) {
-			return item.terrain !== "wall";
+	if (respect_walls) {
+		return _.every(pos.look(), function (item) {
+			if (item.type == LOOK_TERRAIN) {
+				return item.terrain !== "wall";
+			}
+			return true;
+		});
+	}
+	return true;
+}
+
+function exit_edge_check(room, index, exit_list, clockwise = true) {
+	let pos = exit_list[index];
+	let index_adjacent;
+	if (clockwise) {
+		if (index == exit_list.length - 1) {
+			index_adjacent = 0;
+		} else {
+			index_adjacent = index + 1;
 		}
-		return true;
-	});
+	} else {
+		if (index == 0) {
+			index_adjacent = exit_list.length - 1;
+		} else {
+			index_adjacent = index - 1;
+		}
+	}
+	let pos_adjacent_index = exit_list[index_adjacent];
+	if (
+		(pos.x != pos_adjacent_index.x ||
+			![pos.y - 1, pos.y + 1].includes(pos_adjacent_index.y)) &&
+		(pos.y != pos_adjacent_index.y ||
+			![pos.x - 1, pos.x + 1].includes(pos_adjacent_index.x))
+	) {
+		let x = pos.x;
+		let y = pos.y;
+		if (clockwise) {
+			if (pos.x == 0) {
+				y--;
+			} else if (pos.x == 49) {
+				y++;
+			} else if (pos.y == 0) {
+				x++;
+			} else {
+				x--;
+			}
+		} else {
+			if (pos.x == 0) {
+				y++;
+			} else if (pos.x == 49) {
+				y--;
+			} else if (pos.y == 0) {
+				x--;
+			} else {
+				x++;
+			}
+		}
+		let pos_adjacent = room.getPositionAt(x, y);
+		place_wall(pos_adjacent, 1);
+		place_wall(pos_adjacent);
+	}
 }
 
 function get_next_adjacent(room, pos, layer = 1) {
@@ -449,5 +523,35 @@ module.exports = {
 			towers_list.push(memory.pos_to_coord(new_site));
 		}
 		this.create_construction_sites(room, "towers", STRUCTURE_TOWER);
+	},
+	place_walls: function (room) {
+		let room_memory = room.memory;
+		if (room.controller.level >= 3 && room_memory.walls.length == 0) {
+			let side_top = [];
+			let side_right = [];
+			let side_bottom = [];
+			let side_left = [];
+			let find_exit = function (x, y, side_list) {
+				let pos = room.getPositionAt(x, y);
+				if (can_build_here(pos, true)) {
+					side_list.push(pos);
+				}
+			};
+			for (let row = 0; row < 50; row++) {
+				find_exit(row, 0, side_top);
+				find_exit(49, row, side_right);
+				find_exit(row, 49, side_bottom);
+				find_exit(0, row, side_left);
+			}
+			side_bottom.reverse();
+			side_left.reverse();
+			let exit_list = side_top.concat(side_right, side_bottom, side_left);
+			for (let index = 0; index < exit_list.length; index++) {
+				exit_edge_check(room, index, exit_list, true);
+				exit_edge_check(room, index, exit_list, false);
+				place_wall(room, exit_list[index]);
+			}
+			this.create_construction_sites(room, "walls", STRUCTURE_WALL)
+		}
 	},
 };
