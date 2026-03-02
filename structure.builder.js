@@ -348,8 +348,8 @@ function exit_edge_check(room, index, exit_list, clockwise = true) {
 		console.log("Getting adjacent position at ["+x+", "+y+"]")
 		let pos_adjacent = room.getPositionAt(x, y);
 		console.log("Position: "+pos_adjacent)
-		place_wall(pos_adjacent, 1);
-		place_wall(pos_adjacent);
+		place_wall(room, pos_adjacent, 1);
+		place_wall(room, pos_adjacent);
 	}
 }
 
