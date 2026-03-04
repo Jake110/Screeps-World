@@ -144,7 +144,7 @@ function place_rampart(room, start, end) {
 	) {
 		pos_wall_list = [];
 		room_memory.walls.forEach(function (wall_coord) {
-			pos_wall_list.push(memory.coord_to_pos(wall_coord));
+			pos_wall_list.push(memory.coord_to_pos(wall_coord, room));
 		});
 		pos_rampart = pos_rampart.findClosestByRange(pos_wall_list);
 	}
@@ -371,7 +371,7 @@ function can_build_here(pos, respect_walls = false) {
 
 function can_get_to_core(room, pos) {
 	let room_memory = room.memory;
-	let pos_core = memory.coord_to_pos(room_memory.core);
+	let pos_core = memory.coord_to_pos(room_memory.core, room);
 	let route = pos.findPathTo(pos_core, {
 		ignoreCreeps: true,
 		costCallback: function (roomName, costMatrix) {
