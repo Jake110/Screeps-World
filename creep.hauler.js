@@ -152,17 +152,25 @@ module.exports = {
 			target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 				filter: function (structure) {
 					return (
-						[
-							STRUCTURE_EXTENSION,
-							STRUCTURE_SPAWN,
-							STRUCTURE_TOWER,
-						].includes(structure.structureType) &&
+						[STRUCTURE_EXTENSION, STRUCTURE_SPAWN].includes(
+							structure.structureType,
+						) &&
 						structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
 					);
 				},
 			});
 		}
 		let creep_memory = creep.memory;
+		if (!target && creep_memory.role == "hauler") {
+			target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+				filter: function (structure) {
+					return (
+						structure.structureType == STRUCTURE_TOWER &&
+						structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+					);
+				},
+			});
+		}
 		if (!target && creep_memory.role == "harvester") {
 			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 				filter: function (_creep) {
