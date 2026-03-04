@@ -137,7 +137,7 @@ function place_rampart(room, start, end) {
 	}
 	pos_mid = room.getPositionAt(x, y);
 	pos_rampart = shift_to_centre(room, pos_mid, 2);
-	room_memory = room.memory
+	room_memory = room.memory;
 	if (
 		!can_build_here(pos_rampart, true) ||
 		!can_get_to_core(room, pos_rampart)
@@ -148,12 +148,12 @@ function place_rampart(room, start, end) {
 		});
 		pos_rampart = pos_rampart.findClosestByRange(pos_wall_list);
 	}
-	coord = memory.pos_to_coord(pos_rampart)
-	const index = room_memory.walls.indexOf(coord)
+	coord = memory.pos_to_coord(pos_rampart);
+	const index = room_memory.walls.indexOf(coord);
 	if (index != -1) {
-		room_memory.walls.splice(index, 1)
+		room_memory.walls.splice(index, 1);
 	}
-	room_memory.ramparts.push(coord)
+	room_memory.ramparts.push(coord);
 }
 
 /**
@@ -699,8 +699,8 @@ module.exports = {
 					}
 				}
 			}
-			this.create_construction_sites(room, "walls", STRUCTURE_WALL);
-			this.create_construction_sites(room, "ramparts", STRUCTURE_RAMPART)
 		}
+		this.create_construction_sites(room, "walls", STRUCTURE_WALL);
+		this.create_construction_sites(room, "ramparts", STRUCTURE_RAMPART);
 	},
 };
