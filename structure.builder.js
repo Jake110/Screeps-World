@@ -451,9 +451,7 @@ function exit_edge_check(
 					x++;
 				}
 			}
-			console.log("Getting adjacent position at [" + x + ", " + y + "]");
 			let pos_adjacent = room.getPositionAt(x, y);
-			console.log("Position: " + pos_adjacent);
 			place_wall(room, pos_adjacent, 1);
 			place_wall(room, pos_adjacent);
 		}
@@ -657,8 +655,8 @@ module.exports = {
 			side_bottom.reverse();
 			side_left.reverse();
 			let exit_list = side_top.concat(side_right, side_bottom, side_left);
-			let exit_start;
-			let exit_end;
+			let exit_start = null;
+			let exit_end = null;
 			for (let index = 0; index < exit_list.length; index++) {
 				exit_edge_check(room, index, exit_list, true);
 				exit_edge_check(room, index, exit_list, false);
@@ -673,19 +671,7 @@ module.exports = {
 			room_memory.walls = verified_walls;
 			for (let index = 0; index < exit_list.length; index++) {
 				if (exit_edge_check(room, index, exit_list, true, false)) {
-					if (exit_end) {
-						place_rampart(
-							room,
-							exit_list[index],
-							exit_list[exit_end],
-						);
-						exit_end = null;
-					} else {
-						exit_start = index;
-					}
-				}
-				if (exit_edge_check(room, index, exit_list, false, false)) {
-					if (exit_start) {
+					if (exit_start != null) {
 						place_rampart(
 							room,
 							exit_list[exit_start],
@@ -694,6 +680,19 @@ module.exports = {
 						exit_start = null;
 					} else {
 						exit_end = index;
+					}
+				} else if (
+					exit_edge_check(room, index, exit_list, false, false)
+				) {
+					if (exit_end != null) {
+						place_rampart(
+							room,
+							exit_list[index],
+							exit_list[exit_end],
+						);
+						exit_end = null;
+					} else {
+						exit_start = index;
 					}
 				}
 			}
