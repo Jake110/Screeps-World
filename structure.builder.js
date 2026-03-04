@@ -332,14 +332,16 @@ function save_road(room, coord) {
 function shift_to_centre(room, pos, dist) {
 	let x = pos.x;
 	let y = pos.y;
-	if (pos.x == 0) {
-		x = pos.x + dist;
-	} else if (pos.x == 49) {
-		x = pos.x - dist;
-	} else if (pos.y == 0) {
-		y = pos.y + dist;
-	} else {
-		y = pos.y - dist;
+	let max = 49 - dist;
+	if (x < dist) {
+		x = dist;
+	} else if (x > max) {
+		x = max;
+	}
+	if (y < dist) {
+		y = dist;
+	} else if (y > max) {
+		y = max;
 	}
 	return room.getPositionAt(x, y);
 }
