@@ -189,7 +189,7 @@ function place_road(
 					memory.build_pos(_room).forEach(adjust_matrix);
 					if (avoid) {
 						avoid.forEach(function (coord) {
-							adjust_matrix(memory.coord_to_pos(coord, room));
+							adjust_matrix(memory.coord_to_pos(coord, _room));
 						});
 					}
 				}
@@ -386,7 +386,7 @@ function can_get_to_core(room, pos) {
 				};
 				memory.build_pos(_room).forEach(adjust_matrix);
 				room_memory.walls.forEach(function (coord) {
-					adjust_matrix(memory.coord_to_pos(coord, room));
+					adjust_matrix(memory.coord_to_pos(coord, _room));
 				});
 			}
 		},
