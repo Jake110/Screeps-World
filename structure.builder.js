@@ -638,7 +638,6 @@ module.exports = {
 	place_walls: function (room) {
 		let room_memory = room.memory;
 		if (room.controller.level >= 3 && room_memory.walls.length == 0) {
-			console.log("Starting wall placement");
 			let side_top = [];
 			let side_right = [];
 			let side_bottom = [];
@@ -657,7 +656,6 @@ module.exports = {
 			}
 			side_bottom.reverse();
 			side_left.reverse();
-			console.log("Placing Walls");
 			let exit_list = side_top.concat(side_right, side_bottom, side_left);
 			let exit_start;
 			let exit_end;
@@ -668,7 +666,7 @@ module.exports = {
 			}
 			let verified_walls = [];
 			room_memory.walls.forEach(function (coord) {
-				if (can_get_to_core(room, memory.coord_to_pos(coord))) {
+				if (can_get_to_core(room, memory.coord_to_pos(coord, room))) {
 					verified_walls.push(coord);
 				}
 			});
