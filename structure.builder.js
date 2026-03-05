@@ -180,7 +180,7 @@ function place_road(
 				let _room = null;
 				try {
 					_room = Game.rooms[roomName];
-				} catch {}
+				} catch (error) {}
 				if (_room != null) {
 					let adjust_matrix = function (pos) {
 						// Set all positions to be non-walkable
@@ -380,7 +380,7 @@ function can_get_to_core(room, pos) {
 			let _room = null;
 			try {
 				_room = Game.rooms[roomName];
-			} catch {}
+			} catch (error) {}
 			if (_room != null) {
 				let adjust_matrix = function (pos) {
 					// Set all positions to be non-walkable
