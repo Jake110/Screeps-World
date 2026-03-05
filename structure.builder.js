@@ -83,6 +83,79 @@ function place_container(room, source_pos, spawn_pos) {
 	return pos;
 }
 
+function place_wall(room, pos, dist = 2) {
+	let pos_wall = shift_to_centre(room, pos, dist);
+	if (can_build_here(pos_wall, true)) {
+		room.memory.walls.push(memory.pos_to_coord(pos_wall));
+	}
+}
+
+function place_rampart(room, start, end) {
+	let x = Math.round((start.x + end.x) / 2);
+	let y = Math.round((start.y + end.y) / 2);
+	let pos_mid;
+	if (![0, 49].includes(x) && ![0, 49].includes(y)) {
+		let x_diff = 49 - x;
+		let y_diff = 49 - y;
+		switch ((x < 25) + ":" + (y < 25)) {
+			case "true:true":
+				if (x > y) {
+					x -= y;
+					y = 0;
+				} else {
+					y -= x;
+					x = 0;
+				}
+				break;
+			case "true:false":
+				if (x > y_diff) {
+					x -= y_diff;
+					y = 49;
+				} else {
+					y += x;
+					x = 0;
+				}
+				break;
+			case "false:true":
+				if (x_diff > y) {
+					x += y;
+					y = 0;
+				} else {
+					y -= x_diff;
+					x = 49;
+				}
+				break;
+			case "false:false":
+				if (x_diff > y_diff) {
+					x += y_diff;
+					y = 49;
+				} else {
+					y += x_diff;
+					x = 49;
+				}
+		}
+	}
+	pos_mid = room.getPositionAt(x, y);
+	pos_rampart = shift_to_centre(room, pos_mid, 2);
+	room_memory = room.memory;
+	if (
+		!can_build_here(pos_rampart, true) ||
+		!can_get_to_core(room, pos_rampart)
+	) {
+		pos_wall_list = [];
+		room_memory.walls.forEach(function (wall_coord) {
+			pos_wall_list.push(memory.coord_to_pos(wall_coord, room));
+		});
+		pos_rampart = pos_rampart.findClosestByRange(pos_wall_list);
+	}
+	coord = memory.pos_to_coord(pos_rampart);
+	const index = room_memory.walls.indexOf(coord);
+	if (index != -1) {
+		room_memory.walls.splice(index, 1);
+	}
+	room_memory.ramparts.push(coord);
+}
+
 /**
  * Map a road from the origin to the target
  * @param {Room} room
@@ -116,7 +189,7 @@ function place_road(
 					memory.build_pos(_room).forEach(adjust_matrix);
 					if (avoid) {
 						avoid.forEach(function (coord) {
-							adjust_matrix(memory.coord_to_pos(coord, room));
+							adjust_matrix(memory.coord_to_pos(coord, _room));
 						});
 					}
 				}
@@ -256,6 +329,23 @@ function save_road(room, coord) {
 	}
 }
 
+function shift_to_centre(room, pos, dist) {
+	let x = pos.x;
+	let y = pos.y;
+	let max = 49 - dist;
+	if (x < dist) {
+		x = dist;
+	} else if (x > max) {
+		x = max;
+	}
+	if (y < dist) {
+		y = dist;
+	} else if (y > max) {
+		y = max;
+	}
+	return room.getPositionAt(x, y);
+}
+
 /**
  * @param {RoomPosition} pos
  * @param {boolean} respect_walls
@@ -264,17 +354,112 @@ function can_build_here(pos, respect_walls = false) {
 	coord = memory.pos_to_coord(pos);
 	let room_memory = Memory.rooms[pos.roomName];
 	if (
+		room_memory.extensions.includes(coord) ||
 		room_memory.towers.includes(coord) ||
-		room_memory.extensions.includes(coord)
+		room_memory.walls.includes(coord)
 	) {
 		return false;
 	}
-	return _.every(pos.look(), function (item) {
-		if (respect_walls && item.type == LOOK_TERRAIN) {
-			return item.terrain !== "wall";
+	if (respect_walls) {
+		return _.every(pos.look(), function (item) {
+			if (item.type == LOOK_TERRAIN) {
+				return item.terrain !== "wall";
+			}
+			return true;
+		});
+	}
+	return true;
+}
+
+function can_get_to_core(room, pos) {
+	let room_memory = room.memory;
+	let pos_core = memory.coord_to_pos(room_memory.core, room);
+	let route = pos.findPathTo(pos_core, {
+		ignoreCreeps: true,
+		costCallback: function (roomName, costMatrix) {
+			let _room = null;
+			try {
+				_room = Game.rooms[roomName];
+			} catch {}
+			if (_room != null) {
+				let adjust_matrix = function (pos) {
+					// Set all positions to be non-walkable
+					costMatrix.set(pos.x, pos.y, 0xff);
+				};
+				memory.build_pos(_room).forEach(adjust_matrix);
+				room_memory.walls.forEach(function (coord) {
+					adjust_matrix(memory.coord_to_pos(coord, _room));
+				});
+			}
+		},
+	});
+	if (route.length == 0) {
+		return false;
+	}
+	let last_step = route[route.length - 1];
+	return last_step.x == pos_core.x && last_step.y == pos_core.y;
+}
+
+function exit_edge_check(
+	room,
+	index,
+	exit_list,
+	clockwise = true,
+	place_the_wall = true,
+) {
+	let pos = exit_list[index];
+	let index_adjacent;
+	if (clockwise) {
+		if (index == exit_list.length - 1) {
+			index_adjacent = 0;
+		} else {
+			index_adjacent = index + 1;
+		}
+	} else {
+		if (index == 0) {
+			index_adjacent = exit_list.length - 1;
+		} else {
+			index_adjacent = index - 1;
+		}
+	}
+	let pos_adjacent_index = exit_list[index_adjacent];
+	if (
+		(pos.x != pos_adjacent_index.x ||
+			![pos.y - 1, pos.y + 1].includes(pos_adjacent_index.y)) &&
+		(pos.y != pos_adjacent_index.y ||
+			![pos.x - 1, pos.x + 1].includes(pos_adjacent_index.x))
+	) {
+		if (place_the_wall) {
+			let x = pos.x;
+			let y = pos.y;
+			if (clockwise) {
+				if (pos.x == 0) {
+					y--;
+				} else if (pos.x == 49) {
+					y++;
+				} else if (pos.y == 0) {
+					x++;
+				} else {
+					x--;
+				}
+			} else {
+				if (pos.x == 0) {
+					y++;
+				} else if (pos.x == 49) {
+					y--;
+				} else if (pos.y == 0) {
+					x--;
+				} else {
+					x++;
+				}
+			}
+			let pos_adjacent = room.getPositionAt(x, y);
+			place_wall(room, pos_adjacent, 1);
+			place_wall(room, pos_adjacent);
 		}
 		return true;
-	});
+	}
+	return false;
 }
 
 function get_next_adjacent(room, pos, layer = 1) {
@@ -449,5 +634,72 @@ module.exports = {
 			towers_list.push(memory.pos_to_coord(new_site));
 		}
 		this.create_construction_sites(room, "towers", STRUCTURE_TOWER);
+	},
+	place_walls: function (room) {
+		let room_memory = room.memory;
+		if (room.controller.level >= 3 && room_memory.walls.length == 0) {
+			let side_top = [];
+			let side_right = [];
+			let side_bottom = [];
+			let side_left = [];
+			let find_exit = function (x, y, side_list) {
+				let pos = room.getPositionAt(x, y);
+				if (can_build_here(pos, true)) {
+					side_list.push(pos);
+				}
+			};
+			for (let row = 0; row < 50; row++) {
+				find_exit(row, 0, side_top);
+				find_exit(49, row, side_right);
+				find_exit(row, 49, side_bottom);
+				find_exit(0, row, side_left);
+			}
+			side_bottom.reverse();
+			side_left.reverse();
+			let exit_list = side_top.concat(side_right, side_bottom, side_left);
+			let exit_start = null;
+			let exit_end = null;
+			for (let index = 0; index < exit_list.length; index++) {
+				exit_edge_check(room, index, exit_list, true);
+				exit_edge_check(room, index, exit_list, false);
+				place_wall(room, exit_list[index]);
+			}
+			let verified_walls = [];
+			room_memory.walls.forEach(function (coord) {
+				if (can_get_to_core(room, memory.coord_to_pos(coord, room))) {
+					verified_walls.push(coord);
+				}
+			});
+			room_memory.walls = verified_walls;
+			for (let index = 0; index < exit_list.length; index++) {
+				if (exit_edge_check(room, index, exit_list, true, false)) {
+					if (exit_start != null) {
+						place_rampart(
+							room,
+							exit_list[exit_start],
+							exit_list[index],
+						);
+						exit_start = null;
+					} else {
+						exit_end = index;
+					}
+				} else if (
+					exit_edge_check(room, index, exit_list, false, false)
+				) {
+					if (exit_end != null) {
+						place_rampart(
+							room,
+							exit_list[index],
+							exit_list[exit_end],
+						);
+						exit_end = null;
+					} else {
+						exit_start = index;
+					}
+				}
+			}
+		}
+		this.create_construction_sites(room, "walls", STRUCTURE_WALL);
+		this.create_construction_sites(room, "ramparts", STRUCTURE_RAMPART);
 	},
 };
