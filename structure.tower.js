@@ -40,12 +40,33 @@ module.exports = {
 					}
 				});
 			});
-			if (
-				!acted &&
-				tower.store[RESOURCE_ENERGY] >
+			if (!acted) {
+				let weakest;
+				let hit_percentage = 1;
+				tower.room
+					.find(FIND_STRUCTURES, {
+						filter: function (structure) {
+							return (
+								(!structure.owner || structure.my) &&
+								structure.structureType == STRUCTURE_RAMPART
+							);
+						},
+					})
+					.forEach(function (defence) {
+						let hit_perc = defence.hits / defence.hitsMax;
+						if (hit_perc < hit_percentage && defence.hits < 1000) {
+							weakest = defence;
+							hit_percentage = hit_perc;
+						}
+					});
+				if (weakest) {
+					tower.repair(weakest);
+				} else if (
+					tower.store[RESOURCE_ENERGY] >
 					tower.store.getCapacity(RESOURCE_ENERGY) / 2
-			) {
-				towers.push(tower);
+				) {
+					towers.push(tower);
+				}
 			}
 		});
 		let emergency_repair = function (tower) {
