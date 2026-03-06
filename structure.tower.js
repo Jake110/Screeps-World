@@ -34,7 +34,7 @@ module.exports = {
 			};
 			let acted = false;
 			[fire, heal].forEach(function (action) {
-				[(10, 20, 50)].forEach(function (range) {
+				[10, 20, 50].forEach(function (range) {
 					if (!acted) {
 						acted = action(range);
 					}
