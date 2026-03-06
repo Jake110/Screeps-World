@@ -42,7 +42,7 @@ module.exports = {
 			});
 			if (!acted) {
 				let weakest;
-				let lowest_hits = 1;
+				let lowest_hits = 1000000000;
 				tower.room
 					.find(FIND_STRUCTURES, {
 						filter: function (structure) {
@@ -71,7 +71,7 @@ module.exports = {
 		});
 		let emergency_repair = function (tower) {
 			let weakest;
-			let lowest_hits = 1;
+			let lowest_hits = 1000000000;
 			tower.room
 				.find(FIND_STRUCTURES, {
 					filter: function (structure) {
@@ -110,7 +110,7 @@ module.exports = {
 		};
 		let bolster_defence = function (tower) {
 			let weakest;
-			let lowest_hits = 1;
+			let lowest_hits = 1000000000;
 			tower.room
 				.find(FIND_STRUCTURES, {
 					filter: function (structure) {
