@@ -49,20 +49,27 @@ module.exports = {
 			}
 		});
 		let emergency_repair = function (tower) {
-			return tower.pos.findClosestByRange(FIND_STRUCTURES, {
-				filter: function (structure) {
-					if (
-						(structure.owner && !structure.my) ||
-						![STRUCTURE_RAMPART, STRUCTURE_WALL].includes(
-							structure.structureType,
-						)
-					) {
-						// Ignore ramparts that aren't mine and everything else that isn't a wall
-						return false;
+			let weakest;
+			let hit_percentage = 1;
+			tower.room
+				.find(FIND_STRUCTURES, {
+					filter: function (structure) {
+						return (
+							(!structure.owner || structure.my) &&
+							[STRUCTURE_RAMPART, STRUCTURE_WALL].includes(
+								structure.structureType,
+							)
+						);
+					},
+				})
+				.forEach(function (defence) {
+					let hit_perc = defence.hits / defence.hitsMax;
+					if (hit_perc < hit_percentage && defence.hits < 10000) {
+						weakest = defence;
+						hit_percentage = hit_perc;
 					}
-					return structure.hits < 10000;
-				},
-			});
+				});
+			return weakest;
 		};
 		let repair = function (tower) {
 			return tower.pos.findClosestByRange(FIND_STRUCTURES, {
