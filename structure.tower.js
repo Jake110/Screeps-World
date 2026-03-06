@@ -6,12 +6,11 @@ module.exports = {
 		room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_TOWER },
 		}).forEach(function (tower) {
-			let acted = false;
 			let fire = function (range) {
 				let hostile = combat.ranged_target(tower.pos, range);
 				if (hostile) {
 					tower.attack(hostile);
-					acted = true;
+					return true;
 				}
 			};
 			let heal = function (range) {
@@ -28,13 +27,14 @@ module.exports = {
 					});
 				if (most_damaged_creep) {
 					tower.heal(most_damaged_creep);
-					acted = true;
+					return true;
 				}
 			};
+			let acted = false;
 			[(fire, heal)].forEach(function (action) {
 				[(10, 20, 50)].forEach(function (range) {
 					if (!acted) {
-						action(range);
+						acted = action(range);
 					}
 				});
 			});
