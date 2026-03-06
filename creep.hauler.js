@@ -103,13 +103,6 @@ module.exports = {
 			target = get_collection_target(creep, [FIND_RUINS]);
 		}
 		if (!target) {
-			target = creep.pos.findClosestByPath(FIND_RUINS, {
-				filter: function (ruin) {
-					return ruin.store.getUsedCapacity() == 0;
-				},
-			});
-		}
-		if (!target) {
 			target = get_collection_target(creep, [FIND_STRUCTURES]);
 		}
 		if (!target) {
@@ -128,11 +121,7 @@ module.exports = {
 			if (!target.store) {
 				result = creep.pickup(target);
 			} else if (!target.body) {
-				if (target.store[RESOURCE_ENERGY] == 0 && target.destroyTime) {
-					result = creep.dismantle(target);
-				} else {
-					result = creep.withdraw(target, RESOURCE_ENERGY);
-				}
+				result = creep.withdraw(target, RESOURCE_ENERGY);
 			} else {
 				result = target.transfer(creep, RESOURCE_ENERGY);
 			}
