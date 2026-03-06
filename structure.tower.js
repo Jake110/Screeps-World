@@ -12,6 +12,7 @@ module.exports = {
 					tower.attack(hostile);
 					return true;
 				}
+				return false;
 			};
 			let heal = function (range) {
 				let most_damaged_creep;
@@ -29,6 +30,7 @@ module.exports = {
 					tower.heal(most_damaged_creep);
 					return true;
 				}
+				return false;
 			};
 			let acted = false;
 			[(fire, heal)].forEach(function (action) {
