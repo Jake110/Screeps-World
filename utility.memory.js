@@ -72,7 +72,7 @@ module.exports = {
 				}
 			});
 			["roads", "tunnels"].forEach(function (mode) {
-				if (!room_memory.source_connections.includes(mode)) {
+				if (!room_memory.source_connections.hasOwnProperty(mode)) {
 					set_up_list(room, ["source_connections", mode]);
 				}
 			});
