@@ -430,32 +430,37 @@ function exit_edge_check(
 			![pos.x - 1, pos.x + 1].includes(pos_adjacent_index.x))
 	) {
 		if (place_the_wall) {
-			let x = pos.x;
-			let y = pos.y;
-			if (clockwise) {
-				if (pos.x == 0) {
-					y--;
-				} else if (pos.x == 49) {
-					y++;
-				} else if (pos.y == 0) {
-					x++;
+			let shift_pos_one = function (pos) {
+				let x = pos.x;
+				let y = pos.y;
+				if (clockwise) {
+					if (pos.x == 0) {
+						y--;
+					} else if (pos.x == 49) {
+						y++;
+					} else if (pos.y == 0) {
+						x++;
+					} else {
+						x--;
+					}
 				} else {
-					x--;
+					if (pos.x == 0) {
+						y++;
+					} else if (pos.x == 49) {
+						y--;
+					} else if (pos.y == 0) {
+						x--;
+					} else {
+						x++;
+					}
 				}
-			} else {
-				if (pos.x == 0) {
-					y++;
-				} else if (pos.x == 49) {
-					y--;
-				} else if (pos.y == 0) {
-					x--;
-				} else {
-					x++;
-				}
-			}
-			let pos_adjacent = room.getPositionAt(x, y);
-			place_wall(room, pos_adjacent, 1);
+				return room.getPositionAt(x, y);
+			};
+			let pos_adjacent = shift_pos_one(pos);
 			place_wall(room, pos_adjacent);
+			let pos_exit_edge = shift_pos_one(pos_adjacent);
+			place_wall(room, pos_exit_edge, 1);
+			place_wall(room, pos_exit_edge);
 		}
 		return true;
 	}
