@@ -56,16 +56,26 @@ module.exports = {
 	set_up: function (room) {
 		let spawns = room.find(FIND_MY_SPAWNS);
 		let room_memory = room.memory;
-		if (!room_memory.core && spawns.length > 0) {
-			room_memory.core = pos_to_coord(spawns[0].pos);
+		if (spawns.length > 0) {
+			if (!room_memory.core) {
+				room_memory.core = pos_to_coord(spawns[0].pos);
+			}
 			this.tracker_names.forEach(function (name) {
-				set_up_list(room, [name]);
+				if (!room_memory[name]) {
+					set_up_list(room, [name]);
+				}
 			});
 			spawns.forEach(function (spawn) {
-				room_memory.spawns.push(pos_to_coord(spawn.pos));
+				let coord = pos_to_coord(spawn.pos);
+				if (!room_memory.spawns.includes(coord)) {
+					room_memory.spawns.push(coord);
+				}
 			});
-			set_up_list(room, ["source_connections", "roads"]);
-			set_up_list(room, ["source_connections", "tunnels"]);
+			["roads", "tunnels"].forEach(function (mode) {
+				if (!room_memory.source_connections.includes(mode)) {
+					set_up_list(room, ["source_connections", mode]);
+				}
+			});
 		}
 	},
 	set_up_list: set_up_list,
