@@ -16,6 +16,11 @@ module.exports.loop = function () {
 	for (let name in Game.rooms) {
 		let room = Game.rooms[name];
 
+		if (!room.memory.core && room.find(FIND_MY_SPAWNS).length == 0) {
+			// Skip rooms we don't have colonies in
+			continue;
+		}
+
 		// Setup Room Memory
 		memory.set_up(room);
 
@@ -30,9 +35,9 @@ module.exports.loop = function () {
 
 		// Construction
 		builder.place_towers(room);
-		builder.place_walls(room)
-		/*console.log(
-			"CPU this tick: " + Game.cpu.getUsed() + "/" + Game.cpu.tickLimit,
-		);*/
+		builder.place_walls(room);
 	}
+	/*console.log(
+		"CPU this tick: " + Game.cpu.getUsed() + "/" + Game.cpu.tickLimit,
+	);*/
 };
