@@ -5,9 +5,22 @@ module.exports = {
 	build: function (creep) {
 		let target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
 			filter: function (site) {
-				return site.structureType != STRUCTURE_ROAD;
+				return ![
+					STRUCTURE_RAMPART,
+					STRUCTURE_ROAD,
+					STRUCTURE_WALL,
+				].includes(site.structureType);
 			},
 		});
+		if (!target) {
+			target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
+				filter: function (site) {
+					return [STRUCTURE_RAMPART, STRUCTURE_WALL].includes(
+						site.structureType,
+					);
+				},
+			});
+		}
 		if (!target) {
 			target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
 				filter: function (site) {
