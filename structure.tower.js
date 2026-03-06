@@ -42,7 +42,7 @@ module.exports = {
 			});
 			if (!acted) {
 				let weakest;
-				let hit_percentage = 1;
+				let lowest_hits = 1;
 				tower.room
 					.find(FIND_STRUCTURES, {
 						filter: function (structure) {
@@ -53,10 +53,10 @@ module.exports = {
 						},
 					})
 					.forEach(function (defence) {
-						let hit_perc = defence.hits / defence.hitsMax;
-						if (hit_perc < hit_percentage && defence.hits < 1000) {
+						let defence_hits = defence.hits;
+						if (defence_hits < lowest_hits && defence_hits < 1000) {
 							weakest = defence;
-							hit_percentage = hit_perc;
+							lowest_hits = defence_hits;
 						}
 					});
 				if (weakest) {
@@ -71,7 +71,7 @@ module.exports = {
 		});
 		let emergency_repair = function (tower) {
 			let weakest;
-			let hit_percentage = 1;
+			let lowest_hits = 1;
 			tower.room
 				.find(FIND_STRUCTURES, {
 					filter: function (structure) {
@@ -84,10 +84,10 @@ module.exports = {
 					},
 				})
 				.forEach(function (defence) {
-					let hit_perc = defence.hits / defence.hitsMax;
-					if (hit_perc < hit_percentage && defence.hits < 10000) {
+					let defence_hits = defence.hits;
+					if (defence_hits < lowest_hits && defence_hits < 10000) {
 						weakest = defence;
-						hit_percentage = hit_perc;
+						lowest_hits = defence_hits;
 					}
 				});
 			return weakest;
@@ -110,7 +110,7 @@ module.exports = {
 		};
 		let bolster_defence = function (tower) {
 			let weakest;
-			let hit_percentage = 1;
+			let lowest_hits = 1;
 			tower.room
 				.find(FIND_STRUCTURES, {
 					filter: function (structure) {
@@ -123,10 +123,13 @@ module.exports = {
 					},
 				})
 				.forEach(function (defence) {
-					let hit_perc = defence.hits / defence.hitsMax;
-					if (hit_perc < hit_percentage) {
+					let defence_hits = defence.hits;
+					if (
+						defence_hits < lowest_hits &&
+						defence_hits < defence.hitsMax
+					) {
 						weakest = defence;
-						hit_percentage = hit_perc;
+						lowest_hits = defence_hits;
 					}
 				});
 			return weakest;
