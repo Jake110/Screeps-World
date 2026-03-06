@@ -517,31 +517,17 @@ module.exports = {
 	create_construction_sites: function (room, path, structure_type) {
 		let unfinished_count = 0;
 		room.memory[path].forEach(function (coord) {
-			if (structure_type == STRUCTURE_WALL) {
-				console.log("Checking: " + coord);
-			}
 			pos = memory.coord_to_pos(coord, room);
 			let unfinished = true;
 			pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
 				if (structure.structureType == structure_type) {
 					unfinished = false;
-					if (structure_type == STRUCTURE_WALL) {
-						console.log("\tWall found");
-					}
 				}
 			});
 			if (unfinished) {
 				unfinished_count++;
 				if (pos.lookFor(LOOK_CONSTRUCTION_SITES).length == 0) {
-					if (structure_type == STRUCTURE_WALL) {
-						console.log("\t\t\t\tCreating construction site");
-						console.log(
-							"\t\t\t\tResult: " +
-								pos.createConstructionSite(structure_type),
-						);
-					} else {
-						pos.createConstructionSite(structure_type);
-					}
+					pos.createConstructionSite(structure_type);
 				}
 			}
 		});
