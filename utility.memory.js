@@ -71,11 +71,11 @@ module.exports = {
 					room_memory.spawns.push(coord);
 				}
 			});
-			["roads", "tunnels"].forEach(function (mode) {
-				if (!room_memory.source_connections.hasOwnProperty(mode)) {
+			if (!room_memory.source_connections) {
+				["roads", "tunnels"].forEach(function (mode) {
 					set_up_list(room, ["source_connections", mode]);
-				}
-			});
+				});
+			}
 		}
 	},
 	set_up_list: set_up_list,
