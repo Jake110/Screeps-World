@@ -172,56 +172,60 @@ function place_road(
 	avoid = null,
 ) {
 	let route = [];
-	if (mode == "roads") {
-		route = origin.findPathTo(target, {
-			ignoreCreeps: true,
-			ignoreRoads: true,
-			costCallback: function (roomName, costMatrix) {
-				let _room = null;
-				try {
-					_room = Game.rooms[roomName];
-				} catch (error) {}
-				if (_room != null) {
-					let adjust_matrix = function (pos) {
-						// Set all positions to be non-walkable
-						costMatrix.set(pos.x, pos.y, 0xff);
-					};
-					memory.build_pos(_room).forEach(adjust_matrix);
-					if (avoid) {
-						avoid.forEach(function (coord) {
-							adjust_matrix(memory.coord_to_pos(coord, _room));
-						});
-					}
+
+	route = origin.findPathTo(target, {
+		ignoreCreeps: true,
+		ignoreRoads: true,
+		costCallback: function (roomName, costMatrix) {
+			let _room = null;
+			try {
+				_room = Game.rooms[roomName];
+			} catch (error) {}
+			if (_room != null) {
+				let adjust_matrix = function (pos) {
+					// Set all positions to be non-walkable
+					costMatrix.set(pos.x, pos.y, 0xff);
+				};
+				memory.build_pos(_room).forEach(adjust_matrix);
+				if (avoid) {
+					avoid.forEach(function (coord) {
+						adjust_matrix(memory.coord_to_pos(coord, _room));
+					});
 				}
-			},
-			swampCost: 1,
-		});
-		for (; range > 0; range--) {
-			route.pop();
-		}
-		if (!avoid) {
-			route.pop();
-			route.shift();
-		}
-		route.forEach(function (step) {
-			save_road(room, memory.pos_to_coord(step));
-		});
-	} else {
+			}
+		},
+		swampCost: 1,
+	});
+	for (; range > 0; range--) {
+		route.pop();
+	}
+	if (!avoid) {
+		route.pop();
+		route.shift();
+	}
+	console.log("Road Route: " + route.length);
+	route.forEach(function (step) {
+		save_road(room, memory.pos_to_coord(step));
+	});
+	if (mode == "tunnels") {
+		let tunnel_route = [];
 		let x = origin.x;
 		let y = origin.y;
 		while (x != target.x && y != target.y) {
-			console.log("Route: " + route);
 			let step = step_with_coord(x, y, target, room);
-			route.push(step);
+			tunnel_route.push(step);
 			x = step.split(":")[0];
 			y = step.split(":")[1];
 		}
 		for (; range > 0; range--) {
-			route.pop();
+			tunnel_route.pop();
 		}
-		route.forEach(function (coord) {
-			save_road(room, coord);
-		});
+		console.log("Tunnel Route: " + tunnel_route.length);
+		if (tunnel_route.length < route.length) {
+			tunnel_route.forEach(function (coord) {
+				save_road(room, coord);
+			});
+		}
 	}
 	if (link_points) {
 		link_points.outer.forEach(function (link_point) {
