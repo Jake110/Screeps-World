@@ -2,6 +2,7 @@ const combat = require("utility.combat");
 
 module.exports = {
 	fire: function (room) {
+		let big_hit_count = 1000000000;
 		let towers = [];
 		room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_TOWER },
@@ -42,7 +43,7 @@ module.exports = {
 			});
 			if (!acted) {
 				let weakest;
-				let lowest_hits = 1000000000;
+				let lowest_hits = big_hit_count;
 				tower.room
 					.find(FIND_STRUCTURES, {
 						filter: function (structure) {
@@ -71,7 +72,7 @@ module.exports = {
 		});
 		let emergency_repair = function (tower) {
 			let weakest;
-			let lowest_hits = 1000000000;
+			let lowest_hits = big_hit_count;
 			tower.room
 				.find(FIND_STRUCTURES, {
 					filter: function (structure) {
@@ -93,48 +94,27 @@ module.exports = {
 			return weakest;
 		};
 		let repair = function (tower) {
-			return tower.pos.findClosestByRange(FIND_STRUCTURES, {
-				filter: function (structure) {
-					if (
-						(structure.owner && !structure.my) ||
-						[STRUCTURE_RAMPART, STRUCTURE_WALL].includes(
-							structure.structureType,
-						)
-					) {
-						// Ignore structures owned by another player, ramparts, and walls
-						return false;
-					}
-					return structure.hits < structure.hitsMax;
-				},
-			});
-		};
-		let bolster_defence = function (tower) {
 			let weakest;
-			let lowest_hits = 1000000000;
+			let lowest_hits = big_hit_count;
 			tower.room
 				.find(FIND_STRUCTURES, {
 					filter: function (structure) {
-						return (
-							(!structure.owner || structure.my) &&
-							[STRUCTURE_RAMPART, STRUCTURE_WALL].includes(
-								structure.structureType,
-							)
-						);
+						return !structure.owner || structure.my;
 					},
 				})
-				.forEach(function (defence) {
-					let defence_hits = defence.hits;
+				.forEach(function (structure) {
+					let defence_hits = structure.hits;
 					if (
 						defence_hits < lowest_hits &&
-						defence_hits < defence.hitsMax
+						defence_hits < structure.hitsMax
 					) {
-						weakest = defence;
+						weakest = structure;
 						lowest_hits = defence_hits;
 					}
 				});
 			return weakest;
 		};
-		[emergency_repair, repair, bolster_defence].forEach(function (action) {
+		[emergency_repair, repair].forEach(function (action) {
 			let target = true;
 			while (target && towers.length > 0) {
 				let tower = towers.pop();
