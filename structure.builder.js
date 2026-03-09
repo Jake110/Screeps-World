@@ -210,6 +210,7 @@ function place_road(
 		let x = origin.x;
 		let y = origin.y;
 		while (x != target.x && y != target.y) {
+			console.log("Route: "+route)
 			route.push(step_with_coord(x, y, target, room));
 		}
 		for (; range > 0; range--) {
