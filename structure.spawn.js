@@ -107,6 +107,10 @@ module.exports = {
 			});
 		}
 
+		let core_spawn = memory
+			.coord_to_pos(room.memory.core, room)
+			.lookFor(LOOK_STRUCTURES)[0];
+
 		// Road Construction
 		if (Game.time % 13 == 0) {
 			// Get a count for how many unfinished roads there are
@@ -126,23 +130,20 @@ module.exports = {
 				if (room.controller.level > 4) {
 					mode = "tunnels";
 				}
-				let core_spawn = memory
-					.coord_to_pos(room.memory.core, room)
-					.lookFor(LOOK_STRUCTURES)[0];
 				builder.place_controller_road(core_spawn, mode);
 				builder.place_source_roads(core_spawn, mode);
 			}
+		}
+
+		// Extension Construction
+		if (Game.time % 17 == 0) {
+			builder.place_extensions(core_spawn);
 		}
 
 		spawns = room.find(FIND_MY_SPAWNS);
 
 		// Per Spawn Section
 		spawns.forEach(function (spawn) {
-			// Extension Construction
-			if (Game.time % 17 == 0) {
-				builder.place_extensions(spawn);
-			}
-
 			// Spawning Creep Text
 			if (spawn.spawning) {
 				let spawning_creep = Game.creeps[spawn.spawning.name];

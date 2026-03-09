@@ -562,9 +562,6 @@ module.exports = {
 		} else {
 			max_entensions = (room_level - 2) * 10;
 		}
-		if (max_entensions > 20) {
-			max_entensions = 20;
-		}
 		let extension_list = spawn.room.memory.extensions;
 		if (extension_list.length < max_entensions) {
 			let new_site = get_next_adjacent(spawn.room, spawn.pos, 2);
