@@ -563,7 +563,7 @@ module.exports = {
 			max_entensions = (room_level - 2) * 10;
 		}
 		let extension_list = spawn.room.memory.extensions;
-		if (extension_list.length < max_entensions) {
+		while (extension_list.length < max_entensions) {
 			let new_site = get_next_adjacent(spawn.room, spawn.pos, 2);
 			remove_road(new_site);
 			place_road_around(spawn.room, new_site, "roads");
