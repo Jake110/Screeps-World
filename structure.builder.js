@@ -210,8 +210,11 @@ function place_road(
 		let x = origin.x;
 		let y = origin.y;
 		while (x != target.x && y != target.y) {
-			console.log("Route: "+route)
-			route.push(step_with_coord(x, y, target, room));
+			console.log("Route: " + route);
+			let step = step_with_coord(x, y, target, room);
+			route.push(step);
+			x = step.split(":")[0];
+			y = step.split(":")[1];
 		}
 		for (; range > 0; range--) {
 			route.pop();
