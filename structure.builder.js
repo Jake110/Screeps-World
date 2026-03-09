@@ -322,23 +322,13 @@ function place_road_around(
 }
 
 function save_road(room, coord) {
-	let mode = "roads";
-	if (
-		new Room.Terrain(room.name).get(
-			coord.split(":")[0],
-			coord.split(":")[1],
-		) == TERRAIN_MASK_WALL
-	) {
-		mode = "tunnels";
-	}
-	let room_memory = room.memory;
 	let blocked = false;
 	memory.structure_names.forEach(function (avoid_list) {
 		if (avoid_list.includes(coord)) {
 			blocked = true;
 		}
 	});
-	let current = room_memory[mode];
+	let current = room.memory.roads;
 	if (!current.includes(coord) && !blocked) {
 		current.push(coord);
 	}
@@ -509,16 +499,11 @@ function get_next_adjacent(room, pos, layer = 1) {
 }
 
 function remove_road(pos) {
-	let mode = "roads";
-	if (new Room.Terrain(pos.roomName).get(pos.x, pos.y) == TERRAIN_MASK_WALL) {
-		mode = "tunnels";
-	}
 	coord = memory.pos_to_coord(pos);
-	let memory_list = Memory.rooms[pos.roomName][mode];
+	let memory_list = Memory.rooms[pos.roomName].roads;
 	index = memory_list.indexOf(coord);
 	if (index != -1) {
 		memory_list.splice(index, 1);
-
 		pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
 			structure.destroy();
 		});
