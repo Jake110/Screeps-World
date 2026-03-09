@@ -475,12 +475,12 @@ function get_next_adjacent(room, pos, layer = 1) {
 	let next;
 	for (; !next; layer++) {
 		let options = [];
-		for (let n = 0 - layer; n <= layer - 2; n += 2) {
+		for (let n = 0; n <= layer * 2; n += 2) {
 			options.push(
-				room.getPositionAt(pos.x - layer, pos.y + n),
-				room.getPositionAt(pos.x + layer, pos.y + n),
-				room.getPositionAt(pos.x + n, pos.y - layer),
-				room.getPositionAt(pos.x + n, pos.y + layer),
+				room.getPositionAt(pos.x - layer + n, pos.y - layer),
+				room.getPositionAt(pos.x + layer, pos.y - layer + n),
+				room.getPositionAt(pos.x + layer - n, pos.y + layer),
+				room.getPositionAt(pos.x - layer, pos.y + layer - n),
 			);
 		}
 		options = options.filter(function (option) {
