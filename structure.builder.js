@@ -331,8 +331,15 @@ function save_road(room, coord) {
 	) {
 		mode = "tunnels";
 	}
-	let current = room.memory[mode];
-	if (!current.includes(coord)) {
+	let room_memory = room.memory;
+	let blocked = false;
+	memory.structure_names.forEach(function (avoid_list) {
+		if (avoid_list.includes(coord)) {
+			blocked = true;
+		}
+	});
+	let current = room_memory[mode];
+	if (!current.includes(coord) && !blocked) {
 		current.push(coord);
 	}
 }
