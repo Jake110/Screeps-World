@@ -47,17 +47,22 @@ module.exports = {
 			case "harvester":
 				set_cost = 100;
 				if (energy >= set_cost * 2) {
-					parts = [CARRY, MOVE];
+					work = [];
+					parts = [CARRY];
+					move = [MOVE];
 					cost = set_cost;
 					while (energy - cost >= set_cost) {
-						parts = [WORK].concat(parts);
 						cost += set_cost;
-						if (parts.length == 7) {
+						if (work.length < 5) {
 							// A single harvester with 5 WORK parts
 							// can fully mine a source node by itself
-							break;
+							work.push(WORK);
+						} else {
+							parts.push(CARRY);
+							move.push(MOVE);
 						}
 					}
+					parts = work.concat(parts, move);
 				}
 				break;
 			case "hauler":
@@ -90,9 +95,9 @@ module.exports = {
 					let work = [];
 					let move = [];
 					while (energy - cost >= set_cost) {
-						work = work.concat([WORK]);
-						parts = parts.concat([CARRY]);
-						move = move.concat([MOVE]);
+						work.push(WORK);
+						parts.push(CARRY);
+						move.push(MOVE);
 						cost += set_cost;
 						if (parts.length == 48) {
 							break;
