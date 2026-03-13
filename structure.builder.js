@@ -515,7 +515,11 @@ function remove_road(pos) {
 module.exports = {
 	create_construction_sites: function (room, path, structure_type) {
 		let unfinished_count = 0;
-		room.memory[path].forEach(function (coord) {
+		let coord_list = room.memory[path];
+		if (!Array.isArray(coord_list)) {
+			coord_list = [coord_list];
+		}
+		coord_list.forEach(function (coord) {
 			pos = memory.coord_to_pos(coord, room);
 			let unfinished = true;
 			pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
@@ -609,6 +613,17 @@ module.exports = {
 			place_road(spawn.room, spawn.pos, container_pos, mode);
 			room_memory.source_connections[mode].push(_source.id);
 		}
+	},
+	place_storage: function (room) {
+		let room_memory = room.memory;
+		if (room.controller.level > 3 && !room_memory.storage) {
+			let pos = get_next_adjacent(
+				room,
+				memory.coord_to_pos(room_memory.core, room),
+			);
+			room_memory.storage = memory.pos_to_coord(pos);
+		}
+		this.create_construction_sites(room, "storage", STRUCTURE_STORAGE);
 	},
 	place_towers: function (room) {
 		const room_level = room.controller.level;
