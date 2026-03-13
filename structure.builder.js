@@ -203,9 +203,6 @@ function place_road(
 		route.pop();
 		route.shift();
 	}
-	route.forEach(function (step) {
-		save_road(room, memory.pos_to_coord(step));
-	});
 	if (mode == "tunnels") {
 		let tunnel_route = [];
 		let x = origin.x;
@@ -219,11 +216,15 @@ function place_road(
 		for (; range > 0; range--) {
 			tunnel_route.pop();
 		}
-		if (tunnel_route.length < route.length) {
+		if (tunnel_route.length < route.length / 2) {
 			tunnel_route.forEach(function (coord) {
 				save_road(room, coord);
 			});
 		}
+	} else {
+		route.forEach(function (step) {
+			save_road(room, memory.pos_to_coord(step));
+		});
 	}
 	if (link_points) {
 		link_points.outer.forEach(function (link_point) {
