@@ -38,9 +38,10 @@ function set_up_list(room, path) {
 
 module.exports = {
 	build_coords: function (room) {
-		positions = [];
+		let room_memory = room.memory;
+		positions = [room_memory.storage];
 		this.structure_names.forEach(function (name) {
-			positions = positions.concat(room.memory[name]);
+			positions = positions.concat(room_memory[name]);
 		});
 		return positions;
 	},

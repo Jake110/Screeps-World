@@ -356,11 +356,8 @@ function shift_to_centre(room, pos, dist) {
  **/
 function can_build_here(pos, respect_walls = false) {
 	coord = memory.pos_to_coord(pos);
-	let room_memory = Memory.rooms[pos.roomName];
 	if (
-		room_memory.extensions.includes(coord) ||
-		room_memory.towers.includes(coord) ||
-		room_memory.walls.includes(coord)
+		memory.build_coords.includes(coord)
 	) {
 		return false;
 	}
