@@ -619,7 +619,7 @@ module.exports = {
 			} else {
 				let container_coords = room_memory.containers;
 				let dist_max = 0;
-				while (sources.length > 0) {
+				while (container_coords.length > 0) {
 					let container_coord = container_coords.pop();
 					let container_x = container_coord.split(":")[0];
 					let container_y = container_coord.split(":")[1];
