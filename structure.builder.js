@@ -357,7 +357,7 @@ function shift_to_centre(room, pos, dist) {
 function can_build_here(pos, respect_walls = false) {
 	coord = memory.pos_to_coord(pos);
 	if (
-		memory.build_coords.includes(coord)
+		memory.build_coords(Game.rooms[pos.roomName]).includes(coord)
 	) {
 		return false;
 	}
