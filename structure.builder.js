@@ -471,18 +471,21 @@ function exit_edge_check(
 	return false;
 }
 
-function get_next_adjacent(room, pos, layer = 1) {
+function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 	let avoid_pos = memory.build_coords(room);
 	let next;
 	for (; !next; layer++) {
 		let options = [];
-		for (let n = 0; n <= layer * 2; n += 2) {
+		for (let n = 0; n <= layer * 2; n++) {
 			options.push(
 				room.getPositionAt(pos.x - layer + n, pos.y - layer),
 				room.getPositionAt(pos.x + layer, pos.y - layer + n),
 				room.getPositionAt(pos.x + layer - n, pos.y + layer),
 				room.getPositionAt(pos.x - layer, pos.y + layer - n),
 			);
+			if (diagonal) {
+				n++;
+			}
 		}
 		options = options.filter(function (option) {
 			return !avoid_pos.includes(memory.pos_to_coord(option));
@@ -579,6 +582,81 @@ module.exports = {
 			"extensions",
 			STRUCTURE_EXTENSION,
 		);
+	},
+	place_links: function (room) {
+		const room_level = room.controller.level;
+		let max_links = 0;
+		switch (true) {
+			case room_level == 8:
+				max_links += 2;
+			case room_level == 7:
+				max_links++;
+			case room_level == 6:
+				max_links++;
+			case room_level == 5:
+				max_links += 2;
+		}
+		let room_memory = room.memory;
+		for (
+			let link_sites = room_memory.links.length;
+			link_sites < max_links;
+			link_sites++
+		) {
+			const core_pos = memory.coord_to_pos(room_memory.core, room);
+			let core_link = false;
+			room_memory.links.forEach(function (link_coord) {
+				if (
+					core_pos.inRangeTo(memory.coord_to_pos(link_coord, room), 1)
+				) {
+					core_link = true;
+				}
+			});
+			let link_site = null;
+			if (!core_link) {
+				link_site = memory.pos_to_coord(
+					get_next_adjacent(room, core_pos),
+				);
+			} else {
+				let container_coords = room_memory.containers;
+				let dist_max = 0;
+				while (sources.length > 0) {
+					let container_coord = container_coords.pop();
+					let container_x = container_coord.split(":")[0];
+					let container_y = container_coord.split(":")[1];
+					let has_link = false;
+					room_memory.links.forEach(function (link_coord) {
+						let link_x = link_coord.split(":")[0];
+						let link_y = link_coord.split(":")[1];
+						if (
+							Math.abs(container_x - link_x) +
+								Math.abs(container_y - link_y) <=
+							2
+						) {
+							has_link = true;
+						}
+					});
+					if (!has_link) {
+						continue;
+					}
+					let dist = core_pos.findPathTo(source.pos).length;
+					if (dist > dist_max) {
+						link_site = memory.pos_to_coord(
+							get_next_adjacent(
+								room,
+								memory.coord_to_pos(container_coord, room),
+								1,
+								false,
+							),
+						);
+						dist_max = dist;
+					}
+				}
+			}
+			if (link_site) {
+				room_memory.links.push(link_site);
+			}
+		}
+		this.create_construction_sites(room, "links", STRUCTURE_LINK);
 	},
 	place_source_roads: function (spawn, mode) {
 		let room_memory = spawn.room.memory;
