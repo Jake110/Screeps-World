@@ -15,13 +15,15 @@ function get_collection_target(creep, find_list, storage_override = false) {
 					}
 					if (option.body) {
 						let _creep_memory = option.memory;
+						let target_roles = ["harvester"];
+						if (creep_memory.role == "worker") {
+							target_roles.push("hauler");
+						}
+						if (creep.room.controller.level >= 5) {
+							target_roles.shift();
+						}
 						return (
-							((creep_memory.role == "hauler" &&
-								_creep_memory.role == "harvester") ||
-								(creep_memory.role == "worker" &&
-									["harvester", "hauler"].includes(
-										_creep_memory.role,
-									))) &&
+							target_roles.includes(_creep_memory.role) &&
 							option.store.getFreeCapacity() > 0
 						);
 					}

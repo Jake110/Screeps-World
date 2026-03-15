@@ -691,7 +691,7 @@ module.exports = {
 	},
 	place_storage: function (room) {
 		let room_memory = room.memory;
-		if (room.controller.level > 3 && !room_memory.storage) {
+		if (room.controller.level >= 5 && !room_memory.storage) {
 			let pos = get_next_adjacent(
 				room,
 				memory.coord_to_pos(room_memory.core, room),
