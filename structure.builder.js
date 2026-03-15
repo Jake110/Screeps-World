@@ -633,7 +633,7 @@ module.exports = {
 							has_link = true;
 						}
 					});
-					if (!has_link) {
+					if (has_link) {
 						continue;
 					}
 					let dist = core_pos.findPathTo(source.pos).length;
