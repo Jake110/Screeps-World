@@ -19,7 +19,9 @@ function get_collection_target(creep, find_list, storage_override = false) {
 							((creep_memory.role == "hauler" &&
 								_creep_memory.role == "harvester") ||
 								(creep_memory.role == "worker" &&
-									_creep_memory.role == "hauler")) &&
+									["harvester", "hauler"].includes(
+										_creep_memory.role,
+									))) &&
 							option.store.getFreeCapacity() > 0
 						);
 					}
@@ -50,23 +52,26 @@ function get_collection_target(creep, find_list, storage_override = false) {
 		} else {
 			energy = option.amount;
 		}
-		let accessable = false
-		for (let x = - 1; x <= 1; x++) {
-			for (let y = - 1; y <= 1; y++) {
-				if ((x == 0 & y == 0)|| accessable) {
-					continue
+		let accessable = false;
+		for (let x = -1; x <= 1; x++) {
+			for (let y = -1; y <= 1; y++) {
+				if ((x == 0) & (y == 0) || accessable) {
+					continue;
 				}
-				let pos = creep.room.getPositionAt(option.pos.x+x, option.pos.y+y);
+				let pos = creep.room.getPositionAt(
+					option.pos.x + x,
+					option.pos.y + y,
+				);
 				accessable = _.every(pos.look(), function (item) {
 					if (item.type == LOOK_TERRAIN) {
 						return item.terrain !== "wall";
 					}
 					return true;
-				})
+				});
 			}
 		}
 		if (!accessable) {
-			return null
+			return null;
 		}
 		let distance = creep.pos.findPathTo(option).length;
 		creep.room
