@@ -2,6 +2,7 @@ const role_grunt = require("role.grunt");
 const role_harvester = require("role.harvester");
 const role_hauler = require("role.hauler");
 const role_medic = require("role.medic");
+const role_quartermaster = require("role_quartermaster");
 const role_worker = require("role.worker");
 
 module.exports = {
@@ -26,6 +27,9 @@ module.exports = {
 		}
 	},
 	body: function (role, energy) {
+		if (role == "quartermaster") {
+			role = "hauler";
+		}
 		let parts = [];
 		let cost = 0;
 		let set_cost;
@@ -130,6 +134,8 @@ module.exports = {
 					case "medic":
 						role_medic.run(creep);
 						break;
+					case "quartermaster":
+						role_quartermaster.run(creep);
 					case "worker":
 						role_worker.run(creep);
 						break;
@@ -149,6 +155,9 @@ module.exports = {
 				);
 			},
 		}).length;
+		let storage_count = room.find(FIND_MY_STRUCTURES, {
+			filter: { structureType: STRUCTURE_STORAGE },
+		}).length;
 		let hostiles = 0; //room.find(FIND_HOSTILE_CREEPS).length;
 		return [
 			{
@@ -167,6 +176,7 @@ module.exports = {
 				name: "hauler",
 				max: Math.ceil(1.5 * container_count),
 			},
+			{ name: "quartermaster", max: 1 ? storage_count > 0 : 0 },
 			{
 				name: "worker",
 				max: Math.ceil(1.5 * source_count),
