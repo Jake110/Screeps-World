@@ -356,9 +356,7 @@ function shift_to_centre(room, pos, dist) {
  **/
 function can_build_here(pos, respect_walls = false) {
 	coord = memory.pos_to_coord(pos);
-	if (
-		memory.build_coords(Game.rooms[pos.roomName]).includes(coord)
-	) {
+	if (memory.build_coords(Game.rooms[pos.roomName]).includes(coord)) {
 		return false;
 	}
 	if (respect_walls) {
@@ -614,7 +612,10 @@ module.exports = {
 					get_next_adjacent(room, core_pos),
 				);
 			} else {
-				let container_coords = room_memory.containers;
+				let container_coords = [];
+				room_memory.containers.forEach(function (container_coord) {
+					container_coords.push(container_coord);
+				});
 				let dist_max = 0;
 				while (container_coords.length > 0) {
 					let container_coord = container_coords.pop();
