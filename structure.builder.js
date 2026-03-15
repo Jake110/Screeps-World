@@ -636,15 +636,14 @@ module.exports = {
 					if (has_link) {
 						continue;
 					}
-					let dist = core_pos.findPathTo(source.pos).length;
+					let container_pos = memory.coord_to_pos(
+						container_coord,
+						room,
+					);
+					let dist = core_pos.findPathTo(container_pos).length;
 					if (dist > dist_max) {
 						link_site = memory.pos_to_coord(
-							get_next_adjacent(
-								room,
-								memory.coord_to_pos(container_coord, room),
-								1,
-								false,
-							),
+							get_next_adjacent(room, container_pos, 1, false),
 						);
 						dist_max = dist;
 					}
