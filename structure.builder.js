@@ -538,20 +538,16 @@ module.exports = {
 		let memory_list = spawn.room.memory.source_connections[mode];
 		if (!memory_list.includes("controller")) {
 			place_road_around(spawn.room, spawn.pos, mode);
-			place_road_around(
-				spawn.room,
-				spawn.room.controller.pos,
-				mode,
-				false,
-				3,
-			);
-			place_road(
-				spawn.room,
-				spawn.pos,
-				spawn.room.controller.pos,
-				mode,
-				3,
-			);
+			if (mode == "roads") {
+				place_road_around(
+					spawn.room,
+					spawn.room.controller.pos,
+					mode,
+					false,
+					3,
+				);
+			}
+			place_road(spawn.room, spawn.pos, spawn.room.controller.pos, mode);
 			memory_list.push("controller");
 		}
 	},
