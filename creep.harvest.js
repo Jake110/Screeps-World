@@ -6,7 +6,7 @@ const worker = require("creep.worker");
 function deposit_to_link(creep, link, move = true) {
 	let result = creep.transfer(link, RESOURCE_ENERGY);
 	if (result == ERR_NOT_IN_RANGE && move) {
-		creep.moveTo(deposit_target, {
+		creep.moveTo(link, {
 			visualizePathStyle: { stroke: "#2bff00" },
 		});
 	}
