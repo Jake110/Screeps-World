@@ -19,8 +19,6 @@ module.exports = {
 						visualizePathStyle: { stroke: "#2bff00" },
 					});
 				}
-			} else {
-				hauler.recharge(creep);
 			}
 		} else {
 			let core_link = quartermaster.get_structure(
@@ -37,8 +35,6 @@ module.exports = {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
 				}
-			} else {
-				hauler.collect(creep);
 			}
 		}
 	},
