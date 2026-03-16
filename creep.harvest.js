@@ -10,13 +10,18 @@ function deposit_to_link(creep, link, move = true) {
 			visualizePathStyle: { stroke: "#2bff00" },
 		});
 	}
-	if (link.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
+	if (link.cooldown == 0) {
 		let core_link = quartermaster.get_structure(
 			creep.room,
 			creep.room.memory.links[0],
 			STRUCTURE_LINK,
 		);
-		link.transferEnergy(core_link);
+		if (
+			core_link.store.getFreeCapacity(RESOURCE_ENERGY) >=
+			link.store[RESOURCE_ENERGY]
+		) {
+			link.transferEnergy(core_link);
+		}
 	}
 }
 
