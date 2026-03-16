@@ -190,25 +190,34 @@ module.exports = {
 					creep_body.push(part.type);
 				});
 				if (spawn) {
-					let spawn_body = creeper.body(
-						role,
-						spawn.store[RESOURCE_ENERGY] + extension_energy,
-					).parts;
+					let = current_energy =
+						spawn.store[RESOURCE_ENERGY] + extension_energy;
 					if (
-						creep_body.join("-") != spawn_body.join("-") &&
-						spawn_body.length > creep_body.length &&
-						!spawn.memory.recycling
+						current_energy ==
+						spawn.store.getCapacity(RESOURCE_ENERGY) + extension_max
 					) {
-						console.log(
-							room.name +
-								" - Recycling " +
-								role +
-								": " +
-								creep.name,
-						);
-						creep.memory.recycle = memory.pos_to_coord(spawn.pos);
-						spawn.memory.recycling = creep.name;
-						spawn = get_spawn(room, used_spawners, true);
+						let spawn_body = creeper.body(
+							role,
+							current_energy,
+						).parts;
+						if (
+							creep_body.join("-") != spawn_body.join("-") &&
+							spawn_body.length > creep_body.length &&
+							!spawn.memory.recycling
+						) {
+							console.log(
+								room.name +
+									" - Recycling " +
+									role +
+									": " +
+									creep.name,
+							);
+							creep.memory.recycle = memory.pos_to_coord(
+								spawn.pos,
+							);
+							spawn.memory.recycling = creep.name;
+							spawn = get_spawn(room, used_spawners, true);
+						}
 					}
 				}
 				if (creep.ticksToLive < 200 && !creep_body.includes(CLAIM)) {
