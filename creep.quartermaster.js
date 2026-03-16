@@ -7,6 +7,8 @@ module.exports = {
 			.coord_to_pos(coord, room)
 			.look()
 			.forEach(function (item) {
+				console.log("Item type: " + item.type);
+				console.log("Item structureType: " + item.structureType);
 				if (
 					item.type == LOOK_STRUCTURES &&
 					item.structureType == structure_type
