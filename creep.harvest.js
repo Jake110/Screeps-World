@@ -53,7 +53,7 @@ module.exports = {
 				target.transferEnergy(core_link);
 			}
 		}
-		if (target.length == 0 || creep.store[RESOURCE_ENERGY] > 0) {
+		if (target.length == 0) {
 			target = creep.pos.findInRange(FIND_STRUCTURES, 1, {
 				filter: { structureType: STRUCTURE_CONTAINER },
 			});
