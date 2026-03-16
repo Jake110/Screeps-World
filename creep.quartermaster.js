@@ -11,13 +11,9 @@ module.exports = {
 				if (structure) {
 					if (structure.structureType == structure_type) {
 						found_structure = structure;
-						console.log(
-							"Found [" + structure_type + "] at [" + coord + "]",
-						);
 					}
 				}
 			});
-		console.log("\tReturning: " + found_structure);
 		return found_structure;
 	},
 };
