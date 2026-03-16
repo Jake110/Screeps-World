@@ -37,10 +37,12 @@ module.exports = {
 
 		// Get Extension Energy
 		let extension_energy = 0;
+		let extension_max = 0;
 		room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_EXTENSION },
 		}).forEach(function (extension) {
 			extension_energy += extension.store[RESOURCE_ENERGY];
+			extension_max += extension.store.getCapacity(RESOURCE_ENERGY);
 		});
 
 		// Spawn Creeps
@@ -59,12 +61,27 @@ module.exports = {
 						// No spawn was available
 						return null;
 					}
-					let creep = creeper.body(
-						role.name,
-						spawn.store[RESOURCE_ENERGY] + extension_energy,
-					);
+					let creep = null;
+					if (role_count + role_additions > 0) {
+						creep = creeper.body(
+							role.name,
+							spawn.store.getCapacity(RESOURCE_ENERGY) +
+								extension_max,
+						);
+					} else {
+						creep = creeper.body(
+							role.name,
+							spawn.store[RESOURCE_ENERGY] + extension_energy,
+						);
+					}
 					if (creep.cost == 0) {
 						// Not enough energy for this roles cheapest creep
+						return null;
+					}
+					if (
+						creep.cost >
+						spawn.store[RESOURCE_ENERGY] + extension_energy
+					) {
 						return null;
 					}
 					let new_name = role.name + Game.time;
