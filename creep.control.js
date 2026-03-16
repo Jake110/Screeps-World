@@ -168,12 +168,12 @@ module.exports = {
 			},
 			{
 				name: "hauler",
-				max: Math.ceil(1.5 * container_count),
+				max: container_count,
 			},
 			{ name: "quartermaster", max: 1 ? storage_count > 0 : 0 },
 			{
 				name: "worker",
-				max: Math.ceil(1.5 * source_count),
+				max: source_count,
 			},
 		];
 	},
