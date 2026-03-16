@@ -12,8 +12,12 @@ module.exports = {
 					item.structureType == structure_type
 				) {
 					structure = item;
+					console.log(
+						"Found [" + structure_type + "] at [" + coord + "]",
+					);
 				}
 			});
+		console.log("\tReturning: " + structure);
 		return structure;
 	},
 };
