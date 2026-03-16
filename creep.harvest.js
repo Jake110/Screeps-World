@@ -6,7 +6,7 @@ const worker = require("creep.worker");
 module.exports = {
 	/** @param {Creep} creep **/
 	harvest: function (creep) {
-		let harvest_target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
+		let harvest_target = creep.pos.findClosestByPath(FIND_SOURCES, {
 			filter: function (_source) {
 				let no_rivals = true;
 				if (creep.body.length > 4) {
