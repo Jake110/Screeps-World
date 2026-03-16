@@ -50,6 +50,9 @@ module.exports = {
 					creep.room.memory.links[0],
 					STRUCTURE_LINK,
 				);
+				console.log("Link object: " + core_link)
+				console.log("Link ID: " + core_link.id)
+				console.log("Link pos: "+ core_link.pos)
 				console.log("Transfer return" + target.transferEnergy(core_link));
 			}
 		}
