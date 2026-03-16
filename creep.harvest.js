@@ -3,6 +3,23 @@ const hauler = require("creep.hauler");
 const quartermaster = require("creep.quartermaster");
 const worker = require("creep.worker");
 
+function deposit_to_link(creep, link, move = true) {
+	let result = creep.transfer(link, RESOURCE_ENERGY);
+	if (result == ERR_NOT_IN_RANGE && move) {
+		creep.moveTo(deposit_target, {
+			visualizePathStyle: { stroke: "#2bff00" },
+		});
+	}
+	if (link.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
+		let core_link = quartermaster.get_structure(
+			creep.room,
+			creep.room.memory.links[0],
+			STRUCTURE_LINK,
+		);
+		link.transferEnergy(core_link);
+	}
+}
+
 module.exports = {
 	/** @param {Creep} creep **/
 	harvest: function (creep) {
@@ -35,15 +52,7 @@ module.exports = {
 		});
 		if (deposit_target.length > 0) {
 			deposit_target = deposit_target[0];
-			creep.transfer(deposit_target, RESOURCE_ENERGY);
-			if (deposit_target.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
-				let core_link = quartermaster.get_structure(
-					creep.room,
-					creep.room.memory.links[0],
-					STRUCTURE_LINK,
-				);
-				deposit_target.transferEnergy(core_link);
-			}
+			deposit_to_link(creep, deposit_target, false);
 		} else {
 			deposit_target = creep.pos.findInRange(FIND_STRUCTURES, 1, {
 				filter: { structureType: STRUCTURE_CONTAINER },
@@ -62,22 +71,7 @@ module.exports = {
 		});
 		if (deposit_target.length > 0) {
 			deposit_target = deposit_target[0];
-			if (
-				creep.transfer(deposit_target, RESOURCE_ENERGY) ==
-				ERR_NOT_IN_RANGE
-			) {
-				creep.moveTo(deposit_target, {
-					visualizePathStyle: { stroke: "#2bff00" },
-				});
-			}
-			if (deposit_target.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
-				let core_link = quartermaster.get_structure(
-					creep.room,
-					creep.room.memory.links[0],
-					STRUCTURE_LINK,
-				);
-				deposit_target.transferEnergy(core_link);
-			}
+			deposit_to_link(creep, deposit_target);
 		}
 		if (deposit_target.length == 0) {
 			deposit_target = creep.pos.findInRange(FIND_STRUCTURES, 1, {
