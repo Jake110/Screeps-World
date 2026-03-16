@@ -8,6 +8,7 @@ module.exports = {
 			.look()
 			.forEach(function (item) {
 				console.log("Item type: " + item.type);
+				console.log("Item keys: " + Object.keys(item));
 				console.log("Item structureType: " + item.structureType);
 				if (
 					item.type == LOOK_STRUCTURES &&
