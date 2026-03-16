@@ -1,5 +1,5 @@
 const hauler = require("creep.hauler");
-const quartermaster = require("creep.quartermaster")
+const quartermaster = require("creep.quartermaster");
 
 module.exports = {
 	run: function (creep) {
@@ -33,7 +33,7 @@ module.exports = {
 					creep.withdraw(core_link, RESOURCE_ENERGY) ==
 					ERR_NOT_IN_RANGE
 				) {
-					creep.moveTo(target, {
+					creep.moveTo(core_link, {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
 				}
