@@ -7,11 +7,13 @@ module.exports = {
 			.coord_to_pos(coord, room)
 			.look()
 			.forEach(function (item) {
-				if (item.structure.structureType == structure_type) {
-					structure = item;
-					console.log(
-						"Found [" + structure_type + "] at [" + coord + "]",
-					);
+				if (item.structure) {
+					if (item.structure.structureType == structure_type) {
+						structure = item;
+						console.log(
+							"Found [" + structure_type + "] at [" + coord + "]",
+						);
+					}
 				}
 			});
 		console.log("\tReturning: " + structure);
