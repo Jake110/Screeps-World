@@ -156,8 +156,7 @@ module.exports = {
 				});
 			}
 			return true;
-		}
-		if (creep_memory.role == "hauler" && creep.store[RESOURCE_ENERGY] > 0) {
+		} else if (creep.store[RESOURCE_ENERGY] > 0) {
 			creep_memory.full = true;
 		}
 		return false;
