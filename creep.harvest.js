@@ -1,5 +1,6 @@
 const combat = require("utility.combat");
 const hauler = require("creep.hauler");
+const quartermaster = require("creep.quartermaster");
 const worker = require("creep.worker");
 
 module.exports = {
@@ -33,9 +34,30 @@ module.exports = {
 
 	/** @param {Creep} creep **/
 	deposit: function (creep) {
-		let target = creep.pos.findInRange(FIND_STRUCTURES, 4, {
-			filter: { structureType: STRUCTURE_CONTAINER },
+		let target = creep.pos.findInRange(FIND_MY_STRUCTURES, 4, {
+			filter: { structureType: STRUCTURE_LINK },
 		});
+		if (target.length > 0) {
+			target = target[0];
+			if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+				creep.moveTo(target, {
+					visualizePathStyle: { stroke: "#2bff00" },
+				});
+			}
+			if (target.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
+				let core_link = quartermaster.get_structure(
+					creep.room,
+					creep.room.memory.links[0],
+					STRUCTURE_LINK,
+				);
+				target.transferEnergy(core_link);
+			}
+		}
+		if (target.length == 0 || creep.store[RESOURCE_ENERGY] > 0) {
+			target = creep.pos.findInRange(FIND_STRUCTURES, 4, {
+				filter: { structureType: STRUCTURE_CONTAINER },
+			});
+		}
 		if (target.length == 0) {
 			if (hauler.recharge(creep)) {
 				return null;

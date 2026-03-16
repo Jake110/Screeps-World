@@ -1,28 +1,12 @@
 const hauler = require("creep.hauler");
-const memory = require("utility.memory");
-
-function get_structure(room, coord, structure_type) {
-	let structure = null;
-	memory
-		.coord_to_pos(coord, room)
-		.look()
-		.forEach(function (item) {
-			if (
-				item.type == LOOK_STRUCTURES &&
-				item.structureType == structure_type
-			) {
-				structure = item;
-			}
-		});
-	return structure;
-}
+const quartermaster = require("creep.quartermaster")
 
 module.exports = {
 	run: function (creep) {
 		let room_memory = creep.room.memory;
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
 		if (creep.memory.full) {
-			let storage = get_structure(
+			let storage = quartermaster.get_structure(
 				creep.room,
 				room_memory.storage,
 				STRUCTURE_STORAGE,
@@ -39,7 +23,7 @@ module.exports = {
 				hauler.recharge(creep);
 			}
 		} else {
-			let core_link = get_structure(
+			let core_link = quartermaster.get_structure(
 				creep.room,
 				room_memory.links[0],
 				STRUCTURE_LINK,
