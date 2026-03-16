@@ -50,7 +50,7 @@ module.exports = {
 					creep.room.memory.links[0],
 					STRUCTURE_LINK,
 				);
-				target.transferEnergy(core_link);
+				console.log("Transfer return" + target.transferEnergy(core_link));
 			}
 		}
 		if (target.length == 0 || creep.store[RESOURCE_ENERGY] > 0) {
