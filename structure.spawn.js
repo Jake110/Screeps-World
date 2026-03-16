@@ -190,16 +190,15 @@ module.exports = {
 					creep_body.push(part.type);
 				});
 				if (spawn) {
-					let = current_energy =
-						spawn.store[RESOURCE_ENERGY] + extension_energy;
+					let spawn_body = creeper.body(
+						role,
+						spawn.store.getCapacity(RESOURCE_ENERGY) +
+							extension_max,
+					).parts;
 					if (
-						current_energy ==
-						spawn.store.getCapacity(RESOURCE_ENERGY) + extension_max
+						spawn_body.cost <=
+						spawn.store[RESOURCE_ENERGY] + extension_energy
 					) {
-						let spawn_body = creeper.body(
-							role,
-							current_energy,
-						).parts;
 						if (
 							creep_body.join("-") != spawn_body.join("-") &&
 							spawn_body.length > creep_body.length &&
