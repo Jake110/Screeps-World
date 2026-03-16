@@ -11,10 +11,7 @@ module.exports = {
 				console.log("Item keys: " + Object.keys(item));
 				console.log("Item keys: " + Object.keys(item.structure));
 				console.log("Item structureType: " + item.structureType);
-				if (
-					item.type == LOOK_STRUCTURES &&
-					item.structureType == structure_type
-				) {
+				if (item.structure.structureType == structure_type) {
 					structure = item;
 					console.log(
 						"Found [" + structure_type + "] at [" + coord + "]",
