@@ -12,6 +12,7 @@ module.exports = {
 				STRUCTURE_STORAGE,
 			);
 			if (storage) {
+				console.log("Depositing at " + storage.pos);
 				if (
 					creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
 				) {
@@ -27,6 +28,7 @@ module.exports = {
 				STRUCTURE_LINK,
 			);
 			if (core_link) {
+				console.log("Collecting from " + core_link.pos);
 				if (
 					creep.withdraw(core_link, RESOURCE_ENERGY) ==
 					ERR_NOT_IN_RANGE
