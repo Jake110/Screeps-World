@@ -1,5 +1,6 @@
 const combat = require("utility.combat");
 const hauler = require("creep.hauler");
+const memory = require("utility.memory")
 const quartermaster = require("creep.quartermaster");
 const worker = require("creep.worker");
 
@@ -46,10 +47,14 @@ module.exports = {
 			},
 		});
 		if (harvest_target) {
-			if (creep.harvest(harvest_target) == ERR_NOT_IN_RANGE) {
+			let result = creep.harvest(harvest_target)
+			if (result == ERR_NOT_IN_RANGE) {
 				creep.moveTo(harvest_target, {
 					visualizePathStyle: { stroke: "#fff23e" },
 				});
+			} else if (result == ERR_NOT_ENOUGH_RESOURCES && creep.ticksToLive < 1000) {
+				let closest_spawn = creep.pos.findClosestByPath(room.find(FIND_MY_SPAWNS))
+				creep.memory.renew = memory.pos_to_coord(closest_spawn.pos)
 			}
 		}
 		let deposit_target = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {
