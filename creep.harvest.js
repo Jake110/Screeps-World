@@ -53,7 +53,7 @@ module.exports = {
 					visualizePathStyle: { stroke: "#fff23e" },
 				});
 			} else if (result == ERR_NOT_ENOUGH_RESOURCES && creep.ticksToLive < 1000) {
-				let closest_spawn = creep.pos.findClosestByPath(room.find(FIND_MY_SPAWNS))
+				let closest_spawn = creep.pos.findClosestByPath(creep.room.find(FIND_MY_SPAWNS))
 				creep.memory.renew = memory.pos_to_coord(closest_spawn.pos)
 			}
 		}
