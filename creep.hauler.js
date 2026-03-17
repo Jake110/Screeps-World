@@ -8,7 +8,7 @@ function get_collection_target(creep, find_list, storage_override = false) {
 		options.push(
 			quartermaster.get_structure(
 				creep.room,
-				room_memory.links[0],
+				creep.room.memory.links[0],
 				STRUCTURE_LINK,
 			),
 		);
