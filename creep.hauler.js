@@ -1,8 +1,18 @@
 const combat = require("utility.combat");
+const quartermaster = require("creep.quartermaster");
 
 function get_collection_target(creep, find_list, storage_override = false) {
 	let creep_memory = creep.memory;
 	let options = [];
+	if (find_list.includes(FIND_STRUCTURES)) {
+		options.push(
+			quartermaster.get_structure(
+				creep.room,
+				room_memory.links[0],
+				STRUCTURE_LINK,
+			),
+		);
+	}
 	find_list.forEach(function (find_name) {
 		options = options.concat(
 			creep.room.find(find_name, {
