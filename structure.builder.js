@@ -615,27 +615,17 @@ module.exports = {
 				let dist_max = 0;
 				while (container_coords.length > 0) {
 					let container_coord = container_coords.pop();
-					let container_x = container_coord.split(":")[0];
-					let container_y = container_coord.split(":")[1];
-					let has_link = false;
-					room_memory.links.forEach(function (link_coord) {
-						let link_x = link_coord.split(":")[0];
-						let link_y = link_coord.split(":")[1];
-						if (
-							Math.abs(container_x - link_x) +
-								Math.abs(container_y - link_y) <=
-							2
-						) {
-							has_link = true;
-						}
-					});
-					if (has_link) {
-						continue;
-					}
 					let container_pos = memory.coord_to_pos(
 						container_coord,
 						room,
 					);
+					if (
+						container_pos.findInRange(FIND_MY_STRUCTURES, 1, {
+							filter: { structureType: STRUCTURE_LINK },
+						}).length > 0
+					) {
+						continue;
+					}
 					let dist = core_pos.findPathTo(container_pos).length;
 					if (dist > dist_max) {
 						link_site = memory.pos_to_coord(
@@ -647,6 +637,8 @@ module.exports = {
 			}
 			if (link_site) {
 				room_memory.links.push(link_site);
+			} else {
+				break;
 			}
 		}
 		this.create_construction_sites(room, "links", STRUCTURE_LINK);
