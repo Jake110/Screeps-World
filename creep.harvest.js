@@ -64,13 +64,15 @@ module.exports = {
 			});
 		}
 		if (deposit_target.length == 0) {
-			// We want to focus on building the container if it's missing
-			let sites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1, {
-				filter: { structureType: STRUCTURE_CONTAINER },
-			});
-			if (sites.length > 0) {
-				creep.build(sites[0]);
-				return null;
+			if (creep.body.length > 4) {
+				// We want to focus on building the container if it's missing
+				let sites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1, {
+					filter: { structureType: STRUCTURE_CONTAINER },
+				});
+				if (sites.length > 0) {
+					creep.build(sites[0]);
+					return null;
+				}
 			}
 			if (hauler.recharge(creep)) {
 				return null;
