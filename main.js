@@ -1,6 +1,7 @@
 const builder = require("structure.builder");
 const creep = require("creep.control");
 const memory = require("utility.memory");
+const quartermaster = require("creep.quartermaster");
 const spawn = require("structure.spawn");
 const tower = require("structure.tower");
 
@@ -31,6 +32,31 @@ module.exports.loop = function () {
 		spawn.main(room);
 
 		// Link Control
+		let links = room.memory.links;
+		let core_link_coord = links.shift();
+		links.forEach(function (link) {
+			if (link.cooldown == 0) {
+				/*let core_link = memory
+					.coord_to_pos(creep.room.memory.core, creep.room)
+					.findInRange(FIND_MY_STRUCTURES, {
+						filter: { structureType: STRUCTURE_LINK },
+					});*/
+				let core_link = quartermaster.get_structure(
+					room,
+					core_link_coord,
+					STRUCTURE_LINK,
+				);
+				if (core_link) {
+					//core_link = core_link[0];
+					if (
+						core_link.store.getFreeCapacity(RESOURCE_ENERGY) >=
+						link.store[RESOURCE_ENERGY]
+					) {
+						link.transferEnergy(core_link);
+					}
+				}
+			}
+		});
 
 		// Active Defence Check
 		creep.active_defence_check(room);

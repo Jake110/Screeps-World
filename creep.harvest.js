@@ -10,22 +10,6 @@ function deposit_to_link(creep, link, move = true) {
 			visualizePathStyle: { stroke: "#2bff00" },
 		});
 	}
-	if (link.cooldown == 0) {
-		let core_link = memory
-			.coord_to_pos(creep.room.memory.core, creep.room)
-			.findInRange(FIND_MY_STRUCTURES, {
-				filter: { structureType: STRUCTURE_LINK },
-			});
-		if (core_link.length > 0) {
-			core_link = core_link[0];
-			if (
-				core_link.store.getFreeCapacity(RESOURCE_ENERGY) >=
-				link.store[RESOURCE_ENERGY]
-			) {
-				link.transferEnergy(core_link);
-			}
-		}
-	}
 }
 
 module.exports = {
