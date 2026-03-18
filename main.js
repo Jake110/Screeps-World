@@ -40,7 +40,7 @@ module.exports.loop = function () {
 		let core_link_coord = link_coords.shift();
 		console.log("Core Link Coord: " + core_link_coord);
 		link_coords.forEach(function (link_coord) {
-			console.log("\tChecking Link: " + link);
+			console.log("\tChecking Link: " + link_coord);
 			let link = quartermaster.get_structure(
 				room,
 				link_coord,
