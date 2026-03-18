@@ -35,6 +35,7 @@ module.exports.loop = function () {
 		let links = [];
 		room.memory.links.forEach(function (link_coord) {
 			links.push(link_coord);
+			console.log("Links found at: " + link_coord);
 		});
 		let core_link_coord = links.shift();
 		console.log("Core Link Coord: " + core_link_coord);
