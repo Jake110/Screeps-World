@@ -32,15 +32,20 @@ module.exports.loop = function () {
 		spawn.main(room);
 
 		// Link Control
-		let links = [];
+		let link_coords = [];
 		room.memory.links.forEach(function (link_coord) {
-			links.push(link_coord);
+			link_coords.push(link_coord);
 			console.log("Links found at: " + link_coord);
 		});
-		let core_link_coord = links.shift();
+		let core_link_coord = link_coords.shift();
 		console.log("Core Link Coord: " + core_link_coord);
-		links.forEach(function (link) {
+		link_coords.forEach(function (link_coord) {
 			console.log("\tChecking Link: " + link);
+			let link = quartermaster.get_structure(
+				room,
+				link_coord,
+				STRUCTURE_LINK,
+			);
 			if (link.cooldown == 0) {
 				/*let core_link = memory
 					.coord_to_pos(creep.room.memory.core, creep.room)
