@@ -3,15 +3,6 @@ const hauler = require("creep.hauler");
 const memory = require("utility.memory");
 const worker = require("creep.worker");
 
-function deposit_to_link(creep, link, move = true) {
-	let result = creep.transfer(link, RESOURCE_ENERGY);
-	if (result == ERR_NOT_IN_RANGE && move) {
-		creep.moveTo(link, {
-			visualizePathStyle: { stroke: "#2bff00" },
-		});
-	}
-}
-
 module.exports = {
 	/** @param {Creep} creep **/
 	harvest: function (creep) {
@@ -51,17 +42,14 @@ module.exports = {
 		let deposit_target = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {
 			filter: { structureType: STRUCTURE_LINK },
 		});
-		if (deposit_target.length > 0) {
-			deposit_target = deposit_target[0];
-			deposit_to_link(creep, deposit_target, false);
-		} else {
+		if (deposit_target.length == 0) {
 			deposit_target = creep.pos.findInRange(FIND_STRUCTURES, 1, {
 				filter: { structureType: STRUCTURE_CONTAINER },
 			});
-			if (deposit_target.length > 0) {
-				deposit_target = deposit_target[0];
-				creep.transfer(deposit_target, RESOURCE_ENERGY);
-			}
+		}
+		if (deposit_target.length > 0) {
+			deposit_target = deposit_target[0];
+			creep.transfer(deposit_target, RESOURCE_ENERGY);
 		}
 	},
 
@@ -70,26 +58,35 @@ module.exports = {
 		let deposit_target = creep.pos.findInRange(FIND_MY_STRUCTURES, 4, {
 			filter: { structureType: STRUCTURE_LINK },
 		});
-		if (deposit_target.length > 0) {
-			deposit_target = deposit_target[0];
-			deposit_to_link(creep, deposit_target);
-		}
 		if (deposit_target.length == 0) {
 			deposit_target = creep.pos.findInRange(FIND_STRUCTURES, 1, {
 				filter: { structureType: STRUCTURE_CONTAINER },
 			});
 		}
 		if (deposit_target.length == 0) {
+			// We want to focus on building the container if it's missing
+			let sites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1, {
+				filter: { structureType: STRUCTURE_CONTAINER },
+			});
+			if (sites.length > 0) {
+				creep.build(sites[0]);
+				return null;
+			}
 			if (hauler.recharge(creep)) {
 				return null;
 			}
 			worker.upgrade(creep);
 		} else {
 			deposit_target = deposit_target[0];
-			if (
-				creep.transfer(deposit_target, RESOURCE_ENERGY) ==
-				ERR_NOT_IN_RANGE
-			) {
+			let result = null;
+			if (deposit_target.structureType == STRUCTURE_CONTAINER) {
+				// If we're depositing into a container, make sure it's not about to die
+				if (deposit_target.hits / deposit_target.hitsMax < 0.5) {
+					result = creep.repair(deposit_target);
+				}
+			}
+			result = creep.transfer(deposit_target, RESOURCE_ENERGY);
+			if (result == ERR_NOT_IN_RANGE) {
 				creep.moveTo(deposit_target, {
 					visualizePathStyle: { stroke: "#2bff00" },
 				});
