@@ -13,10 +13,12 @@ module.exports.loop = function () {
 	creep.main();
 
 	// Loop Through Rooms
-	Game.rooms.forEach(function (room) {
+	for (let name in Game.rooms) {
+		let room = Game.rooms[name];
+
 		if (!room.memory.core && room.find(FIND_MY_SPAWNS).length == 0) {
 			// Skip rooms we don't have colonies in
-			return null;
+			continue;
 		}
 
 		// Setup Room Memory
@@ -38,7 +40,7 @@ module.exports.loop = function () {
 		builder.place_walls(room);
 		builder.place_storage(room);
 		builder.place_links(room);
-	});
+	}
 	/*console.log(
 		"CPU this tick: " + Game.cpu.getUsed() + "/" + Game.cpu.tickLimit,
 	);*/
