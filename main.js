@@ -40,6 +40,7 @@ module.exports.loop = function () {
 		let core_link_coord = links.shift();
 		console.log("Core Link Coord: " + core_link_coord);
 		links.forEach(function (link) {
+			console.log("\tChecking Link: " + link);
 			if (link.cooldown == 0) {
 				/*let core_link = memory
 					.coord_to_pos(creep.room.memory.core, creep.room)
