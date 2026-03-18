@@ -35,36 +35,25 @@ module.exports.loop = function () {
 		let link_coords = [];
 		room.memory.links.forEach(function (link_coord) {
 			link_coords.push(link_coord);
-			console.log("Links found at: " + link_coord);
 		});
 		let core_link_coord = link_coords.shift();
-		console.log("Core Link Coord: " + core_link_coord);
 		link_coords.forEach(function (link_coord) {
-			console.log("\tChecking Link: " + link_coord);
 			let link = quartermaster.get_structure(
 				room,
 				link_coord,
 				STRUCTURE_LINK,
 			);
 			if (link.cooldown == 0) {
-				/*let core_link = memory
-					.coord_to_pos(creep.room.memory.core, creep.room)
-					.findInRange(FIND_MY_STRUCTURES, {
-						filter: { structureType: STRUCTURE_LINK },
-					});*/
 				let core_link = quartermaster.get_structure(
 					room,
 					core_link_coord,
 					STRUCTURE_LINK,
 				);
 				if (core_link) {
-					console.log("Core Link: " + core_link);
-					//core_link = core_link[0];
 					if (
 						core_link.store.getFreeCapacity(RESOURCE_ENERGY) >=
 						link.store[RESOURCE_ENERGY]
 					) {
-						console.log("Linking energy");
 						link.transferEnergy(core_link);
 					}
 				}
