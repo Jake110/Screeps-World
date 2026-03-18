@@ -32,7 +32,10 @@ module.exports.loop = function () {
 		spawn.main(room);
 
 		// Link Control
-		let links = room.memory.links;
+		let links = [];
+		room.memory.links.forEach(function (link_coord) {
+			links.push(link_coord);
+		});
 		let core_link_coord = links.shift();
 		console.log("Core Link Coord: " + core_link_coord);
 		links.forEach(function (link) {
