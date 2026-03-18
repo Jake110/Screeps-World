@@ -34,6 +34,7 @@ module.exports.loop = function () {
 		// Link Control
 		let links = room.memory.links;
 		let core_link_coord = links.shift();
+		console.log("Core Link Coord: " + core_link_coord);
 		links.forEach(function (link) {
 			if (link.cooldown == 0) {
 				/*let core_link = memory
@@ -47,11 +48,13 @@ module.exports.loop = function () {
 					STRUCTURE_LINK,
 				);
 				if (core_link) {
+					console.log("Core Link: " + core_link);
 					//core_link = core_link[0];
 					if (
 						core_link.store.getFreeCapacity(RESOURCE_ENERGY) >=
 						link.store[RESOURCE_ENERGY]
 					) {
+						console.log("Linking energy");
 						link.transferEnergy(core_link);
 					}
 				}
