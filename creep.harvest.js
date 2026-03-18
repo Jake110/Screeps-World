@@ -1,7 +1,6 @@
 const combat = require("utility.combat");
 const hauler = require("creep.hauler");
-const memory = require("utility.memory")
-const quartermaster = require("creep.quartermaster");
+const memory = require("utility.memory");
 const worker = require("creep.worker");
 
 function deposit_to_link(creep, link, move = true) {
@@ -12,16 +11,19 @@ function deposit_to_link(creep, link, move = true) {
 		});
 	}
 	if (link.cooldown == 0) {
-		let core_link = quartermaster.get_structure(
-			creep.room,
-			creep.room.memory.links[0],
-			STRUCTURE_LINK,
-		);
-		if (
-			core_link.store.getFreeCapacity(RESOURCE_ENERGY) >=
-			link.store[RESOURCE_ENERGY]
-		) {
-			link.transferEnergy(core_link);
+		let core_link = memory
+			.coord_to_pos(creep.room.memory.core, creep.room)
+			.findInRange(FIND_MY_STRUCTURES, {
+				filter: { structureType: STRUCTURE_LINK },
+			});
+		if (core_link.length > 0) {
+			core_link = core_link[0];
+			if (
+				core_link.store.getFreeCapacity(RESOURCE_ENERGY) >=
+				link.store[RESOURCE_ENERGY]
+			) {
+				link.transferEnergy(core_link);
+			}
 		}
 	}
 }
@@ -47,14 +49,19 @@ module.exports = {
 			},
 		});
 		if (harvest_target) {
-			let result = creep.harvest(harvest_target)
+			let result = creep.harvest(harvest_target);
 			if (result == ERR_NOT_IN_RANGE) {
 				creep.moveTo(harvest_target, {
 					visualizePathStyle: { stroke: "#fff23e" },
 				});
-			} else if (result == ERR_NOT_ENOUGH_RESOURCES && creep.ticksToLive < 1000) {
-				let closest_spawn = creep.pos.findClosestByPath(creep.room.find(FIND_MY_SPAWNS))
-				creep.memory.renew = memory.pos_to_coord(closest_spawn.pos)
+			} else if (
+				result == ERR_NOT_ENOUGH_RESOURCES &&
+				creep.ticksToLive < 1000
+			) {
+				let closest_spawn = creep.pos.findClosestByPath(
+					creep.room.find(FIND_MY_SPAWNS),
+				);
+				creep.memory.renew = memory.pos_to_coord(closest_spawn.pos);
 			}
 		}
 		let deposit_target = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {

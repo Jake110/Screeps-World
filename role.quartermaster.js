@@ -22,12 +22,13 @@ module.exports = {
 				}
 			}
 		} else {
-			let core_link = quartermaster.get_structure(
-				creep.room,
-				room_memory.links[0],
-				STRUCTURE_LINK,
-			);
-			if (core_link) {
+			let core_link = memory
+				.coord_to_pos(creep.room.memory.core, creep.room)
+				.findInRange(FIND_MY_STRUCTURES, {
+					filter: { structureType: STRUCTURE_LINK },
+				});
+			if (core_link.length > 0) {
+				core_link = core_link[0];
 				console.log("Collecting from " + core_link.pos);
 				if (
 					creep.withdraw(core_link, RESOURCE_ENERGY) ==
