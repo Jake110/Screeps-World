@@ -6,6 +6,7 @@ const worker = require("creep.worker");
 module.exports = {
 	/** @param {Creep} creep **/
 	harvest: function (creep) {
+		console.log("Creep body size: "+creep.body.length)
 		if (creep.body.length > 4) {
 			let sources = creep.pos.findInRange(FIND_ACTIVE_SOURCES, 1);
 			let harvested = false;
