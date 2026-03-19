@@ -49,9 +49,13 @@ function weigh_targets(pos, range, hostiles) {
 }
 
 module.exports = {
-	avoid_filter: function (target) {
+	safe_check: function (target) {
+		let pos = target;
+		if (target.pos) {
+			pos = target.pos;
+		}
 		return (
-			target.pos.findInRange(FIND_HOSTILE_CREEPS, 10, {
+			pos.findInRange(FIND_HOSTILE_CREEPS, 10, {
 				filter: function (object) {
 					return (
 						object.getActiveBodyparts(ATTACK) != 0 ||

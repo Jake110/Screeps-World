@@ -17,7 +17,7 @@ function get_collection_target(creep, find_list, storage_override = false) {
 		options = options.concat(
 			creep.room.find(find_name, {
 				filter: function (option) {
-					if (!combat.avoid_filter(option)) {
+					if (!combat.safe_check(option)) {
 						return false;
 					}
 					if (!option.store) {

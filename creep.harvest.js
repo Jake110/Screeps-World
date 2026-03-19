@@ -6,37 +6,86 @@ const worker = require("creep.worker");
 module.exports = {
 	/** @param {Creep} creep **/
 	harvest: function (creep) {
-		let harvest_target = creep.pos.findClosestByPath(FIND_SOURCES, {
-			filter: function (_source) {
-				let no_rivals = true;
-				if (creep.body.length > 4) {
-					no_rivals =
-						_source.pos.findInRange(FIND_MY_CREEPS, 2, {
-							filter: function (_creep) {
-								return (
-									_creep.memory.role == "harvester" &&
-									_creep.name != creep.name
-								);
-							},
-						}).length == 0;
+		if (creep.body.length > 4) {
+			let sources = creep.pos.findInRange(FIND_ACTIVE_SOURCES, 1);
+			let harvested = false;
+			if (sources.length > 0) {
+				if (creep.harvest(sources[0]) != ERR_NOT_ENOUGH_RESOURCES) {
+					harvested = true;
 				}
-				return combat.avoid_filter && no_rivals;
-			},
-		});
-		if (harvest_target) {
-			let result = creep.harvest(harvest_target);
-			if (result == ERR_NOT_IN_RANGE) {
-				creep.moveTo(harvest_target, {
-					visualizePathStyle: { stroke: "#fff23e" },
+			}
+			if (!harvested) {
+				let chosen_pos = null;
+				let chosen_dist = 999;
+				creep.room.memory.containers.forEach(function (coord) {
+					let pos = memory.coord_to_pos(coord, creep.room);
+					if (!combat.safe_check(pos)) {
+						return null;
+					}
+					let dist = creep.pos.findPathTo(pos).length;
+					if (
+						creep.room.find(FIND_MY_CREEPS, {
+							filter: function (_creep) {
+								let _creep_memory = _creep.memory;
+								if (
+									_creep_memory.role != "harvester" ||
+									_creep.name == creep.name
+								) {
+									return false;
+								}
+								let at_pos =
+									_creep.pos.x == pos.x &&
+									_creep.pos.y == pos.y;
+								let get_there_first = false;
+								if (_creep_memory._move) {
+									let target =
+										_creep_memory._move.dest.x == pos.x &&
+										_creep_memory._move.dest.y == pos.y;
+									let closer =
+										_creep.pos.findPathTo(pos).length <
+										dist;
+									if (target && closer) {
+										get_there_first = true;
+									}
+								}
+								return at_pos || get_there_first;
+							},
+						}).length > 0
+					) {
+						return null;
+					}
+					if (dist < chosen_dist) {
+						chosen_pos = pos;
+						chosen_dist = dist;
+					}
 				});
-			} else if (
-				result == ERR_NOT_ENOUGH_RESOURCES &&
-				creep.ticksToLive < 1000
-			) {
-				let closest_spawn = creep.pos.findClosestByPath(
-					creep.room.find(FIND_MY_SPAWNS),
-				);
-				creep.memory.renew = memory.pos_to_coord(closest_spawn.pos);
+				if (chosen_pos) {
+					creep.moveTo(pos, {
+						visualizePathStyle: { stroke: "#fff23e" },
+					});
+				}
+			}
+		} else {
+			let harvest_target = creep.pos.findClosestByPath(FIND_SOURCES, {
+				filter: function (source) {
+					return combat.safe_check(source);
+				},
+			});
+			if (harvest_target) {
+				let result = creep.harvest(harvest_target);
+				if (result == ERR_NOT_IN_RANGE) {
+					creep.moveTo(harvest_target, {
+						visualizePathStyle: { stroke: "#fff23e" },
+					});
+				} else if (
+					result == ERR_NOT_ENOUGH_RESOURCES &&
+					creep.ticksToLive < 1000
+				) {
+					let closest_spawn = creep.pos.findClosestByPath(
+						creep.room.find(FIND_MY_SPAWNS),
+					);
+					creep.memory.renew = memory.pos_to_coord(closest_spawn.pos);
+				}
 			}
 		}
 		let deposit_target = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {
