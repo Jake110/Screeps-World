@@ -112,6 +112,7 @@ module.exports = {
 	},
 	main: function () {
 		for (let name in Game.creeps) {
+			console.log("-------> "+name)
 			let creep = Game.creeps[name];
 			let creep_memory = creep.memory;
 			if (!creep_memory.recycle && !creep_memory.renew) {
