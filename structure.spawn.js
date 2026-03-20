@@ -62,16 +62,19 @@ module.exports = {
 						return null;
 					}
 					let creep = null;
-					if (role_count + role_additions > 0) {
+					if (
+						role_count + role_additions == 0 &&
+						["harvester", "worker"].includes(role.name)
+					) {
 						creep = creeper.body(
 							role.name,
-							spawn.store.getCapacity(RESOURCE_ENERGY) +
-								extension_max,
+							spawn.store[RESOURCE_ENERGY] + extension_energy,
 						);
 					} else {
 						creep = creeper.body(
 							role.name,
-							spawn.store[RESOURCE_ENERGY] + extension_energy,
+							spawn.store.getCapacity(RESOURCE_ENERGY) +
+								extension_max,
 						);
 					}
 					if (creep.cost == 0) {
