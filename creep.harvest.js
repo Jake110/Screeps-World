@@ -91,6 +91,7 @@ module.exports = {
 				console.log("Harvesting from: " + harvest_target.pos);
 				let result = creep.harvest(harvest_target);
 				if (result == ERR_NOT_IN_RANGE) {
+					console.log("Moving to source")
 					creep.moveTo(harvest_target, {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
@@ -98,6 +99,7 @@ module.exports = {
 					result == ERR_NOT_ENOUGH_RESOURCES &&
 					creep.ticksToLive < 1000
 				) {
+					console.log("Renewing")
 					let closest_spawn = creep.pos.findClosestByPath(
 						creep.room.find(FIND_MY_SPAWNS),
 					);
