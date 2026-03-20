@@ -4,6 +4,7 @@ const role_hauler = require("role.hauler");
 const role_medic = require("role.medic");
 const role_quartermaster = require("role.quartermaster");
 const role_worker = require("role.worker");
+const creepHarvest = require("./creep.harvest");
 
 module.exports = {
 	active_defence_check: function (room) {
@@ -115,6 +116,8 @@ module.exports = {
 			console.log("-------> "+name)
 			let creep = Game.creeps[name];
 			let creep_memory = creep.memory;
+			console.log("Recycle? " + creep_memory.recycle)
+			console.log("Renew? "+creep_memory.renew)
 			if (!creep_memory.recycle && !creep_memory.renew) {
 				switch (creep_memory.role) {
 					case "grunt":
