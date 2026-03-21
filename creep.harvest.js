@@ -8,7 +8,7 @@ module.exports = {
 	harvest: function (creep) {
 		console.log("Creep body size: " + creep.body.length);
 		if (creep.body.length > 4) {
-			let sources = creep.pos.findInRange(FIND_ACTIVE_SOURCES, 1);
+			let sources = creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1);
 			let harvested = false;
 			console.log("Source in range? " + sources.length > 0);
 			if (sources.length > 0) {
