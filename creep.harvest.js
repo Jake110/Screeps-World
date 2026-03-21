@@ -75,7 +75,7 @@ module.exports = {
 					}
 				});
 				if (chosen_pos) {
-					creep.moveTo(pos, {
+					creep.moveTo(chosen_pos, {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
 				}
