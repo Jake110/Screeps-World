@@ -42,8 +42,8 @@ function get_collection_target(creep, find_list, storage_override = false) {
 					}
 					let structure = STRUCTURE_CONTAINER;
 					if (
-						creep.room.memory.storage &&
-						(creep_memory.role == "worker" || storage_override)
+						(creep_memory.role == "worker" && !storage_override) ||
+						(creep_memory.role == "hauler" && storage_override)
 					) {
 						structure = STRUCTURE_STORAGE;
 					}
@@ -146,8 +146,13 @@ module.exports = {
 		let creep_memory = creep.memory;
 		if (
 			!target &&
-			creep_memory.role == "hauler" &&
-			creep.room.memory.storage
+			((creep_memory.role == "hauler" && creep.room.memory.storage) ||
+				(creep_memory.role == "worker" &&
+					creep.room.find(FIND_MY_CREEPS, {
+						filter: function (_creep) {
+							return _creep.memory.role == "hauler";
+						},
+					}) > 0))
 		) {
 			target = get_collection_target(creep, [FIND_STRUCTURES], true);
 		}
