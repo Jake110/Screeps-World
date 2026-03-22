@@ -143,11 +143,16 @@ module.exports = {
 					}
 					console.log("Creep cost: " + creep.cost)
 					console.log("Energy Pool: " + energy_pool)
-					console.log("Energy Sources: "+energy_pos)
-					console.log("Spawn result: "+spawn.spawnCreep(creep.parts, new_name, {
+					console.log("Energy Sources: " + energy_pos)
+					let result = spawn.spawnCreep(creep.parts, new_name, {
 						energyStructures: energy_sources,
 						memory: creep_memory,
-					}));
+					});
+					console.log("----| Spawn result: " + result)
+					if (result == ERR_NOT_ENOUGH_ENERGY) {
+						console.log("Cost: "+creep.cost)
+						console.log("Body: "+creep.body)
+					}
 					used_spawners.push(spawn.id);
 					if (spawn.memory.recycling) {
 						Memory.creeps[spawn.memory.recycling].recycle = false;
