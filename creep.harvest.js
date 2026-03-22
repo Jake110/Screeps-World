@@ -124,18 +124,27 @@ module.exports = {
 
 	/** @param {Creep} creep **/
 	deposit: function (creep) {
+		let invalid_target_check = function(target_list){
+			let invalid = true
+			if (target_list.length > 0){
+				if (target_list[0].store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+					invalid = false
+				}
+			}
+			return invalid
+		}
 		console.log("Depositing ["+creep.store[RESOURCE_ENERGY]+"] energy")
 		console.log("Finding Link")
 		let deposit_target = creep.pos.findInRange(FIND_MY_STRUCTURES, 4, {
 			filter: { structureType: STRUCTURE_LINK },
 		});
-		if (deposit_target.length == 0) {
+		if (invalid_target_check(deposit_target)) {
 			console.log("No Link, finding Container")
 			deposit_target = creep.pos.findInRange(FIND_STRUCTURES, 1, {
 				filter: { structureType: STRUCTURE_CONTAINER },
 			});
 		}
-		if (deposit_target.length == 0) {
+		if (invalid_target_check(deposit_target)) {
 			console.log("No Container")
 			if (creep.body.length > 4) {
 				// We want to focus on building the container if it's missing
