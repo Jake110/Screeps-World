@@ -48,6 +48,11 @@ module.exports = {
 		console.log("Current Energy: " + extension_energy)
 		console.log("Max Energy: "+extension_max)
 
+		let core_spawn = memory
+					.coord_to_pos(room.memory.core, room)
+								.lookFor(LOOK_STRUCTURES)[0];
+
+
 		// Spawn Creeps
 		let used_spawners = [];
 		if (Game.time % 7 == 0) {
@@ -119,7 +124,23 @@ module.exports = {
 					} else {
 						creep_memory.full = false;
 					}
+					energy_sources = [spawn]
+					energy_pool = spawn.store[RESOURCE_ENERGY]
+					while (energy_pool < creep.cost) {
+						let extension = core_spawn.findClosestByPath(FIND_MY_STRUCTURES, {
+							filter: function (structure) {
+							return structure.isActive() && structure.structureType == STRUCTURE_EXTENSION && !energy_sources.includes(structure)
+							}
+						})
+						if (extension) {
+							energy_sources.push(extension)
+							energy_pool+= extension.store[RESOURCE_ENERGY]
+						} else {
+							break
+						}
+					}
 					spawn.spawnCreep(creep.parts, new_name, {
+						energyStructures: energy_sources,
 						memory: creep_memory,
 					});
 					used_spawners.push(spawn.id);
@@ -130,10 +151,6 @@ module.exports = {
 				}
 			});
 		}
-
-		let core_spawn = memory
-			.coord_to_pos(room.memory.core, room)
-			.lookFor(LOOK_STRUCTURES)[0];
 
 		// Road Construction
 		if (Game.time % 13 == 0) {
