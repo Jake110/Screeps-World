@@ -139,10 +139,10 @@ module.exports = {
 							break
 						}
 					}
-					spawn.spawnCreep(creep.parts, new_name, {
+					console.log("Spawn result: "+spawn.spawnCreep(creep.parts, new_name, {
 						energyStructures: energy_sources,
 						memory: creep_memory,
-					});
+					}));
 					used_spawners.push(spawn.id);
 					if (spawn.memory.recycling) {
 						Memory.creeps[spawn.memory.recycling].recycle = false;
