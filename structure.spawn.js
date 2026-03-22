@@ -127,7 +127,7 @@ module.exports = {
 					energy_sources = [spawn]
 					energy_pool = spawn.store[RESOURCE_ENERGY]
 					while (energy_pool < creep.cost) {
-						let extension = core_spawn.findClosestByPath(FIND_MY_STRUCTURES, {
+						let extension = core_spawn.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 							filter: function (structure) {
 							return structure.isActive() && structure.structureType == STRUCTURE_EXTENSION && !energy_sources.includes(structure)
 							}
