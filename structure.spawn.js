@@ -39,9 +39,11 @@ module.exports = {
 		// Get Extension Energy
 		let extension_energy = 0;
 		let extension_max = 0;
+		let extension_list = []
 		room.find(FIND_MY_STRUCTURES, {
 			filter: function(structure){ return structure.isActive() && structure.structureType == STRUCTURE_EXTENSION },
 		}).forEach(function (extension) {
+			extension_list.push(extension)
 			extension_energy += extension.store[RESOURCE_ENERGY];
 			extension_max += extension.store.getCapacity(RESOURCE_ENERGY);
 		});
@@ -90,12 +92,12 @@ module.exports = {
 						// Not enough energy for this roles cheapest creep
 						return null;
 					}
-					let dry_run = spawn.spawnCreep(creep.parts, "TestSpawn", {dryRun:true})
+					let dry_run = spawn.spawnCreep(creep.parts, "TestSpawn", {dryRun:true, energyStructures:extension_list.concat([spawn])})
 					console.log("Dry run result: " + dry_run)
 					if (dry_run != OK) {
 						console.log("Cost: "+creep.cost)
 						console.log("Body: "+creep.parts)
-						console.log("Energy: "+(spawn.store[ERR_NOT_ENOUGH_RESOURCES]+extension_energy))
+						console.log("Energy: "+(spawn.store[RESOURCE_ENERGY]+extension_energy))
 						return null;
 					}
 					let new_name = role.name + Game.time;
