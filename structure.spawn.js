@@ -73,21 +73,21 @@ module.exports = {
 						return null;
 					}
 					let creep = null;
-					if (
+					/*if (
 						role_count + role_additions == 0 &&
 						["harvester", "worker"].includes(role.name)
-					) {
+					) {*/
 						creep = creeper.body(
 							role.name,
 							spawn.store[RESOURCE_ENERGY] + extension_energy,
 						);
-					} else {
+					/*} else {
 						creep = creeper.body(
 							role.name,
 							spawn.store.getCapacity(RESOURCE_ENERGY) +
 								extension_max,
 						);
-					}
+					}*/
 					if (creep.cost == 0) {
 						// Not enough energy for this roles cheapest creep
 						return null;
