@@ -64,6 +64,7 @@ module.exports = {
 				}).length;
 				let role_additions = 0;
 				while (role_count + role_additions < role.max) {
+					console.log("--| Role: "+role.name)
 					let spawn = get_spawn(room, used_spawners);
 					if (!spawn) {
 						// No spawn was available
@@ -89,10 +90,12 @@ module.exports = {
 						// Not enough energy for this roles cheapest creep
 						return null;
 					}
-					if (
-						creep.cost >
-						spawn.store[RESOURCE_ENERGY] + extension_energy
-					) {
+					let dry_run = spawn.spawnCreep(creep.parts, "TestSpawn", {dryRun:true})
+					console.log("Dry run result: " + dry_run)
+					if (dry_run != OK) {
+						console.log("Cost: "+creep.cost)
+						console.log("Body: "+creep.parts)
+						console.log("Energy: "+(spawn.store[ERR_NOT_ENOUGH_RESOURCES]+extension_energy))
 						return null;
 					}
 					let new_name = role.name + Game.time;
