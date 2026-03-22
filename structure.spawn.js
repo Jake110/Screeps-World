@@ -39,7 +39,7 @@ module.exports = {
 		let extension_energy = 0;
 		let extension_max = 0;
 		room.find(FIND_MY_STRUCTURES, {
-			filter: { structureType: STRUCTURE_EXTENSION },
+			filter: function(structure){ return structure.isActive() && structure.structureType == STRUCTURE_EXTENSION },
 		}).forEach(function (extension) {
 			extension_energy += extension.store[RESOURCE_ENERGY];
 			extension_max += extension.store.getCapacity(RESOURCE_ENERGY);

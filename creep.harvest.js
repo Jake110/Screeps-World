@@ -127,7 +127,8 @@ module.exports = {
 		let invalid_target_check = function(target_list){
 			let invalid = true
 			if (target_list.length > 0){
-				if (target_list[0].store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+				let target = target_list[0]
+				if (target.isActive() && target.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
 					invalid = false
 				}
 			}
