@@ -152,7 +152,7 @@ module.exports = {
 						filter: function (_creep) {
 							return _creep.memory.role == "hauler";
 						},
-					}) > 0))
+					}) == 0))
 		) {
 			target = get_collection_target(creep, [FIND_STRUCTURES], true);
 		}
