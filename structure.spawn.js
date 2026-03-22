@@ -125,6 +125,7 @@ module.exports = {
 						creep_memory.full = false;
 					}
 					energy_sources = [spawn]
+					energy_pos = [spawn.pos]
 					energy_pool = spawn.store[RESOURCE_ENERGY]
 					while (energy_pool < creep.cost) {
 						let extension = core_spawn.pos.findClosestByPath(FIND_MY_STRUCTURES, {
@@ -134,13 +135,15 @@ module.exports = {
 						})
 						if (extension) {
 							energy_sources.push(extension)
+							energy_pos.push(extension.pos)
 							energy_pool+= extension.store[RESOURCE_ENERGY]
 						} else {
 							break
 						}
 					}
 					console.log("Creep cost: " + creep.cost)
-					console.log("Energy Pool: "+energy_pool)
+					console.log("Energy Pool: " + energy_pool)
+					console.log("Energy Sources: "+energy_pos)
 					console.log("Spawn result: "+spawn.spawnCreep(creep.parts, new_name, {
 						energyStructures: energy_sources,
 						memory: creep_memory,
