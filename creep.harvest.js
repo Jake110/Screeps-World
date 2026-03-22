@@ -124,40 +124,50 @@ module.exports = {
 
 	/** @param {Creep} creep **/
 	deposit: function (creep) {
+		console.log("Depositing ["+creep.store[RESOURCE_ENERGY]+"] energy")
+		console.log("Finding Link")
 		let deposit_target = creep.pos.findInRange(FIND_MY_STRUCTURES, 4, {
 			filter: { structureType: STRUCTURE_LINK },
 		});
 		if (deposit_target.length == 0) {
+			console.log("No Link, finding Container")
 			deposit_target = creep.pos.findInRange(FIND_STRUCTURES, 1, {
 				filter: { structureType: STRUCTURE_CONTAINER },
 			});
 		}
 		if (deposit_target.length == 0) {
+			console.log("No Container")
 			if (creep.body.length > 4) {
 				// We want to focus on building the container if it's missing
 				let sites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1, {
 					filter: { structureType: STRUCTURE_CONTAINER },
 				});
 				if (sites.length > 0) {
+					console.log("Building Container")
 					creep.build(sites[0]);
 					return null;
 				}
 			}
+			console.log("Running Hauler Recharge")
 			if (hauler.recharge(creep)) {
 				return null;
 			}
+			console.log("Running Worker Upgrade")
 			worker.upgrade(creep);
 		} else {
 			deposit_target = deposit_target[0];
+			console.log("\tDepositing to: "+deposit_target.pos)
 			let result = null;
 			if (deposit_target.structureType == STRUCTURE_CONTAINER) {
 				// If we're depositing into a container, make sure it's not about to die
 				if (deposit_target.hits / deposit_target.hitsMax < 0.5) {
+					console.log("Repairing Container first")
 					result = creep.repair(deposit_target);
 				}
 			}
 			result = creep.transfer(deposit_target, RESOURCE_ENERGY);
 			if (result == ERR_NOT_IN_RANGE) {
+				console.log("Moving to target")
 				creep.moveTo(deposit_target, {
 					visualizePathStyle: { stroke: "#2bff00" },
 				});
