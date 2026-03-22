@@ -139,6 +139,8 @@ module.exports = {
 							break
 						}
 					}
+					console.log("Creep cost: " + creep.cost)
+					console.log("Energy Pool: "+energy_pool)
 					console.log("Spawn result: "+spawn.spawnCreep(creep.parts, new_name, {
 						energyStructures: energy_sources,
 						memory: creep_memory,
