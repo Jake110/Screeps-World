@@ -35,6 +35,7 @@ module.exports = {
 		// Get Creep Roles
 		let roles = creeper.roles(room);
 
+		console.log("-------- > Spawner code")
 		// Get Extension Energy
 		let extension_energy = 0;
 		let extension_max = 0;
@@ -44,6 +45,8 @@ module.exports = {
 			extension_energy += extension.store[RESOURCE_ENERGY];
 			extension_max += extension.store.getCapacity(RESOURCE_ENERGY);
 		});
+		console.log("Current Energy: " + extension_energy)
+		console.log("Max Energy: "+extension_max)
 
 		// Spawn Creeps
 		let used_spawners = [];
