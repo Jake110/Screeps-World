@@ -151,7 +151,7 @@ module.exports = {
 					console.log("----| Spawn result: " + result)
 					if (result == ERR_NOT_ENOUGH_ENERGY) {
 						console.log("Cost: "+creep.cost)
-						console.log("Body: "+creep.body)
+						console.log("Body: "+creep.parts)
 					}
 					used_spawners.push(spawn.id);
 					if (spawn.memory.recycling) {
