@@ -151,7 +151,7 @@ module.exports = {
 				filter: function (_creep) {
 					return _creep.memory.role == "hauler";
 				},
-			}) == 0 && creep.room.controller.level < 4;
+			}) == 0 || creep.room.controller.level < 4;
 		console.log("||||||||||||||| " + creep_memory.role);
 		console.log("\tHauler Override: " + hauler_override);
 		console.log("\tWorker Override: " + worker_override);
