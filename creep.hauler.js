@@ -144,15 +144,18 @@ module.exports = {
 			target = get_collection_target(creep, [FIND_MY_CREEPS]);
 		}
 		let creep_memory = creep.memory;
+		let hauler_override =
+			creep.room.memory.storage && creep.room.controller.level >= 4;
+		let worker_override =
+			creep.room.find(FIND_MY_CREEPS, {
+				filter: function (_creep) {
+					return _creep.memory.role == "hauler";
+				},
+			}) == 0 && creep.room.controller.level < 4;
 		if (
 			!target &&
-			((creep_memory.role == "hauler" && creep.room.memory.storage) ||
-				(creep_memory.role == "worker" &&
-					creep.room.find(FIND_MY_CREEPS, {
-						filter: function (_creep) {
-							return _creep.memory.role == "hauler";
-						},
-					}) == 0))
+			((creep_memory.role == "hauler" && hauler_override) ||
+				(creep_memory.role == "worker" && worker_override))
 		) {
 			target = get_collection_target(creep, [FIND_STRUCTURES], true);
 		}
@@ -181,7 +184,8 @@ module.exports = {
 		let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 			filter: function (structure) {
 				return (
-					structure.isActive() && structure.structureType == STRUCTURE_TOWER &&
+					structure.isActive() &&
+					structure.structureType == STRUCTURE_TOWER &&
 					structure.store[RESOURCE_ENERGY] <
 						structure.store.getCapacity(RESOURCE_ENERGY) / 3
 				);
@@ -191,7 +195,8 @@ module.exports = {
 			target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 				filter: function (structure) {
 					return (
-						structure.isActive() && [STRUCTURE_EXTENSION, STRUCTURE_SPAWN].includes(
+						structure.isActive() &&
+						[STRUCTURE_EXTENSION, STRUCTURE_SPAWN].includes(
 							structure.structureType,
 						) &&
 						structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
@@ -204,7 +209,8 @@ module.exports = {
 			target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 				filter: function (structure) {
 					return (
-						structure.isActive() && structure.structureType == STRUCTURE_TOWER &&
+						structure.isActive() &&
+						structure.structureType == STRUCTURE_TOWER &&
 						structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
 					);
 				},
@@ -222,7 +228,12 @@ module.exports = {
 		}
 		if (!target && ["harvester", "hauler"].includes(creep_memory.role)) {
 			target = creep.room.find(FIND_MY_STRUCTURES, {
-				filter: function(structure){ return structure.isActive() && structure.structureType == STRUCTURE_STORAGE },
+				filter: function (structure) {
+					return (
+						structure.isActive() &&
+						structure.structureType == STRUCTURE_STORAGE
+					);
+				},
 			})[0];
 			if (!target) {
 				target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
@@ -242,7 +253,8 @@ module.exports = {
 					target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 						filter: function (structure) {
 							if (
-								structure.isActive() && structure.structureType == STRUCTURE_CONTAINER
+								structure.isActive() &&
+								structure.structureType == STRUCTURE_CONTAINER
 							) {
 								return structure.store.getFreeCapacity > 0;
 							}
