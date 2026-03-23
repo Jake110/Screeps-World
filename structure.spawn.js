@@ -35,25 +35,29 @@ module.exports = {
 		// Get Creep Roles
 		let roles = creeper.roles(room);
 
-		console.log("-------- > Spawner code")
+		console.log("-------- > Spawner code");
 		// Get Extension Energy
 		let extension_energy = 0;
 		let extension_max = 0;
-		let extension_list = []
+		let extension_list = [];
 		room.find(FIND_MY_STRUCTURES, {
-			filter: function(structure){ return structure.isActive() && structure.structureType == STRUCTURE_EXTENSION },
+			filter: function (structure) {
+				return (
+					structure.isActive() &&
+					structure.structureType == STRUCTURE_EXTENSION
+				);
+			},
 		}).forEach(function (extension) {
-			extension_list.push(extension)
+			extension_list.push(extension);
 			extension_energy += extension.store[RESOURCE_ENERGY];
 			extension_max += extension.store.getCapacity(RESOURCE_ENERGY);
 		});
-		console.log("Current Energy: " + extension_energy)
-		console.log("Max Energy: "+extension_max)
+		console.log("Current Energy: " + extension_energy);
+		console.log("Max Energy: " + extension_max);
 
 		let core_spawn = memory
-					.coord_to_pos(room.memory.core, room)
-								.lookFor(LOOK_STRUCTURES)[0];
-
+			.coord_to_pos(room.memory.core, room)
+			.lookFor(LOOK_STRUCTURES)[0];
 
 		// Spawn Creeps
 		let used_spawners = [];
@@ -66,38 +70,45 @@ module.exports = {
 				}).length;
 				let role_additions = 0;
 				while (role_count + role_additions < role.max) {
-					console.log("--| Role: "+role.name)
+					console.log("--| Role: " + role.name);
 					let spawn = get_spawn(room, used_spawners);
 					if (!spawn) {
 						// No spawn was available
 						return null;
 					}
 					let creep = null;
-					/*if (
+					if (
 						role_count + role_additions == 0 &&
 						["harvester", "worker"].includes(role.name)
-					) {*/
+					) {
 						creep = creeper.body(
 							role.name,
 							spawn.store[RESOURCE_ENERGY] + extension_energy,
 						);
-					/*} else {
+					} else {
 						creep = creeper.body(
 							role.name,
 							spawn.store.getCapacity(RESOURCE_ENERGY) +
 								extension_max,
 						);
-					}*/
+					}
 					if (creep.cost == 0) {
 						// Not enough energy for this roles cheapest creep
 						return null;
 					}
-					let dry_run = spawn.spawnCreep(creep.parts, "TestSpawn", {dryRun:true, energyStructures:extension_list.concat([spawn])})
-					console.log("Dry run result: " + dry_run)
+					let dry_run = spawn.spawnCreep(creep.parts, "TestSpawn", {
+						dryRun: true,
+						energyStructures: extension_list.concat([spawn]),
+					});
+					console.log("Dry run result: " + dry_run);
 					if (dry_run != OK) {
-						console.log("Cost: "+creep.cost)
-						console.log("Body: "+creep.parts)
-						console.log("Energy: "+(spawn.store[RESOURCE_ENERGY]+extension_energy))
+						console.log("Cost: " + creep.cost);
+						console.log("Body: " + creep.parts);
+						console.log(
+							"Energy: " +
+								(spawn.store[RESOURCE_ENERGY] +
+									extension_energy),
+						);
 						return null;
 					}
 					let new_name = role.name + Game.time;
@@ -129,34 +140,42 @@ module.exports = {
 					} else {
 						creep_memory.full = false;
 					}
-					energy_sources = [spawn]
-					energy_pos = [spawn.pos]
-					energy_pool = spawn.store[RESOURCE_ENERGY]
+					energy_sources = [spawn];
+					energy_pos = [spawn.pos];
+					energy_pool = spawn.store[RESOURCE_ENERGY];
 					while (energy_pool < creep.cost) {
-						let extension = core_spawn.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-							filter: function (structure) {
-							return structure.isActive() && structure.structureType == STRUCTURE_EXTENSION && !energy_sources.includes(structure)
-							}
-						})
+						let extension = core_spawn.pos.findClosestByPath(
+							FIND_MY_STRUCTURES,
+							{
+								filter: function (structure) {
+									return (
+										structure.isActive() &&
+										structure.structureType ==
+											STRUCTURE_EXTENSION &&
+										!energy_sources.includes(structure)
+									);
+								},
+							},
+						);
 						if (extension) {
-							energy_sources.push(extension)
-							energy_pos.push(extension.pos)
-							energy_pool+= extension.store[RESOURCE_ENERGY]
+							energy_sources.push(extension);
+							energy_pos.push(extension.pos);
+							energy_pool += extension.store[RESOURCE_ENERGY];
 						} else {
-							break
+							break;
 						}
 					}
-					console.log("Creep cost: " + creep.cost)
-					console.log("Energy Pool: " + energy_pool)
-					console.log("Energy Sources: " + energy_pos)
+					console.log("Creep cost: " + creep.cost);
+					console.log("Energy Pool: " + energy_pool);
+					console.log("Energy Sources: " + energy_pos);
 					let result = spawn.spawnCreep(creep.parts, new_name, {
 						energyStructures: energy_sources,
 						memory: creep_memory,
 					});
-					console.log("----| Spawn result: " + result)
+					console.log("----| Spawn result: " + result);
 					if (result == ERR_NOT_ENOUGH_ENERGY) {
-						console.log("Cost: "+creep.cost)
-						console.log("Body: "+creep.parts)
+						console.log("Cost: " + creep.cost);
+						console.log("Body: " + creep.parts);
 					}
 					used_spawners.push(spawn.id);
 					if (spawn.memory.recycling) {
