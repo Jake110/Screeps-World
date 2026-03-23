@@ -255,7 +255,7 @@ module.exports = {
 						spawn.store.getCapacity(RESOURCE_ENERGY) +
 							extension_max,
 					).parts;
-					let dry_run = spawn.spawnCreep(creep.parts, "TestSpawn", {
+					let dry_run = spawn.spawnCreep(spawn_body, "TestSpawn", {
 						dryRun: true,
 						energyStructures: extension_list.concat([spawn]),
 					});
@@ -280,14 +280,12 @@ module.exports = {
 							spawn = get_spawn(room, used_spawners, true);
 						}
 					} else {
-						console.log("Cost: " + creep.cost);
-						console.log("Body: " + creep.parts);
+						console.log("Body: " + spawn_body);
 						console.log(
 							"Energy: " +
 								(spawn.store[RESOURCE_ENERGY] +
 									extension_energy),
 						);
-						return null;
 					}
 				}
 				if (creep.ticksToLive < 200 && !creep_body.includes(CLAIM)) {
