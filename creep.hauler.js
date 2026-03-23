@@ -219,9 +219,9 @@ module.exports = {
 		if (!target && creep_memory.role == "harvester") {
 			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 				filter: function (_creep) {
-					let _creep_memory = _creep.memory;
 					return (
-						_creep_memory.role == "hauler" && !_creep_memory.full
+						_creep.memory.role == "hauler" &&
+						_creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
 					);
 				},
 			});
@@ -238,10 +238,9 @@ module.exports = {
 			if (!target) {
 				target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 					filter: function (_creep) {
-						let _creep_memory = _creep.memory;
 						return (
-							_creep_memory.role == "worker" &&
-							!_creep_memory.full
+							_creep.memory.role == "worker" &&
+							_creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
 						);
 					},
 				});
