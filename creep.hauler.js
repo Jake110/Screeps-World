@@ -120,6 +120,10 @@ function get_collection_target(creep, find_list, storage_override = false) {
 	return chosen;
 }
 
+function get_home_room(creep) {
+	return Game.rooms[creep.memory.home]
+}
+
 module.exports = {
 	capacity_check: function (creep, resource) {
 		if (creep.memory.full && creep.store[resource] == 0) {
@@ -180,6 +184,7 @@ module.exports = {
 		return false;
 	},
 	get_collection_target: get_collection_target,
+	get_home_room: get_home_room,
 	recharge: function (creep) {
 		let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 			filter: function (structure) {
