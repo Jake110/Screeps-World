@@ -55,7 +55,7 @@ module.exports = {
 					work = [];
 					parts = [CARRY];
 					move = [];
-					cost = set_cost;
+					cost = 50;
 					while (energy - cost >= set_cost) {
 						cost += set_cost;
 						work.push(WORK);
