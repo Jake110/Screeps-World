@@ -120,6 +120,10 @@ function get_collection_target(creep, find_list, storage_override = false) {
 	return chosen;
 }
 
+function get_home_room(creep) {
+	return Game.rooms[creep.memory.home]
+}
+
 module.exports = {
 	capacity_check: function (creep, resource) {
 		if (creep.memory.full && creep.store[resource] == 0) {
@@ -180,11 +184,11 @@ module.exports = {
 		return false;
 	},
 	get_collection_target: get_collection_target,
+	get_home_room: get_home_room,
 	recharge: function (creep) {
 		let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 			filter: function (structure) {
 				return (
-					structure.isActive() &&
 					structure.structureType == STRUCTURE_TOWER &&
 					structure.store[RESOURCE_ENERGY] <
 						structure.store.getCapacity(RESOURCE_ENERGY) / 3
@@ -195,7 +199,6 @@ module.exports = {
 			target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 				filter: function (structure) {
 					return (
-						structure.isActive() &&
 						[STRUCTURE_EXTENSION, STRUCTURE_SPAWN].includes(
 							structure.structureType,
 						) &&
@@ -209,7 +212,6 @@ module.exports = {
 			target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 				filter: function (structure) {
 					return (
-						structure.isActive() &&
 						structure.structureType == STRUCTURE_TOWER &&
 						structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
 					);
@@ -229,10 +231,7 @@ module.exports = {
 		if (!target && ["harvester", "hauler"].includes(creep_memory.role)) {
 			target = creep.room.find(FIND_MY_STRUCTURES, {
 				filter: function (structure) {
-					return (
-						structure.isActive() &&
-						structure.structureType == STRUCTURE_STORAGE
-					);
+					return structure.structureType == STRUCTURE_STORAGE;
 				},
 			})[0];
 			if (!target) {
@@ -252,7 +251,6 @@ module.exports = {
 					target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 						filter: function (structure) {
 							if (
-								structure.isActive() &&
 								structure.structureType == STRUCTURE_CONTAINER
 							) {
 								return structure.store.getFreeCapacity > 0;

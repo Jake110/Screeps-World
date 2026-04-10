@@ -39,16 +39,11 @@ module.exports = {
 		// Get Extension Energy
 		let extension_energy = 0;
 		let extension_max = 0;
-		let extension_list = [];
 		room.find(FIND_MY_STRUCTURES, {
 			filter: function (structure) {
-				return (
-					structure.isActive() &&
-					structure.structureType == STRUCTURE_EXTENSION
-				);
+				return structure.structureType == STRUCTURE_EXTENSION;
 			},
-		}).forEach(function (extension) {
-			extension_list.push(extension);
+		}).forEach(function (extension) { 
 			extension_energy += extension.store[RESOURCE_ENERGY];
 			extension_max += extension.store.getCapacity(RESOURCE_ENERGY);
 		});
@@ -98,7 +93,6 @@ module.exports = {
 					}
 					let dry_run = spawn.spawnCreep(creep.parts, "TestSpawn", {
 						dryRun: true,
-						energyStructures: extension_list.concat([spawn]),
 					});
 					console.log("Dry run result: " + dry_run);
 					if (dry_run != OK) {
@@ -140,7 +134,6 @@ module.exports = {
 					} else {
 						creep_memory.full = false;
 					}
-					energy_sources = [spawn];
 					energy_pos = [spawn.pos];
 					energy_pool = spawn.store[RESOURCE_ENERGY];
 					while (energy_pool < creep.cost) {
@@ -149,17 +142,13 @@ module.exports = {
 							{
 								filter: function (structure) {
 									return (
-										structure.isActive() &&
 										structure.structureType ==
-											STRUCTURE_EXTENSION &&
-										!energy_sources.includes(structure)
+											STRUCTURE_EXTENSION
 									);
 								},
 							},
 						);
 						if (extension) {
-							energy_sources.push(extension);
-							energy_pos.push(extension.pos);
 							energy_pool += extension.store[RESOURCE_ENERGY];
 						} else {
 							break;
@@ -167,9 +156,7 @@ module.exports = {
 					}
 					console.log("Creep cost: " + creep.cost);
 					console.log("Energy Pool: " + energy_pool);
-					console.log("Energy Sources: " + energy_pos);
 					let result = spawn.spawnCreep(creep.parts, new_name, {
-						energyStructures: energy_sources,
 						memory: creep_memory,
 					});
 					console.log("----| Spawn result: " + result);
@@ -257,7 +244,6 @@ module.exports = {
 					).parts;
 					let dry_run = spawn.spawnCreep(spawn_body, "TestSpawn", {
 						dryRun: true,
-						energyStructures: extension_list.concat([spawn]),
 					});
 					console.log("Dry run result: " + dry_run);
 					if (dry_run == OK) {
