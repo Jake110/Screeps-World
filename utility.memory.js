@@ -88,5 +88,5 @@ module.exports = {
 	},
 	set_up_list: set_up_list,
 	structure_names: structure_names,
-	tracker_names: structure_names.concat(["ramparts", "roads"]),
+	tracker_names: structure_names.concat(["dismantle", "ramparts", "roads"]),
 };

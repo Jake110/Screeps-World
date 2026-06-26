@@ -1,11 +1,17 @@
 const combat = require("utility.combat");
+const memory = require("utility.memory");
 const quartermaster = require("creep.quartermaster");
 
-function get_collection_target(creep, find_list, storage_override = false) {
+function get_collection_target(
+	creep,
+	find_list,
+	storage_override = false,
+	dismantle = false,
+) {
 	let creep_memory = creep.memory;
 	let room = creep.room;
 	let options = [];
-	if (find_list.includes(FIND_STRUCTURES)) {
+	if (find_list.includes(FIND_STRUCTURES) && !dismantle) {
 		options.push(
 			quartermaster.get_structure(
 				room,
@@ -20,6 +26,10 @@ function get_collection_target(creep, find_list, storage_override = false) {
 				filter: function (option) {
 					if (!combat.safe_check(option)) {
 						return false;
+					}
+					if (dismantle) {
+						let coord = memory.pos_to_coord(option.pos);
+						return room.memory.dismantle.indexOf(coord) != -1;
 					}
 					if (!option.store) {
 						return option.resourceType == RESOURCE_ENERGY;
@@ -87,30 +97,28 @@ function get_collection_target(creep, find_list, storage_override = false) {
 			return null;
 		}
 		let distance = creep.pos.findPathTo(option).length;
-		room
-			.find(FIND_MY_CREEPS, {
-				filter: function (_creep) {
-					let creep_memory = _creep.memory;
-					if (
-						_creep.name == creep.name ||
-						!creep_memory._move ||
-						!["hauler", "worker"].includes(creep_memory.role) ||
-						creep_memory.full ||
-						distance < _creep.pos.findPathTo(option).length
-					) {
-						return false;
-					}
-					let dest = creep_memory._move.dest;
-					return (
-						dest.x == option.pos.x &&
-						dest.y == option.pos.y &&
-						dest.room == option.pos.roomName
-					);
-				},
-			})
-			.forEach(function (_creep) {
-				energy -= _creep.store.getFreeCapacity();
-			});
+		room.find(FIND_MY_CREEPS, {
+			filter: function (_creep) {
+				let creep_memory = _creep.memory;
+				if (
+					_creep.name == creep.name ||
+					!creep_memory._move ||
+					!["hauler", "worker"].includes(creep_memory.role) ||
+					creep_memory.full ||
+					distance < _creep.pos.findPathTo(option).length
+				) {
+					return false;
+				}
+				let dest = creep_memory._move.dest;
+				return (
+					dest.x == option.pos.x &&
+					dest.y == option.pos.y &&
+					dest.room == option.pos.roomName
+				);
+			},
+		}).forEach(function (_creep) {
+			energy -= _creep.store.getFreeCapacity();
+		});
 		if (energy > 0) {
 			if (distance < chosen_distance) {
 				chosen = option;
@@ -122,7 +130,7 @@ function get_collection_target(creep, find_list, storage_override = false) {
 }
 
 function get_home_room(creep) {
-	return Game.rooms[creep.memory.home]
+	return Game.rooms[creep.memory.home];
 }
 
 module.exports = {
@@ -142,13 +150,21 @@ module.exports = {
 		if (!target) {
 			target = get_collection_target(creep, [FIND_RUINS]);
 		}
+		let creep_memory = creep.memory;
+		if (!target && creep_memory.role == "worker") {
+			target = get_collection_target(
+				creep,
+				[FIND_STRUCTURES],
+				false,
+				true,
+			);
+		}
 		if (!target) {
 			target = get_collection_target(creep, [FIND_STRUCTURES]);
 		}
 		if (!target) {
 			target = get_collection_target(creep, [FIND_MY_CREEPS]);
 		}
-		let creep_memory = creep.memory;
 		let hauler_override =
 			creep.room.memory.storage && creep.room.controller.level >= 4;
 		let worker_override =

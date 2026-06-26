@@ -495,14 +495,28 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 	return next;
 }
 
+function remove_extension(pos) {
+	let room_memory = Memory.rooms[pos.roomName];
+	let memory_list = room_memory.extensions;
+	remove_structure(pos, STRUCTURE_EXTENSION, memory_list, room_memory);
+	return true;
+}
+
 function remove_road(pos) {
-	coord = memory.pos_to_coord(pos);
-	let memory_list = Memory.rooms[pos.roomName].roads;
+	let room_memory = Memory.rooms[pos.roomName];
+	let memory_list = room_memory.roads;
+	remove_structure(pos, STRUCTURE_ROAD, memory_list, room_memory);
+}
+
+function remove_structure(pos, structure_type, memory_list, room_memory) {
+	coord = memory.pos_to_coord(extension.pos);
 	index = memory_list.indexOf(coord);
 	if (index != -1) {
 		memory_list.splice(index, 1);
 		pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
-			structure.destroy();
+			if (structure.structureType == structure_type) {
+				room_memory.dismantle.push(memory.pos_to_coord(pos));
+			}
 		});
 		pos.lookFor(LOOK_CONSTRUCTION_SITES).forEach(function (site) {
 			site.remove();
@@ -562,6 +576,27 @@ module.exports = {
 			max_entensions = (room_level - 2) * 10;
 		}
 		let extension_list = spawn.room.memory.extensions;
+		while (extension_list.length > max_entensions) {
+			let end_loop = false;
+			for (let n = 0; n < extension_list.length; n++) {
+				let pos = memory.coord_to_pos(extension_list[n], spawn.room);
+				let extension_not_found = true;
+				pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
+					if (structure.structureType == STRUCTURE_EXTENSION) {
+						extension_not_found = true;
+						if (structure.store[RESOURCE_ENERGY] == 0) {
+							end_loop = remove_extension(pos);
+						}
+					}
+				});
+				if (extension_not_found) {
+					end_loop = remove_extension(pos);
+				}
+				if (end_loop) {
+					break;
+				}
+			}
+		}
 		while (extension_list.length < max_entensions) {
 			let new_site = get_next_adjacent(spawn.room, spawn.pos, 2);
 			remove_road(new_site);
