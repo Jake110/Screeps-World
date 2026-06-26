@@ -509,7 +509,7 @@ function remove_road(pos) {
 }
 
 function remove_structure(pos, structure_type, memory_list, room_memory) {
-	coord = memory.pos_to_coord(extension.pos);
+	coord = memory.pos_to_coord(pos);
 	index = memory_list.indexOf(coord);
 	if (index != -1) {
 		memory_list.splice(index, 1);
