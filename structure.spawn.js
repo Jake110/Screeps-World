@@ -38,17 +38,14 @@ module.exports = {
 		console.log("-------- > Spawner code");
 		// Get Extension Energy
 		let extension_energy = 0;
-		let extension_max = 0;
 		room.find(FIND_MY_STRUCTURES, {
 			filter: function (structure) {
 				return structure.structureType == STRUCTURE_EXTENSION;
 			},
 		}).forEach(function (extension) {
 			extension_energy += extension.store[RESOURCE_ENERGY];
-			extension_max += extension.store.getCapacity(RESOURCE_ENERGY);
 		});
 		console.log("Current Energy: " + extension_energy);
-		console.log("Max Energy: " + extension_max);
 
 		let core_spawn = memory
 			.coord_to_pos(room.memory.core, room)
@@ -71,22 +68,10 @@ module.exports = {
 						// No spawn was available
 						return null;
 					}
-					let creep = null;
-					if (
-						role_count + role_additions == 0 &&
-						["harvester", "worker"].includes(role.name)
-					) {
-						creep = creeper.body(
-							role.name,
-							spawn.store[RESOURCE_ENERGY] + extension_energy,
-						);
-					} else {
-						creep = creeper.body(
-							role.name,
-							spawn.store.getCapacity(RESOURCE_ENERGY) +
-								extension_max,
-						);
-					}
+					let creep = creeper.body(
+						role.name,
+						spawn.store[RESOURCE_ENERGY] + extension_energy,
+					);
 					if (creep.cost == 0) {
 						// Not enough energy for this roles cheapest creep
 						return null;
@@ -216,8 +201,7 @@ module.exports = {
 				if (spawn) {
 					let spawn_body = creeper.body(
 						role,
-						spawn.store.getCapacity(RESOURCE_ENERGY) +
-							extension_max,
+						spawn.store[RESOURCE_ENERGY] + extension_energy,
 					).parts;
 					let dry_run = spawn.spawnCreep(spawn_body, "TestSpawn", {
 						dryRun: true,
