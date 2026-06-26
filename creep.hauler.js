@@ -70,7 +70,9 @@ function get_collection_target(
 	let chosen_distance = 999;
 	options.forEach(function (option) {
 		let energy;
-		if (option.store) {
+		if (dismantle) {
+			energy = 1 - option.hits / option.hitsMax;
+		} else if (option.store) {
 			energy = option.store[RESOURCE_ENERGY];
 		} else {
 			energy = option.amount;
@@ -182,6 +184,13 @@ module.exports = {
 		}
 		if (target) {
 			let result;
+			if (
+				creep.room.memory.dismantle.indexOf(
+					memory.pos_to_coord(target.pos),
+				) != -1
+			) {
+				result = creep.dismantle(target);
+			}
 			if (!target.store) {
 				result = creep.pickup(target);
 			} else if (!target.body) {
