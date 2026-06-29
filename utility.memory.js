@@ -59,9 +59,6 @@ module.exports = {
 			}
 		}
 		for (let name in Memory.rooms) {
-			console.log("Checking room [" + name + "] Memory");
-			console.log("\tNo presence check: " + !Game.rooms[name]);
-			console.log("\tBase Memory check: " + Memory.rooms[name].core);
 			if (!Game.rooms[name] && Memory.rooms[name].core) {
 				delete Memory.rooms[name];
 			}
