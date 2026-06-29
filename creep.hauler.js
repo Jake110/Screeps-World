@@ -33,7 +33,38 @@ function get_collection_target(
 					}
 					if (dismantle) {
 						let coord = memory.pos_to_coord(option.pos);
-						return room.memory.dismantle.indexOf(coord) != -1;
+						switch (option.structureType) {
+							case STRUCTURE_CONTAINER:
+								coord_list = room.memory.containers;
+								break;
+							case STRUCTURE_EXTENSION:
+								coord_list = room.memory.extensions;
+								break;
+							case STRUCTURE_LINK:
+								coord_list = room.memory.links;
+								break;
+							case STRUCTURE_RAMPART:
+								coord_list = room.memory.ramparts;
+								break;
+							case STRUCTURE_ROAD:
+								coord_list = room.memory.roads;
+								break;
+							case STRUCTURE_SPAWN:
+								coord_list = room.memory.spawns;
+								break;
+							case STRUCTURE_STORAGE:
+								coord_list = [room.memory.storage];
+								break;
+							case STRUCTURE_TOWER:
+								coord_list = room.memory.towers;
+								break;
+							case STRUCTURE_WALL:
+								coord_list = room.memory.walls;
+								break;
+							default:
+								return false;
+						}
+						return !coord_list.includes(coord);
 					}
 					if (!option.store) {
 						return option.resourceType == RESOURCE_ENERGY;
@@ -75,7 +106,7 @@ function get_collection_target(
 	options.forEach(function (option) {
 		let energy;
 		if (dismantle) {
-			energy = 1 - option.hits / option.hitsMax;
+			energy = option.hits / 200;
 		} else if (option.store) {
 			energy = option.store[RESOURCE_ENERGY];
 		} else {
@@ -157,6 +188,7 @@ module.exports = {
 			target = get_collection_target(creep, [FIND_RUINS]);
 		}
 		let creep_memory = creep.memory;
+		let dismantle = false;
 		if (!target && creep_memory.role == "worker") {
 			target = get_collection_target(
 				creep,
@@ -164,6 +196,9 @@ module.exports = {
 				false,
 				true,
 			);
+			if (target) {
+				dismantle = true;
+			}
 		}
 		if (!target) {
 			target = get_collection_target(creep, [FIND_STRUCTURES]);
@@ -188,11 +223,7 @@ module.exports = {
 		}
 		if (target) {
 			let result;
-			if (
-				creep.room.memory.dismantle.indexOf(
-					memory.pos_to_coord(target.pos),
-				) != -1
-			) {
+			if (dismantle) {
 				result = creep.dismantle(target);
 			}
 			if (!target.store) {
@@ -228,6 +259,15 @@ module.exports = {
 		if (!target) {
 			target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 				filter: function (structure) {
+					if (
+						structure.structureType == STRUCTURE_EXTENSION &&
+						!creep.room.memory.extensions.includes(
+							memory.pos_to_coord(structure.pos),
+						)
+					) {
+						// Ignore Extensions marked for dismantling
+						return false;
+					}
 					return (
 						[STRUCTURE_EXTENSION, STRUCTURE_SPAWN].includes(
 							structure.structureType,
