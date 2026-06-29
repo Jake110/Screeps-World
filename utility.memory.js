@@ -58,6 +58,11 @@ module.exports = {
 				delete Memory.creeps[name];
 			}
 		}
+		for (let name in Memory.rooms) {
+			if (!Game.rooms[name] && Memory.rooms.core) {
+				delete Memory.rooms[name];
+			}
+		}
 	},
 	coord_to_pos: coord_to_pos,
 	pos_to_coord: pos_to_coord,
