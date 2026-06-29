@@ -142,6 +142,7 @@ function get_collection_target(
 			}
 		}
 		if (!accessable) {
+			console.log("Not Accessable");
 			return null;
 		}
 		let distance = creep.pos.findPathTo(option).length;
