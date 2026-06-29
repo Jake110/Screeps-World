@@ -240,6 +240,7 @@ module.exports = {
 			let result;
 			if (dismantle) {
 				result = creep.dismantle(target);
+				console.log("Result: " + result);
 			}
 			if (!target.store) {
 				result = creep.pickup(target);
