@@ -84,7 +84,11 @@ function place_container(room, source_pos, spawn_pos) {
 }
 
 function place_wall(room, pos, dist = 2) {
-	let pos_wall = shift_to_centre(room, pos, dist);
+	if (dist > 0) {
+		let pos_wall = shift_to_centre(room, pos, dist);
+	} else {
+		let pos_wall = pos;
+	}
 	if (can_build_here(pos_wall, true)) {
 		room.memory.walls.push(memory.pos_to_coord(pos_wall));
 	}
@@ -258,9 +262,26 @@ function place_road_around(room, pos, mode, radius = 1) {
 				)
 			) {
 				save_road(room, coord);
-				if (return_inner_ring && !inner_ring.includes(coord)) {
-					inner_ring.push(coord);
-				}
+			}
+		}
+	}
+}
+
+function place_wall_around(room, pos, radius = 1) {
+	let edges = [0 - radius, radius];
+	for (let n = 0 - radius; n <= radius; n++) {
+		for (let m = 0 - radius; m <= radius; m++) {
+			let edge = edges.includes(n) || edges.includes(m);
+			if (!edge) {
+				// Don't build inside the radius
+				continue;
+			}
+			let wall_pos = memory.coord_to_pos(
+				pos.x + n + ":" + (pos.y + m),
+				room,
+			);
+			if (can_build_here(wall_pos, true)) {
+				place_wall(room, wall_pos, 0);
 			}
 		}
 	}
