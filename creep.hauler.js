@@ -211,6 +211,7 @@ module.exports = {
 				true,
 			);
 			if (target) {
+				console.log("Target chosen at: " + target.pos);
 				dismantle = true;
 			}
 		}
