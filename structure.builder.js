@@ -241,83 +241,29 @@ function place_road(
 	}
 }
 
-function place_road_around(
-	room,
-	pos,
-	mode,
-	square = false,
-	radius = 1,
-	thickness = 1,
-	full_inner_ring = false,
-	return_inner_ring = false,
-) {
-	let outer_edges = [0 - radius, radius];
-	let outer_ring = [];
-	let inner_edges = [-1 - radius + thickness, 1 + radius - thickness];
-	let inner_ring = [];
+function place_road_around(room, pos, mode, radius = 1) {
+	let edges = [0 - radius, radius];
 	for (let n = 0 - radius; n <= radius; n++) {
 		for (let m = 0 - radius; m <= radius; m++) {
-			let outer_edge = outer_edges.includes(n) || outer_edges.includes(m);
-			let inner_edge = inner_edges.includes(n) || inner_edges.includes(m);
-			if (
-				(!full_inner_ring &&
-					!outer_edge &&
-					(!inner_edge ||
-						inner_edges.includes(n) != inner_edges.includes(m))) ||
-				(full_inner_ring && !outer_edge && !inner_edge) ||
-				(!square && outer_edges.includes(n) && outer_edges.includes(m))
-			) {
-				// Only place road in the radius zone
-				// Don't place road in the corners unless flagged as square
+			let edge = edges.includes(n) || edges.includes(m);
+			if (!edge || (edges.includes(n) && edges.includes(m))) {
+				// Don't build inside the radius or in the corners
 				continue;
 			}
-			if (outer_edge) {
-				pos_step = room.getPositionAt(pos.x + n, pos.y + m);
-				let steps = [];
-				for (let thick = 0; thick < thickness; thick++) {
-					if (thick > 0) {
-						pos_step = step_with_pos(pos_step, pos, room);
-					}
-					if (!can_build_here(pos_step, mode == "roads")) {
-						break;
-					}
-					steps.push(pos_step);
-				}
-				if (steps.length != thickness) {
-					continue;
-				}
-				steps.forEach(function (step) {
-					save_road(room, memory.pos_to_coord(step));
-				});
-				outer_ring.push(steps[0]);
-				if (return_inner_ring) {
-					let inner_tile = memory.pos_to_coord(
-						steps[steps.length - 1],
-					);
-					if (!inner_ring.includes(inner_tile)) {
-						inner_ring.push(inner_tile);
-					}
-				}
-			} else {
-				let coord = pos.x + n + ":" + (pos.y + m);
-				if (
-					can_build_here(
-						memory.coord_to_pos(coord, room),
-						mode == "roads",
-					)
-				) {
-					save_road(room, coord);
-					if (return_inner_ring && !inner_ring.includes(coord)) {
-						inner_ring.push(coord);
-					}
+			let coord = pos.x + n + ":" + (pos.y + m);
+			if (
+				can_build_here(
+					memory.coord_to_pos(coord, room),
+					mode == "roads",
+				)
+			) {
+				save_road(room, coord);
+				if (return_inner_ring && !inner_ring.includes(coord)) {
+					inner_ring.push(coord);
 				}
 			}
 		}
 	}
-	return {
-		outer: outer_ring,
-		inner: inner_ring,
-	};
 }
 
 function save_road(room, coord) {
@@ -557,7 +503,6 @@ module.exports = {
 					spawn.room,
 					spawn.room.controller.pos,
 					mode,
-					false,
 					3,
 				);
 			}
@@ -744,7 +689,7 @@ module.exports = {
 			tower_sites < max_towers;
 			tower_sites++
 		) {
-			let new_site = get_next_adjacent(room, room.controller.pos);
+			let new_site = get_next_adjacent(room, room.controller.pos, 2);
 			remove_road(new_site);
 			place_road_around(room, new_site, "roads");
 			towers_list.push(memory.pos_to_coord(new_site));
