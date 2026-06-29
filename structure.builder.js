@@ -721,7 +721,9 @@ module.exports = {
 			);
 			room_memory.storage = memory.pos_to_coord(pos);
 		}
-		this.create_construction_sites(room, "storage", STRUCTURE_STORAGE);
+		if (room_memory.storage) {
+			this.create_construction_sites(room, "storage", STRUCTURE_STORAGE);
+		}
 	},
 	place_towers: function (room) {
 		const room_level = room.controller.level;
