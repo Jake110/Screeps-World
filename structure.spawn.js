@@ -35,7 +35,6 @@ module.exports = {
 		// Get Creep Roles
 		let roles = creeper.roles(room);
 
-		console.log("-------- > Spawner code");
 		// Get Extension Energy
 		let extension_energy = 0;
 		room.find(FIND_MY_STRUCTURES, {
@@ -45,7 +44,6 @@ module.exports = {
 		}).forEach(function (extension) {
 			extension_energy += extension.store[RESOURCE_ENERGY];
 		});
-		console.log("Current Extension Energy: " + extension_energy);
 
 		let core_spawn = memory
 			.coord_to_pos(room.memory.core, room)
@@ -62,7 +60,6 @@ module.exports = {
 				}).length;
 				let role_additions = 0;
 				while (role_count + role_additions < role.max) {
-					console.log("--| Role: " + role.name);
 					let spawn = get_spawn(room, used_spawners);
 					if (!spawn) {
 						// No spawn was available
@@ -79,13 +76,6 @@ module.exports = {
 					let dry_run = spawn.spawnCreep(creep.parts, "TestSpawn", {
 						dryRun: true,
 					});
-					console.log("Dry run result: " + dry_run);
-					console.log("Cost: " + creep.cost);
-					console.log("Body: " + creep.parts);
-					console.log(
-						"Energy: " +
-							(spawn.store[RESOURCE_ENERGY] + extension_energy),
-					);
 					if (dry_run != OK) {
 						return null;
 					}
@@ -121,11 +111,6 @@ module.exports = {
 					let result = spawn.spawnCreep(creep.parts, new_name, {
 						memory: creep_memory,
 					});
-					console.log("----| Spawn result: " + result);
-					if (result == ERR_NOT_ENOUGH_ENERGY) {
-						console.log("Cost: " + creep.cost);
-						console.log("Body: " + creep.parts);
-					}
 					used_spawners.push(spawn.id);
 					if (spawn.memory.recycling) {
 						Memory.creeps[spawn.memory.recycling].recycle = false;
@@ -188,11 +173,9 @@ module.exports = {
 		});
 
 		// Renew & Recycle Creeps
-		console.log("\n\n----------> Renew/Recycle Checks");
 		let spawn = get_spawn(room, used_spawners, true);
 		room.find(FIND_MY_CREEPS).forEach(function (creep) {
 			if (Game.time % 7 == 0) {
-				console.log("|||| " + creep.name);
 				let role = creep.memory.role;
 				let creep_body = [];
 				creep.body.forEach(function (part) {
@@ -206,7 +189,6 @@ module.exports = {
 					let dry_run = spawn.spawnCreep(spawn_body, "TestSpawn", {
 						dryRun: true,
 					});
-					console.log("Dry run result: " + dry_run);
 					if (dry_run == OK) {
 						if (
 							creep_body.join("-") != spawn_body.join("-") &&
@@ -226,13 +208,6 @@ module.exports = {
 							spawn.memory.recycling = creep.name;
 							spawn = get_spawn(room, used_spawners, true);
 						}
-					} else {
-						console.log("Body: " + spawn_body);
-						console.log(
-							"Energy: " +
-								(spawn.store[RESOURCE_ENERGY] +
-									extension_energy),
-						);
 					}
 				}
 				if (creep.ticksToLive < 200 && !creep_body.includes(CLAIM)) {

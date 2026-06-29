@@ -113,11 +113,8 @@ module.exports = {
 	},
 	main: function () {
 		for (let name in Game.creeps) {
-			console.log("-------> " + name);
 			let creep = Game.creeps[name];
 			let creep_memory = creep.memory;
-			console.log("Recycle? " + creep_memory.recycle);
-			console.log("Renew? " + creep_memory.renew);
 			if (!creep_memory.recycle && !creep_memory.renew) {
 				switch (creep_memory.role) {
 					case "grunt":
