@@ -33,7 +33,6 @@ function get_collection_target(
 					}
 					if (dismantle) {
 						let coord = memory.pos_to_coord(option.pos);
-						console.log("---------- Checking: " + coord);
 						switch (option.structureType) {
 							case STRUCTURE_CONTAINER:
 								coord_list = room.memory.containers;
@@ -61,11 +60,9 @@ function get_collection_target(
 								break;
 							case STRUCTURE_WALL:
 								coord_list = room.memory.walls;
-								console.log("Wall hits: " + option.hits);
 								if (!option.hits) {
 									return false;
 								}
-								console.log(!coord_list.includes(coord));
 								break;
 							default:
 								return false;
@@ -107,13 +104,9 @@ function get_collection_target(
 			}),
 		);
 	});
-	console.log("Options list: " + options);
 	let chosen = null;
 	let chosen_distance = 999;
 	options.forEach(function (option) {
-		console.log(
-			"---------- Weighing Option at: " + memory.pos_to_coord(option.pos),
-		);
 		let energy;
 		if (dismantle) {
 			energy = option.hits / 200;
@@ -122,7 +115,6 @@ function get_collection_target(
 		} else {
 			energy = option.amount;
 		}
-		console.log("Energy: " + energy);
 		let accessable = false;
 		for (let x = -1; x <= 1; x++) {
 			for (let y = -1; y <= 1; y++) {
@@ -142,7 +134,6 @@ function get_collection_target(
 			}
 		}
 		if (!accessable) {
-			console.log("Not Accessable");
 			return null;
 		}
 		let distance = creep.pos.findPathTo(option).length;
@@ -168,8 +159,6 @@ function get_collection_target(
 		}).forEach(function (_creep) {
 			energy -= _creep.store.getFreeCapacity();
 		});
-		console.log("Energy: " + energy);
-		console.log("Distance: " + distance);
 		if (energy > 0) {
 			if (distance < chosen_distance) {
 				chosen = option;
@@ -211,7 +200,6 @@ module.exports = {
 				true,
 			);
 			if (target) {
-				console.log("Target chosen at: " + target.pos);
 				dismantle = true;
 			}
 		}
@@ -240,7 +228,6 @@ module.exports = {
 			let result;
 			if (dismantle) {
 				result = creep.dismantle(target);
-				console.log("Result: " + result);
 			} else if (!target.store) {
 				result = creep.pickup(target);
 			} else if (!target.body) {
@@ -249,12 +236,9 @@ module.exports = {
 				result = target.transfer(creep, RESOURCE_ENERGY);
 			}
 			if (result == ERR_NOT_IN_RANGE) {
-				console.log("Moving to target");
-				console.log(
-					creep.moveTo(target, {
-						visualizePathStyle: { stroke: "#fff23e" },
-					}),
-				);
+				creep.moveTo(target, {
+					visualizePathStyle: { stroke: "#fff23e" },
+				});
 			}
 			return true;
 		} else if (creep.store[RESOURCE_ENERGY] > 0) {
