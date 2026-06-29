@@ -250,9 +250,12 @@ module.exports = {
 				result = target.transfer(creep, RESOURCE_ENERGY);
 			}
 			if (result == ERR_NOT_IN_RANGE) {
-				creep.moveTo(target, {
-					visualizePathStyle: { stroke: "#fff23e" },
-				});
+				console.log("Moving to target");
+				console.log(
+					creep.moveTo(target, {
+						visualizePathStyle: { stroke: "#fff23e" },
+					}),
+				);
 			}
 			return true;
 		} else if (creep.store[RESOURCE_ENERGY] > 0) {
