@@ -45,7 +45,7 @@ module.exports = {
 		}).forEach(function (extension) {
 			extension_energy += extension.store[RESOURCE_ENERGY];
 		});
-		console.log("Current Energy: " + extension_energy);
+		console.log("Current Extension Energy: " + extension_energy);
 
 		let core_spawn = memory
 			.coord_to_pos(room.memory.core, room)
