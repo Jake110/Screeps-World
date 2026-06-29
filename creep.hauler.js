@@ -241,8 +241,7 @@ module.exports = {
 			if (dismantle) {
 				result = creep.dismantle(target);
 				console.log("Result: " + result);
-			}
-			if (!target.store) {
+			} else if (!target.store) {
 				result = creep.pickup(target);
 			} else if (!target.body) {
 				result = creep.withdraw(target, RESOURCE_ENERGY);
