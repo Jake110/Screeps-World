@@ -168,6 +168,8 @@ function get_collection_target(
 		}).forEach(function (_creep) {
 			energy -= _creep.store.getFreeCapacity();
 		});
+		console.log("Energy: " + energy);
+		console.log("Distance: " + distance);
 		if (energy > 0) {
 			if (distance < chosen_distance) {
 				chosen = option;
