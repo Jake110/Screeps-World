@@ -107,6 +107,7 @@ function get_collection_target(
 			}),
 		);
 	});
+	console.log("Options list: " + options);
 	let chosen = null;
 	let chosen_distance = 999;
 	options.forEach(function (option) {
