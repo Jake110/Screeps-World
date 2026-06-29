@@ -65,6 +65,7 @@ function get_collection_target(
 								if (!option.hits) {
 									return false;
 								}
+								console.log(!coord_list.includes(coord));
 								break;
 							default:
 								return false;
