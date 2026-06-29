@@ -302,7 +302,13 @@ function shift_to_centre(room, pos, dist) {
  **/
 function can_build_here(pos, respect_walls = false) {
 	coord = memory.pos_to_coord(pos);
+	let room_edges = [0, 49];
+	if (room_edges.includes(pos.x) || room_edges.includes(pos.y)) {
+		// Can't build anything on the room edges
+		return false;
+	}
 	if (memory.build_coords(Game.rooms[pos.roomName]).includes(coord)) {
+		// Don't try to build over something we already built
 		return false;
 	}
 	if (respect_walls) {
@@ -699,6 +705,7 @@ module.exports = {
 	place_walls: function (room) {
 		let room_memory = room.memory;
 		if (room.controller.level >= 3 && room_memory.walls.length == 0) {
+			// Room Exit walls
 			let side_top = [];
 			let side_right = [];
 			let side_bottom = [];
@@ -759,6 +766,7 @@ module.exports = {
 					}
 				}
 			}
+			// Controller walls
 		}
 		this.create_construction_sites(room, "walls", STRUCTURE_WALL);
 		this.create_construction_sites(room, "ramparts", STRUCTURE_RAMPART);
