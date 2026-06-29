@@ -110,6 +110,9 @@ function get_collection_target(
 	let chosen = null;
 	let chosen_distance = 999;
 	options.forEach(function (option) {
+		console.log(
+			"---------- Weighing Option at: " + memory.pos_to_coord(option.pos),
+		);
 		let energy;
 		if (dismantle) {
 			energy = option.hits / 200;
@@ -118,6 +121,7 @@ function get_collection_target(
 		} else {
 			energy = option.amount;
 		}
+		console.log("Energy: " + energy);
 		let accessable = false;
 		for (let x = -1; x <= 1; x++) {
 			for (let y = -1; y <= 1; y++) {
