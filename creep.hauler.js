@@ -60,6 +60,9 @@ function get_collection_target(
 								break;
 							case STRUCTURE_WALL:
 								coord_list = room.memory.walls;
+								if (!option.hits) {
+									return false;
+								}
 								break;
 							default:
 								return false;
