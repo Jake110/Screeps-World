@@ -33,6 +33,7 @@ function get_collection_target(
 					}
 					if (dismantle) {
 						let coord = memory.pos_to_coord(option.pos);
+						console.log("---------- Checking: " + coord);
 						switch (option.structureType) {
 							case STRUCTURE_CONTAINER:
 								coord_list = room.memory.containers;
@@ -60,6 +61,7 @@ function get_collection_target(
 								break;
 							case STRUCTURE_WALL:
 								coord_list = room.memory.walls;
+								console.log("Wall hits: " + option.hits);
 								if (!option.hits) {
 									return false;
 								}
