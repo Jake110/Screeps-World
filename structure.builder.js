@@ -484,6 +484,11 @@ function remove_structure(pos, structure_type, memory_list) {
 	index = memory_list.indexOf(coord);
 	if (index != -1) {
 		memory_list.splice(index, 1);
+		pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
+			if (structure.structureType == structure_type) {
+				structure.destroy();
+			}
+		});
 		pos.lookFor(LOOK_CONSTRUCTION_SITES).forEach(function (site) {
 			if (site.structureType == structure_type) {
 				site.remove();
