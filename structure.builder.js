@@ -469,17 +469,17 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 }
 
 function remove_extension(pos, extension_list) {
-	remove_structure(pos, STRUCTURE_EXTENSION, memory_list, extension_list);
+	remove_structure(pos, STRUCTURE_EXTENSION, extension_list);
 	return true;
 }
 
 function remove_road(pos) {
 	let room_memory = Memory.rooms[pos.roomName];
 	let memory_list = room_memory.roads;
-	remove_structure(pos, STRUCTURE_ROAD, memory_list, room_memory);
+	remove_structure(pos, STRUCTURE_ROAD, memory_list);
 }
 
-function remove_structure(pos, structure_type, memory_list, room_memory) {
+function remove_structure(pos, structure_type, memory_list) {
 	coord = memory.pos_to_coord(pos);
 	index = memory_list.indexOf(coord);
 	if (index != -1) {
