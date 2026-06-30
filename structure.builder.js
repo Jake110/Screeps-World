@@ -552,6 +552,7 @@ module.exports = {
 				break;
 			}
 			console.log("Current Extensions: " + extension_list.length);
+			console.log(extension_list);
 			let end_loop = false;
 			for (let n = extension_list.length - 1; n <= 0; n--) {
 				let pos = memory.coord_to_pos(extension_list[n], spawn.room);
