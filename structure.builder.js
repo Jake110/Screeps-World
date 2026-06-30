@@ -546,7 +546,9 @@ module.exports = {
 			max_entensions = (room_level - 2) * 10;
 		}
 		let extension_list = spawn.room.memory.extensions;
+		console.log("---------- Max Extensions: " + max_entensions);
 		while (extension_list.length > max_entensions) {
+			console.log("Current Extensions: " + extension_list.length);
 			let end_loop = false;
 			for (let n = extension_list.length - 1; n <= 0; n--) {
 				let pos = memory.coord_to_pos(extension_list[n], spawn.room);
