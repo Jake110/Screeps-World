@@ -191,7 +191,7 @@ module.exports = {
 			target = get_collection_target(creep, [FIND_RUINS]);
 		}
 		let creep_memory = creep.memory;
-		let dismantle = false;
+		/*let dismantle = false;
 		if (!target && creep_memory.role == "worker") {
 			target = get_collection_target(
 				creep,
@@ -202,7 +202,7 @@ module.exports = {
 			if (target) {
 				dismantle = true;
 			}
-		}
+		}*/
 		if (!target) {
 			target = get_collection_target(creep, [FIND_STRUCTURES]);
 		}
@@ -226,9 +226,10 @@ module.exports = {
 		}
 		if (target) {
 			let result;
-			if (dismantle) {
+			/*if (dismantle) {
 				result = creep.dismantle(target);
-			} else if (!target.store) {
+		} else*/
+			if (!target.store) {
 				result = creep.pickup(target);
 			} else if (!target.body) {
 				result = creep.withdraw(target, RESOURCE_ENERGY);
