@@ -545,7 +545,12 @@ module.exports = {
 		}
 		let extension_list = spawn.room.memory.extensions;
 		console.log("---------- Max Extensions: " + max_entensions);
+		let timeout = 5;
 		while (extension_list.length > max_entensions) {
+			timeout -= 1;
+			if (timeout == 0) {
+				break;
+			}
 			console.log("Current Extensions: " + extension_list.length);
 			let end_loop = false;
 			for (let n = extension_list.length - 1; n <= 0; n--) {
