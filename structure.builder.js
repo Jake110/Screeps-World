@@ -485,6 +485,7 @@ function remove_structure(pos, structure_type, memory_list, room_memory) {
 	coord = memory.pos_to_coord(pos);
 	index = memory_list.indexOf(coord);
 	if (index != -1) {
+		console.log("Removing [" + structure_type + "] at [" + coord + "]");
 		memory_list.splice(index, 1);
 		pos.lookFor(LOOK_CONSTRUCTION_SITES).forEach(function (site) {
 			if (site.structureType == structure_type) {
