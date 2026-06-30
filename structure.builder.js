@@ -560,11 +560,18 @@ module.exports = {
 					if (structure.structureType == STRUCTURE_EXTENSION) {
 						extension_not_found = false;
 						if (structure.store[RESOURCE_ENERGY] == 0) {
+							console.log(
+								"Removing empty Extension at: " +
+									extension_list[n],
+							);
 							end_loop = remove_extension(pos, extension_list);
 						}
 					}
 				});
 				if (extension_not_found) {
+					console.log(
+						"Removing unbuild Extension at: " + extension_list[n],
+					);
 					end_loop = remove_extension(pos, extension_list);
 				}
 				if (end_loop) {
