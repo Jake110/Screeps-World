@@ -483,7 +483,6 @@ function remove_structure(pos, structure_type, memory_list) {
 	coord = memory.pos_to_coord(pos);
 	index = memory_list.indexOf(coord);
 	if (index != -1) {
-		console.log("Removing [" + structure_type + "] at [" + coord + "]");
 		memory_list.splice(index, 1);
 		pos.lookFor(LOOK_CONSTRUCTION_SITES).forEach(function (site) {
 			if (site.structureType == structure_type) {
@@ -544,26 +543,20 @@ module.exports = {
 			max_entensions = (room_level - 2) * 10;
 		}
 		let extension_list = spawn.room.memory.extensions;
-		console.log("---------- Max Extensions: " + max_entensions);
 		while (extension_list.length > max_entensions) {
-			console.log("Current Extensions: " + extension_list.length);
-			console.log(extension_list);
 			let end_loop = false;
 			for (let n = extension_list.length - 1; n >= 0; n--) {
-				console.log("---- Checking: " + extension_list[n]);
 				let pos = memory.coord_to_pos(extension_list[n], spawn.room);
 				let extension_not_found = true;
 				pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
 					if (structure.structureType == STRUCTURE_EXTENSION) {
 						extension_not_found = false;
 						if (structure.store[RESOURCE_ENERGY] == 0) {
-							console.log("Removing empty Extension");
 							end_loop = remove_extension(pos, extension_list);
 						}
 					}
 				});
 				if (extension_not_found) {
-					console.log("Removing unbuild Extension");
 					end_loop = remove_extension(pos, extension_list);
 				}
 				if (end_loop) {
