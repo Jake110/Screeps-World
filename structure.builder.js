@@ -554,7 +554,7 @@ module.exports = {
 			console.log("Current Extensions: " + extension_list.length);
 			console.log(extension_list);
 			let end_loop = false;
-			for (let n = extension_list.length - 1; n <= 0; n--) {
+			for (let n = extension_list.length - 1; n >= 0; n--) {
 				console.log("---- Checking: " + extension_list[n]);
 				let pos = memory.coord_to_pos(extension_list[n], spawn.room);
 				let extension_not_found = true;
