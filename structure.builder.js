@@ -468,10 +468,8 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 	return next;
 }
 
-function remove_extension(pos) {
-	let room_memory = Memory.rooms[pos.roomName];
-	let memory_list = room_memory.extensions;
-	remove_structure(pos, STRUCTURE_EXTENSION, memory_list, room_memory);
+function remove_extension(pos, extension_list) {
+	remove_structure(pos, STRUCTURE_EXTENSION, memory_list, extension_list);
 	return true;
 }
 
@@ -557,12 +555,12 @@ module.exports = {
 					if (structure.structureType == STRUCTURE_EXTENSION) {
 						extension_not_found = false;
 						if (structure.store[RESOURCE_ENERGY] == 0) {
-							end_loop = remove_extension(pos);
+							end_loop = remove_extension(pos, extension_list);
 						}
 					}
 				});
 				if (extension_not_found) {
-					end_loop = remove_extension(pos);
+					end_loop = remove_extension(pos, extension_list);
 				}
 				if (end_loop) {
 					break;
