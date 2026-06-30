@@ -555,24 +555,20 @@ module.exports = {
 			console.log(extension_list);
 			let end_loop = false;
 			for (let n = extension_list.length - 1; n <= 0; n--) {
+				console.log("---- Checking: " + extension_list[n]);
 				let pos = memory.coord_to_pos(extension_list[n], spawn.room);
 				let extension_not_found = true;
 				pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
 					if (structure.structureType == STRUCTURE_EXTENSION) {
 						extension_not_found = false;
 						if (structure.store[RESOURCE_ENERGY] == 0) {
-							console.log(
-								"Removing empty Extension at: " +
-									extension_list[n],
-							);
+							console.log("Removing empty Extension");
 							end_loop = remove_extension(pos, extension_list);
 						}
 					}
 				});
 				if (extension_not_found) {
-					console.log(
-						"Removing unbuild Extension at: " + extension_list[n],
-					);
+					console.log("Removing unbuild Extension");
 					end_loop = remove_extension(pos, extension_list);
 				}
 				if (end_loop) {
