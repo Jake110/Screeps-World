@@ -468,25 +468,27 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 	return next;
 }
 
-function remove_extension(pos) {
-	let room_memory = Memory.rooms[pos.roomName];
-	let memory_list = room_memory.extensions;
-	remove_structure(pos, STRUCTURE_EXTENSION, memory_list, room_memory);
+function remove_extension(pos, extension_list) {
+	remove_structure(pos, STRUCTURE_EXTENSION, extension_list);
 	return true;
 }
 
 function remove_road(pos) {
 	let room_memory = Memory.rooms[pos.roomName];
 	let memory_list = room_memory.roads;
-	remove_structure(pos, STRUCTURE_ROAD, memory_list, room_memory);
+	remove_structure(pos, STRUCTURE_ROAD, memory_list);
 }
 
-function remove_structure(pos, structure_type, memory_list, room_memory) {
+function remove_structure(pos, structure_type, memory_list) {
 	coord = memory.pos_to_coord(pos);
 	index = memory_list.indexOf(coord);
 	if (index != -1) {
-		console.log("Removing [" + structure_type + "] at [" + coord + "]");
 		memory_list.splice(index, 1);
+		pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
+			if (structure.structureType == structure_type) {
+				structure.destroy();
+			}
+		});
 		pos.lookFor(LOOK_CONSTRUCTION_SITES).forEach(function (site) {
 			if (site.structureType == structure_type) {
 				site.remove();
@@ -548,19 +550,19 @@ module.exports = {
 		let extension_list = spawn.room.memory.extensions;
 		while (extension_list.length > max_entensions) {
 			let end_loop = false;
-			for (let n = extension_list.length - 1; n <= 0; n--) {
+			for (let n = extension_list.length - 1; n >= 0; n--) {
 				let pos = memory.coord_to_pos(extension_list[n], spawn.room);
 				let extension_not_found = true;
 				pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
 					if (structure.structureType == STRUCTURE_EXTENSION) {
 						extension_not_found = false;
 						if (structure.store[RESOURCE_ENERGY] == 0) {
-							end_loop = remove_extension(pos);
+							end_loop = remove_extension(pos, extension_list);
 						}
 					}
 				});
 				if (extension_not_found) {
-					end_loop = remove_extension(pos);
+					end_loop = remove_extension(pos, extension_list);
 				}
 				if (end_loop) {
 					break;

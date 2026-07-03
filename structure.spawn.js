@@ -145,7 +145,10 @@ module.exports = {
 		}
 
 		// Extension Construction
-		if (Game.time % 17 == 0) {
+		if (
+			Game.time % 17 == 0 &&
+			room.memory.source_connections.roads.length > 0
+		) {
 			builder.place_extensions(core_spawn);
 		}
 
