@@ -725,7 +725,6 @@ module.exports = {
 	},
 	place_walls: function (room) {
 		let room_memory = room.memory;
-		console.log("Walls: " + room_memory.walls.length)
 		if (room.controller.level >= 3 && room_memory.walls.length == 0) {
 			// Room Exit walls
 			let side_top = [];
