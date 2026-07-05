@@ -43,18 +43,20 @@ module.exports.loop = function () {
 				link_coord,
 				STRUCTURE_LINK,
 			);
-			if (link.cooldown == 0) {
-				let core_link = quartermaster.get_structure(
-					room,
-					core_link_coord,
-					STRUCTURE_LINK,
-				);
-				if (core_link) {
-					if (
-						core_link.store.getFreeCapacity(RESOURCE_ENERGY) >=
-						link.store[RESOURCE_ENERGY]
-					) {
-						link.transferEnergy(core_link);
+			if (link) {
+				if (link.cooldown == 0) {
+					let core_link = quartermaster.get_structure(
+						room,
+						core_link_coord,
+						STRUCTURE_LINK,
+					);
+					if (core_link) {
+						if (
+							core_link.store.getFreeCapacity(RESOURCE_ENERGY) >=
+							link.store[RESOURCE_ENERGY]
+						) {
+							link.transferEnergy(core_link);
+						}
 					}
 				}
 			}
