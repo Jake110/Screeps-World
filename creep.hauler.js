@@ -16,13 +16,14 @@ function get_collection_target(
 		!dismantle &&
 		room.memory.links[0]
 	) {
-		options.push(
-			quartermaster.get_structure(
-				room,
-				room.memory.links[0],
-				STRUCTURE_LINK,
-			),
+		let core_link = quartermaster.get_structure(
+			room,
+			room.memory.links[0],
+			STRUCTURE_LINK,
 		);
+		if (core_link) {
+			options.push(core_link);
+		}
 	}
 	find_list.forEach(function (find_name) {
 		options = options.concat(
