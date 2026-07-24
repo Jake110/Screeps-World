@@ -34,14 +34,6 @@ function get_collection_target(
 						return false;
 					}
 					if (extension_override) {
-						if (option.structureType == STRUCTURE_EXTENSION) {
-							console.log(
-								"Checking [" +
-									option.pos +
-									"]. Energy: " +
-									option.store[RESOURCE_ENERGY],
-							);
-						}
 						return (
 							option.structureType == STRUCTURE_EXTENSION &&
 							option.store[RESOURCE_ENERGY] > 0
