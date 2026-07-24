@@ -7,10 +7,10 @@ module.exports = {
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
 		if (creep.memory.full) {
 			if (creep.room.controller.ticksToDowngrade > 1000) {
-				if (hauler.recharge(creep)) {
+				if (worker.build(creep)) {
 					return null;
 				}
-				if (worker.build(creep)) {
+				if (hauler.recharge(creep)) {
 					return null;
 				}
 			}
