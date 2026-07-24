@@ -133,6 +133,18 @@ module.exports = {
 						role_quartermaster.run(creep);
 						break;
 					case "worker":
+						if (creep.hits < creep.hitsMax) {
+							let can_work = false;
+							creep.body.forEach(function (part) {
+								if (part["type"] == WORK && part["hits"] > 0) {
+									can_work = true;
+								}
+							});
+							if (!can_work) {
+								role_hauler.run(creep);
+								continue;
+							}
+						}
 						role_worker.run(creep);
 						break;
 				}
