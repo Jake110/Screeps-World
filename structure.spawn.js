@@ -49,6 +49,11 @@ module.exports = {
 			.coord_to_pos(room.memory.core, room)
 			.lookFor(LOOK_STRUCTURES)[0];
 
+		if (core_spawn == undefined) {
+			// The Spawn needs rebuilding
+			return null;
+		}
+
 		// Spawn Creeps
 		let used_spawners = [];
 		if (Game.time % 7 == 0) {
