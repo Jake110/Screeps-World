@@ -1,10 +1,10 @@
+const hauler = require("creep.hauler");
 const role_grunt = require("role.grunt");
 const role_harvester = require("role.harvester");
 const role_hauler = require("role.hauler");
 const role_medic = require("role.medic");
 const role_quartermaster = require("role.quartermaster");
 const role_worker = require("role.worker");
-const creepHarvest = require("./creep.harvest");
 
 module.exports = {
 	active_defence_check: function (room) {
@@ -133,7 +133,7 @@ module.exports = {
 						role_quartermaster.run(creep);
 						break;
 					case "worker":
-						if (role_hauler.can_work(creep)) {
+						if (hauler.can_work(creep)) {
 							role_worker.run(creep);
 						} else {
 							role_hauler.run(creep);
