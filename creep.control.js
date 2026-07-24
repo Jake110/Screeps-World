@@ -141,6 +141,11 @@ module.exports = {
 								}
 							});
 							if (!can_work) {
+								console.log(
+									"Worker [" +
+										creep.name +
+										"] has no functional WORK parts, running Hauler code...",
+								);
 								role_hauler.run(creep);
 								continue;
 							}
