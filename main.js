@@ -17,9 +17,13 @@ module.exports.loop = function () {
 	for (let name in Game.rooms) {
 		let room = Game.rooms[name];
 
-		if (!room.memory.core && room.find(FIND_MY_SPAWNS).length == 0) {
+		if (!room.memory.core) {
 			// Skip rooms we don't have colonies in
 			continue;
+		}
+		if (room.find(FIND_MY_SPAWNS).length < room.memory.spawns.length) {
+			// Try to rebuild missing Spawns
+			builder.create_construction_sites(room, "spawns", STRUCTURE_SPAWN);
 		}
 
 		// Setup Room Memory
