@@ -235,7 +235,7 @@ module.exports = {
 		if (
 			!target &&
 			creep_memory.role == "worker" &&
-			room.memory.core &&
+			creep.room.memory.core &&
 			creep.room.find(FIND_MY_SPAWNS).length
 		) {
 			target = get_collection_target(
