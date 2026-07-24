@@ -182,6 +182,18 @@ function get_home_room(creep) {
 }
 
 module.exports = {
+	can_work: function (creep) {
+		let can_work = true;
+		if (creep.hits < creep.hitsMax) {
+			can_work = false;
+			creep.body.forEach(function (part) {
+				if (part["type"] == WORK && part["hits"] > 0) {
+					can_work = true;
+				}
+			});
+		}
+		return can_work;
+	},
 	capacity_check: function (creep, resource) {
 		if (creep.memory.full && creep.store[resource] == 0) {
 			creep.memory.full = false;
@@ -322,7 +334,10 @@ module.exports = {
 				},
 			});
 		}
-		if (!target) {
+		if (
+			!target &&
+			(creep_memory.role == "harvester" || !this.can_work(creep))
+		) {
 			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 				filter: function (_creep) {
 					return (
