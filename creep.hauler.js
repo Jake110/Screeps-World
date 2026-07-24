@@ -39,7 +39,7 @@ function get_collection_target(
 								"Checking [" +
 									option.pos +
 									"]. Energy: " +
-									ption.store[RESOURCE_ENERGY],
+									option.store[RESOURCE_ENERGY],
 							);
 						}
 						return (
