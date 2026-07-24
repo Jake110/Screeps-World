@@ -6,6 +6,7 @@ function get_collection_target(
 	creep,
 	find_list,
 	storage_override = false,
+	extension_override = false,
 	dismantle = false,
 ) {
 	let creep_memory = creep.memory;
@@ -31,6 +32,12 @@ function get_collection_target(
 				filter: function (option) {
 					if (!combat.safe_check(option)) {
 						return false;
+					}
+					if (extension_override) {
+						return (
+							option.structureType == STRUCTURE_EXTENSION &&
+							option.store[RESOURCE_ENERGY] > 0
+						);
 					}
 					if (dismantle) {
 						let coord = memory.pos_to_coord(option.pos);
@@ -224,6 +231,19 @@ module.exports = {
 				(creep_memory.role == "worker" && worker_override))
 		) {
 			target = get_collection_target(creep, [FIND_STRUCTURES], true);
+		}
+		if (
+			!target &&
+			creep_memory.role == "worker" &&
+			room.memory.core &&
+			creep.room.find(FIND_MY_SPAWNS).length
+		) {
+			target = get_collection_target(
+				creep,
+				[FIND_STRUCTURES],
+				false,
+				true,
+			);
 		}
 		if (target) {
 			let result;
