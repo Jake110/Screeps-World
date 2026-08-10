@@ -280,9 +280,7 @@ function place_wall_around(room, pos, radius = 1) {
 				pos.x + n + ":" + (pos.y + m),
 				room,
 			);
-			if (can_build_here(wall_pos, true)) {
-				place_wall(room, wall_pos, 0);
-			}
+			place_wall(room, wall_pos, 0);
 		}
 	}
 }
@@ -753,12 +751,14 @@ module.exports = {
 				exit_edge_check(room, index, exit_list, false);
 				place_wall(room, exit_list[index]);
 			}
+			console.log("Planned Walls: " + room_memory.walls.length);
 			let verified_walls = [];
 			room_memory.walls.forEach(function (coord) {
 				if (can_get_to_core(room, memory.coord_to_pos(coord, room))) {
 					verified_walls.push(coord);
 				}
 			});
+			console.log("Verified Walls: " + verified_walls.length);
 			room_memory.walls = verified_walls;
 			for (let index = 0; index < exit_list.length; index++) {
 				if (exit_edge_check(room, index, exit_list, true, false)) {
@@ -788,8 +788,10 @@ module.exports = {
 				}
 			}
 			// Controller walls
+			//place_wall_around(room, room.controller.pos)
 		}
 		this.create_construction_sites(room, "walls", STRUCTURE_WALL);
 		this.create_construction_sites(room, "ramparts", STRUCTURE_RAMPART);
+		console.log("----------");
 	},
 };
