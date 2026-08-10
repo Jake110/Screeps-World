@@ -731,7 +731,14 @@ module.exports = {
 			let side_left = [];
 			let find_exit = function (x, y, side_list) {
 				let pos = room.getPositionAt(x, y);
-				if (can_build_here(pos, true)) {
+				if (
+					_.every(pos.look(), function (item) {
+						if (item.type == LOOK_TERRAIN) {
+							return item.terrain !== "wall";
+						}
+						return true;
+					})
+				) {
 					side_list.push(pos);
 				}
 			};
