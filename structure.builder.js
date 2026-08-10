@@ -313,6 +313,7 @@ function shift_to_centre(room, pos, dist) {
 	} else if (y > max) {
 		y = max;
 	}
+	console.log("\t\t\t\tGetting pos_wall at [" + x + ", " + y + "]");
 	return room.getPositionAt(x, y);
 }
 
