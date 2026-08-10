@@ -744,6 +744,7 @@ module.exports = {
 			side_bottom.reverse();
 			side_left.reverse();
 			let exit_list = side_top.concat(side_right, side_bottom, side_left);
+			console.log("Exits found: " + exit_list.length);
 			let exit_start = null;
 			let exit_end = null;
 			for (let index = 0; index < exit_list.length; index++) {
