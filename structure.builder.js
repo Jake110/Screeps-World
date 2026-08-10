@@ -427,7 +427,9 @@ function exit_edge_check(
 				}
 				return room.getPositionAt(x, y);
 			};
+			console.log("\t\t\tpos: " + pos);
 			let pos_adjacent = shift_pos_one(pos);
+			console.log("\t\t\tpos adjacent: " + pos_adjacent);
 			place_wall(room, pos_adjacent);
 			let pos_exit_edge = shift_pos_one(pos_adjacent);
 			place_wall(room, pos_exit_edge, 1);
