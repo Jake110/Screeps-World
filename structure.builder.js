@@ -86,14 +86,10 @@ function place_container(room, source_pos, spawn_pos) {
 function place_wall(room, pos, dist = 2) {
 	console.log("\t\t\t\tplace_wall() dist: " + dist);
 	if (dist > 0) {
-		let pos_wall = shift_to_centre(room, pos, dist);
-		console.log(pos_wall);
-	} else {
-		let pos_wall = pos;
-		console.log(pos_wall);
+		pos = shift_to_centre(room, pos, dist);
 	}
-	if (can_build_here(pos_wall, true)) {
-		room.memory.walls.push(memory.pos_to_coord(pos_wall));
+	if (can_build_here(pos, true)) {
+		room.memory.walls.push(memory.pos_to_coord(pos));
 	}
 }
 
