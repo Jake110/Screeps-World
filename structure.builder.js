@@ -90,7 +90,7 @@ function place_wall(room, pos, dist = 2) {
 		let pos_wall = pos;
 	}
 	console.log(pos_wall);
-	if (can_build_here(pos_wall, true)) {
+	if (pos_wall != null && can_build_here(pos_wall, true)) {
 		room.memory.walls.push(memory.pos_to_coord(pos_wall));
 	}
 }
