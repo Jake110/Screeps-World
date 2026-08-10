@@ -84,7 +84,6 @@ function place_container(room, source_pos, spawn_pos) {
 }
 
 function place_wall(room, pos, dist = 2) {
-	console.log("\t\t\t\tplace_wall() dist: " + dist);
 	if (dist > 0) {
 		pos = shift_to_centre(room, pos, dist);
 	}
@@ -311,7 +310,6 @@ function shift_to_centre(room, pos, dist) {
 	} else if (y > max) {
 		y = max;
 	}
-	console.log("\t\t\t\tGetting pos_wall at [" + x + ", " + y + "]");
 	return room.getPositionAt(x, y);
 }
 
@@ -377,7 +375,6 @@ function exit_edge_check(
 	clockwise = true,
 	place_the_wall = true,
 ) {
-	console.log("\t\tClockwise: " + clockwise);
 	let pos = exit_list[index];
 	let index_adjacent;
 	if (clockwise) {
@@ -427,9 +424,7 @@ function exit_edge_check(
 				}
 				return room.getPositionAt(x, y);
 			};
-			console.log("\t\t\tpos: " + pos);
 			let pos_adjacent = shift_pos_one(pos);
-			console.log("\t\t\tpos adjacent: " + pos_adjacent);
 			place_wall(room, pos_adjacent);
 			let pos_exit_edge = shift_pos_one(pos_adjacent);
 			place_wall(room, pos_exit_edge, 1);
@@ -754,24 +749,19 @@ module.exports = {
 			side_bottom.reverse();
 			side_left.reverse();
 			let exit_list = side_top.concat(side_right, side_bottom, side_left);
-			console.log("Exits found: " + exit_list.length);
-			console.log("Exist List: " + exit_list);
 			let exit_start = null;
 			let exit_end = null;
 			for (let index = 0; index < exit_list.length; index++) {
-				console.log("\tChecking Exit: " + exit_list[index]);
 				exit_edge_check(room, index, exit_list, true);
 				exit_edge_check(room, index, exit_list, false);
 				place_wall(room, exit_list[index]);
 			}
-			console.log("Planned Walls: " + room_memory.walls.length);
 			let verified_walls = [];
 			room_memory.walls.forEach(function (coord) {
 				if (can_get_to_core(room, memory.coord_to_pos(coord, room))) {
 					verified_walls.push(coord);
 				}
 			});
-			console.log("Verified Walls: " + verified_walls.length);
 			room_memory.walls = verified_walls;
 			for (let index = 0; index < exit_list.length; index++) {
 				if (exit_edge_check(room, index, exit_list, true, false)) {
@@ -802,12 +792,8 @@ module.exports = {
 			}
 			// Controller walls
 			place_wall_around(room, room.controller.pos);
-
-			console.log("Walls Placed: " + room_memory.walls.length);
-			room_memory.walls = [];
 		}
 		this.create_construction_sites(room, "walls", STRUCTURE_WALL);
 		this.create_construction_sites(room, "ramparts", STRUCTURE_RAMPART);
-		console.log("----------");
 	},
 };
