@@ -377,6 +377,7 @@ function exit_edge_check(
 	clockwise = true,
 	place_the_wall = true,
 ) {
+	console.log("\t\tClockwise: " + clockwise);
 	let pos = exit_list[index];
 	let index_adjacent;
 	if (clockwise) {
@@ -756,6 +757,7 @@ module.exports = {
 			let exit_start = null;
 			let exit_end = null;
 			for (let index = 0; index < exit_list.length; index++) {
+				console.log("\tChecking Exit: " + exit_list[index]);
 				exit_edge_check(room, index, exit_list, true);
 				exit_edge_check(room, index, exit_list, false);
 				place_wall(room, exit_list[index]);
