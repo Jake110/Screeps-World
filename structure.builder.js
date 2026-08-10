@@ -752,6 +752,7 @@ module.exports = {
 			side_left.reverse();
 			let exit_list = side_top.concat(side_right, side_bottom, side_left);
 			console.log("Exits found: " + exit_list.length);
+			console.log("Exist List: " + exit_list);
 			let exit_start = null;
 			let exit_end = null;
 			for (let index = 0; index < exit_list.length; index++) {
@@ -796,7 +797,10 @@ module.exports = {
 				}
 			}
 			// Controller walls
-			//place_wall_around(room, room.controller.pos)
+			place_wall_around(room, room.controller.pos);
+
+			console.log("Walls Placed: " + room_memory.walls.length);
+			room_memory.walls = [];
 		}
 		this.create_construction_sites(room, "walls", STRUCTURE_WALL);
 		this.create_construction_sites(room, "ramparts", STRUCTURE_RAMPART);
