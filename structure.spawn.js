@@ -76,10 +76,10 @@ module.exports = {
 							"] creep [" +
 							creep.name +
 							"] at [" +
-							memory.pos_to_coord(core_spawn.pos) +
+							room.memory.core +
 							"]",
 					);
-					creep.memory.recycle = memory.pos_to_coord(core_spawn.pos);
+					creep.memory.recycle = room.memory.core;
 					creeps = creeps.filter(function (_creep) {
 						return _creep !== creep;
 					});
