@@ -177,7 +177,7 @@ module.exports = {
 			},
 			{
 				name: "hauler",
-				max: Math.max(1, container_count - link_count),
+				max: container_count,
 			},
 			{
 				name: "quartermaster",
