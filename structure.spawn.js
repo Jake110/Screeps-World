@@ -72,7 +72,7 @@ module.exports = {
 					});
 					console.log(
 						"Recycling unnneeded [" +
-							role +
+							role.name +
 							"] creep [" +
 							creep.name +
 							"] at [" +
