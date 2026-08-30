@@ -134,7 +134,7 @@ module.exports = {
 				STRUCTURE_ROAD,
 			);
 			// If all roads have been built, map the next batch
-			if (unfinished_road == 0) {
+			if (unfinished_road == 0 && core_spawn) {
 				let mode = "roads";
 				if (room.controller.level > 4) {
 					mode = "tunnels";
@@ -147,7 +147,8 @@ module.exports = {
 		// Extension Construction
 		if (
 			Game.time % 17 == 0 &&
-			room.memory.source_connections.roads.length > 0
+			room.memory.source_connections.roads.length > 0 &&
+			core_spawn
 		) {
 			builder.place_extensions(core_spawn);
 		}

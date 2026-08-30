@@ -6,6 +6,7 @@ function get_collection_target(
 	creep,
 	find_list,
 	storage_override = false,
+	extension_override = false,
 	dismantle = false,
 ) {
 	let creep_memory = creep.memory;
@@ -31,6 +32,12 @@ function get_collection_target(
 				filter: function (option) {
 					if (!combat.safe_check(option)) {
 						return false;
+					}
+					if (extension_override) {
+						return (
+							option.structureType == STRUCTURE_EXTENSION &&
+							option.store[RESOURCE_ENERGY] > 0
+						);
 					}
 					if (dismantle) {
 						let coord = memory.pos_to_coord(option.pos);
@@ -175,6 +182,18 @@ function get_home_room(creep) {
 }
 
 module.exports = {
+	can_work: function (creep) {
+		let can_work = true;
+		if (creep.hits < creep.hitsMax) {
+			can_work = false;
+			creep.body.forEach(function (part) {
+				if (part["type"] == WORK && part["hits"] > 0) {
+					can_work = true;
+				}
+			});
+		}
+		return can_work;
+	},
 	capacity_check: function (creep, resource) {
 		if (creep.memory.full && creep.store[resource] == 0) {
 			creep.memory.full = false;
@@ -224,6 +243,19 @@ module.exports = {
 				(creep_memory.role == "worker" && worker_override))
 		) {
 			target = get_collection_target(creep, [FIND_STRUCTURES], true);
+		}
+		if (
+			!target &&
+			creep_memory.role == "worker" &&
+			creep.room.memory.core &&
+			creep.room.find(FIND_MY_SPAWNS).length == 0
+		) {
+			target = get_collection_target(
+				creep,
+				[FIND_STRUCTURES],
+				false,
+				true,
+			);
 		}
 		if (target) {
 			let result;
@@ -302,21 +334,26 @@ module.exports = {
 				},
 			});
 		}
-		if (!target && ["harvester", "hauler"].includes(creep_memory.role)) {
-			target = creep.room.find(FIND_MY_STRUCTURES, {
-				filter: function (structure) {
-					return structure.structureType == STRUCTURE_STORAGE;
+		if (
+			!target &&
+			(creep_memory.role == "harvester" || !this.can_work(creep))
+		) {
+			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+				filter: function (_creep) {
+					return (
+						_creep.name != creep.name &&
+						_creep.memory.role == "worker" &&
+						_creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+					);
 				},
-			})[0];
+			});
+
 			if (!target) {
-				target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-					filter: function (_creep) {
-						return (
-							_creep.memory.role == "worker" &&
-							_creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-						);
+				target = creep.room.find(FIND_MY_STRUCTURES, {
+					filter: function (structure) {
+						return structure.structureType == STRUCTURE_STORAGE;
 					},
-				});
+				})[0];
 			}
 			if (!target) {
 				if (creep.store.getFreeCapacity() > 0) {

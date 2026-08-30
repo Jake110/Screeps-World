@@ -85,12 +85,10 @@ function place_container(room, source_pos, spawn_pos) {
 
 function place_wall(room, pos, dist = 2) {
 	if (dist > 0) {
-		let pos_wall = shift_to_centre(room, pos, dist);
-	} else {
-		let pos_wall = pos;
+		pos = shift_to_centre(room, pos, dist);
 	}
-	if (can_build_here(pos_wall, true)) {
-		room.memory.walls.push(memory.pos_to_coord(pos_wall));
+	if (can_build_here(pos, true)) {
+		room.memory.walls.push(memory.pos_to_coord(pos));
 	}
 }
 
@@ -280,9 +278,7 @@ function place_wall_around(room, pos, radius = 1) {
 				pos.x + n + ":" + (pos.y + m),
 				room,
 			);
-			if (can_build_here(wall_pos, true)) {
-				place_wall(room, wall_pos, 0);
-			}
+			place_wall(room, wall_pos, 0);
 		}
 	}
 }
@@ -733,7 +729,14 @@ module.exports = {
 			let side_left = [];
 			let find_exit = function (x, y, side_list) {
 				let pos = room.getPositionAt(x, y);
-				if (can_build_here(pos, true)) {
+				if (
+					_.every(pos.look(), function (item) {
+						if (item.type == LOOK_TERRAIN) {
+							return item.terrain !== "wall";
+						}
+						return true;
+					})
+				) {
 					side_list.push(pos);
 				}
 			};
@@ -788,6 +791,7 @@ module.exports = {
 				}
 			}
 			// Controller walls
+			place_wall_around(room, room.controller.pos);
 		}
 		this.create_construction_sites(room, "walls", STRUCTURE_WALL);
 		this.create_construction_sites(room, "ramparts", STRUCTURE_RAMPART);
