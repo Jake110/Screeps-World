@@ -143,6 +143,9 @@ module.exports = {
 		let container_count = room.find(FIND_STRUCTURES, {
 			filter: { structureType: STRUCTURE_CONTAINER },
 		}).length;
+		let link_count = room.find(FIND_STRUCTURES, {
+			filter: { structureType: STRUCTURE_LINK },
+		}).length;
 		let source_count = room.find(FIND_SOURCES, {
 			filter: function (_source) {
 				return (
@@ -170,9 +173,12 @@ module.exports = {
 			},
 			{
 				name: "hauler",
-				max: container_count,
+				max: Math.max(1, container_count - link_count),
 			},
-			{ name: "quartermaster", max: 1 ? storage_count > 0 : 0 },
+			{
+				name: "quartermaster",
+				max: 1 ? storage_count > 0 : 0,
+			},
 			{
 				name: "worker",
 				max: source_count,
