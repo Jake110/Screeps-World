@@ -70,6 +70,15 @@ module.exports = {
 							timer = _creep.ticksToLive;
 						}
 					});
+					console.log(
+						"Recycling unnneeded [" +
+							role +
+							"] creep [" +
+							creep.name +
+							"] at [" +
+							memory.pos_to_coord(core_spawn.pos) +
+							"]",
+					);
 					creep.memory.recycle = memory.pos_to_coord(core_spawn.pos);
 					creeps = creeps.filter(function (_creep) {
 						return _creep !== creep;
