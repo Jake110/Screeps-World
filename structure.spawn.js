@@ -53,11 +53,29 @@ module.exports = {
 		let used_spawners = [];
 		if (Game.time % 7 == 0) {
 			roles.forEach(function (role) {
-				let role_count = room.find(FIND_MY_CREEPS, {
+				let creeps = room.find(FIND_MY_CREEPS, {
 					filter: function (creep) {
-						return creep.memory.role == role.name;
+						return (
+							creep.memory.role == role.name &&
+							!creep.memory.recycle
+						);
 					},
-				}).length;
+				});
+				while (creeps.length - role.max > 0) {
+					let creep;
+					let timer = 10000;
+					creeps.forEach(function (_creep) {
+						if (_creep.ticksToLive < timer) {
+							creep = _creep;
+							timer = _creep.ticksToLive;
+						}
+					});
+					creep.memory.recycle = true;
+					creeps = creeps.filter(function (_creep) {
+						return _creep !== creep;
+					});
+				}
+				let role_count = creeps.length;
 				let role_additions = 0;
 				while (role_count + role_additions < role.max) {
 					let spawn = get_spawn(room, used_spawners);
