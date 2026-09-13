@@ -459,6 +459,7 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 			}
 			return !avoid_pos.includes(memory.pos_to_coord(option));
 		});
+		console.log("Filtered options: " + options);
 		next = pos.findClosestByPath(options, {
 			ignoreCreeps: true,
 			ignoreRoads: true,
