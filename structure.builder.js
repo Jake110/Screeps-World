@@ -451,6 +451,7 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 				n++;
 			}
 		}
+		console.log("Options: " + options);
 		options = options.filter(function (option) {
 			return !avoid_pos.includes(memory.pos_to_coord(option));
 		});
