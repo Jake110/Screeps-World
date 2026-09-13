@@ -467,6 +467,15 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 			filter: can_build_here,
 		});
 	}
+	if (next == null) {
+		throw new Error(
+			"Failed to find get adjacent space in room [" +
+				room.name +
+				"] near pos [" +
+				pos +
+				"]",
+		);
+	}
 	return next;
 }
 
