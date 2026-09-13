@@ -466,6 +466,12 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 			swampCost: 1,
 			filter: can_build_here,
 		});
+		console.log(
+			"Can build at pos [" +
+				options[0] +
+				"]? " +
+				can_build_here(options[0]),
+		);
 	}
 	if (next == null) {
 		throw new Error(
