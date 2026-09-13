@@ -454,12 +454,10 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 		console.log("Layer: " + layer);
 		console.log("Options: " + options);
 		options = options.filter(function (option) {
-			try {
-				return !avoid_pos.includes(memory.pos_to_coord(option));
-			} catch (error) {
-				console.log("Failed to filter pos option [" + option + "]");
-				throw error;
+			if (option == null) {
+				return false;
 			}
+			return !avoid_pos.includes(memory.pos_to_coord(option));
 		});
 		next = pos.findClosestByPath(options, {
 			ignoreCreeps: true,
