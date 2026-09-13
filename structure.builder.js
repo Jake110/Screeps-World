@@ -438,7 +438,7 @@ function exit_edge_check(
 function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 	let avoid_pos = memory.build_coords(room);
 	let next;
-	for (; !next && layer < 50; layer++) {
+	for (; !next && layer < 20; layer++) {
 		let options = [];
 		for (let n = 0; n <= layer * 2; n++) {
 			options.push(
