@@ -451,6 +451,7 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 				n++;
 			}
 		}
+		console.log("Layer: " + layer);
 		console.log("Options: " + options);
 		options = options.filter(function (option) {
 			try {
