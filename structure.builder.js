@@ -435,7 +435,13 @@ function exit_edge_check(
 	return false;
 }
 
-function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
+function get_next_adjacent(
+	room,
+	pos,
+	layer = 1,
+	diagonal = true,
+	respect_walls = true,
+) {
 	let avoid_pos = memory.build_coords(room);
 	let next;
 	for (; !next && layer < 20; layer++) {
@@ -460,12 +466,16 @@ function get_next_adjacent(room, pos, layer = 1, diagonal = true) {
 			return !avoid_pos.includes(memory.pos_to_coord(option));
 		});
 		console.log("Filtered options: " + options);
-		next = pos.findClosestByPath(options, {
-			ignoreCreeps: true,
-			ignoreRoads: true,
-			swampCost: 1,
-			filter: can_build_here,
-		});
+		if (respect_walls) {
+			next = pos.findClosestByPath(options, {
+				ignoreCreeps: true,
+				ignoreRoads: true,
+				swampCost: 1,
+				filter: can_build_here,
+			});
+		} else {
+			next = pos.findClosestByRange(options);
+		}
 		console.log(
 			"Can build at pos [" +
 				options[0] +
@@ -733,7 +743,13 @@ module.exports = {
 			tower_sites < max_towers;
 			tower_sites++
 		) {
-			let new_site = get_next_adjacent(room, room.controller.pos, 2);
+			let new_site = get_next_adjacent(
+				room,
+				room.controller.pos,
+				2,
+				true,
+				false,
+			);
 			remove_road(new_site);
 			place_road_around(room, new_site, "roads");
 			towers_list.push(memory.pos_to_coord(new_site));
