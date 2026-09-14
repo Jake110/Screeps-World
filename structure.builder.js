@@ -457,15 +457,12 @@ function get_next_adjacent(
 				n++;
 			}
 		}
-		console.log("Layer: " + layer);
-		console.log("Options: " + options);
 		options = options.filter(function (option) {
 			if (option == null) {
 				return false;
 			}
 			return !avoid_pos.includes(memory.pos_to_coord(option));
 		});
-		console.log("Filtered options: " + options);
 		if (respect_walls) {
 			next = pos.findClosestByPath(options, {
 				ignoreCreeps: true,
@@ -476,12 +473,6 @@ function get_next_adjacent(
 		} else {
 			next = pos.findClosestByRange(options);
 		}
-		console.log(
-			"Can build at pos [" +
-				options[0] +
-				"]? " +
-				can_build_here(options[0]),
-		);
 	}
 	if (next == null) {
 		throw new Error(
