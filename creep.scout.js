@@ -41,7 +41,7 @@ module.exports = {
 				});
 				if (
 					path.length < range &&
-					creep.pos.findClosestByPath(route[0].exit)
+					creep.pos.findClosestByPath(path[0].exit)
 				) {
 					target = room_name;
 					route = path;
