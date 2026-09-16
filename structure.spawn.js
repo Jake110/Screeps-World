@@ -71,7 +71,9 @@ module.exports = {
 						) {
 							continue;
 						}
-						creeps.push(creep);
+						if (creeps.indexOf(creep) == -1) {
+							creeps.push(creep);
+						}
 					}
 				}
 				while (creeps.length - role.max > 0) {
