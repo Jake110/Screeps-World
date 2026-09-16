@@ -78,14 +78,22 @@ module.exports = {
 				switch (creep.pos.x) {
 					case 0:
 						x_options.push(1);
+						break;
 					case 49:
 						x_options.push(48);
+						break;
+					case _:
+						break;
 				}
 				switch (creep.pos.y) {
 					case 0:
 						y_options.push(1);
+						break;
 					case 49:
 						y_options.push(48);
+						break;
+					case _:
+						break;
 				}
 				if (x_options.length == 0) {
 					x_options = [creep.pos.x - 1, creep.pos.x, creep.pos.x + 1];
