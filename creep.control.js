@@ -61,6 +61,9 @@ module.exports = {
 						cost += set_cost;
 						work.push(WORK);
 						move.push(MOVE);
+						if (work.length == 24) {
+							break;
+						}
 					}
 					parts = work.concat(parts, move);
 				}
@@ -111,7 +114,7 @@ module.exports = {
 						parts.push(CARRY);
 						move.push(MOVE);
 						cost += set_cost;
-						if (parts.length == 48) {
+						if (parts.length == 16) {
 							break;
 						}
 					}
