@@ -98,7 +98,7 @@ module.exports = {
 					for (y in y_options) {
 						let option = creep.room.getPositionAt(x, y);
 						if (
-							_.every(pos.look(), function (item) {
+							_.every(option.look(), function (item) {
 								if (item.type == LOOK_TERRAIN) {
 									return item.terrain !== "wall";
 								} else if (
