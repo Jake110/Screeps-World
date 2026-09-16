@@ -4,7 +4,7 @@ const role_harvester = require("role.harvester");
 const role_hauler = require("role.hauler");
 const role_medic = require("role.medic");
 const role_quartermaster = require("role.quartermaster");
-const role_scout = require("role.scount");
+const role_scout = require("role.scout");
 const role_worker = require("role.worker");
 
 module.exports = {
