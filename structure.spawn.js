@@ -66,7 +66,7 @@ module.exports = {
 					for (creep_name in Game.creeps) {
 						creep = Game.creeps[creep_name];
 						if (
-							multi_room_roles(creep.memory.role) == -1 ||
+							multi_room_roles.indexOf(creep.memory.role) == -1 ||
 							creep.memory.home != room.name
 						) {
 							return null;
