@@ -113,11 +113,13 @@ module.exports = {
 								return true;
 							})
 						) {
+							console.log("Option: " + option);
 							options.push(option);
 						}
 					}
 				}
 				let spot = exit.findClosestByPath(options);
+				console.log("Spot: " + spot);
 				creep.moveTo(spot);
 			} else {
 				let direction;
