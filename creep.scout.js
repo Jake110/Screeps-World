@@ -8,15 +8,58 @@ module.exports = {
 		let target = null;
 		let route;
 		let range = 100;
+		let avoid_rooms = [];
+		let pending_rooms = 0;
+		for (room_name in map) {
+			if (map[room_name].status == "owned") {
+				let avoid = true;
+				if (Game.rooms.indexOf(room_name) != -1) {
+					if (Game.rooms[room_name].memory.core) {
+						avoid = false;
+					}
+				}
+				if (avoid) {
+					avoid_rooms.push(room_name);
+				}
+			}
+		}
 		for (room_name in map) {
 			if (map[room_name].status == "pending") {
-				let path = Game.map.findRoute(creep.room, room_name);
-				if (path.length < range) {
+				pending_rooms++;
+				let path = Game.map.findRoute(creep.room, room_name, {
+					routeCallback(roomName, fromRoomName) {
+						if (avoid_rooms.indexOf(roomName) != -1) {
+							// avoid this room
+							return Infinity;
+						}
+						return 1;
+					},
+				});
+				if (
+					path.length < range &&
+					creep.pos.findClosestByPath(route[0].exit)
+				) {
 					target = room_name;
 					route = path;
 					range = path.length;
 				}
 			}
+		}
+		if (
+			target == null &&
+			pending_rooms > 0 &&
+			creep.room.name != home.name
+		) {
+			target = home.name;
+			route = Game.map.findRoute(creep.room, home.name, {
+				routeCallback(roomName, fromRoomName) {
+					if (avoid_rooms.indexOf(roomName) != -1) {
+						// avoid this room
+						return Infinity;
+					}
+					return 1;
+				},
+			});
 		}
 		if (target == null) {
 			creep.memory.recycle = home.memory.core;
