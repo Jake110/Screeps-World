@@ -104,8 +104,8 @@ module.exports = {
 				console.log("X's: " + x_options);
 				console.log("Y's: " + y_options);
 				let options = [];
-				for (x in x_options) {
-					for (y in y_options) {
+				x_options.forEach(function (x) {
+					y_options.forEach(function (y) {
 						let option = creep.room.getPositionAt(x, y);
 						console.log("Option: " + option);
 						if (
@@ -129,8 +129,8 @@ module.exports = {
 							console.log("\tApproved");
 							options.push(option);
 						}
-					}
-				}
+					});
+				});
 				let spot = exit.findClosestByPath(options);
 				console.log("Spot: " + spot);
 				creep.moveTo(spot);
