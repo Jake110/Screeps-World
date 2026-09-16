@@ -10,10 +10,14 @@ module.exports = {
 		let range = 100;
 		let avoid_rooms = [];
 		let pending_rooms = 0;
+		let active_rooms = [];
+		for (room_name in Game.rooms) {
+			active_rooms.push(room_name);
+		}
 		for (room_name in map) {
 			if (map[room_name].status == "owned") {
 				let avoid = true;
-				if (Game.rooms.indexOf(room_name) != -1) {
+				if (active_rooms.indexOf(room_name) != -1) {
 					if (Game.rooms[room_name].memory.core) {
 						avoid = false;
 					}
