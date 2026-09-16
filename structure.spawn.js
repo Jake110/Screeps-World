@@ -112,23 +112,10 @@ module.exports = {
 						role_count++;
 					}
 				});
-				console.log(
-					"Creep Role [" +
-						role.name +
-						"] currently has [" +
-						creeps.length +
-						"/" +
-						role.max +
-						"]",
-				);
 				let role_additions = 0;
 				while (role_count + role_additions < role.max) {
-					console.log(
-						"\tAttempting to spawn new [" + role.name + "] Creep",
-					);
 					let spawn = get_spawn(room, used_spawners);
 					if (!spawn) {
-						console.log("\tNo Spawn available");
 						// No spawn was available
 						return null;
 					}
@@ -136,14 +123,7 @@ module.exports = {
 						role.name,
 						spawn.store[RESOURCE_ENERGY] + extension_energy,
 					);
-					console.log(
-						"\tCreep to spawn with cost [" +
-							creep.cost +
-							"] and parts: " +
-							creep.parts,
-					);
 					if (creep.cost == 0) {
-						console.log("\tNot enough energy available");
 						// Not enough energy for this roles cheapest creep
 						return null;
 					}
@@ -151,7 +131,6 @@ module.exports = {
 						dryRun: true,
 					});
 					if (dry_run != OK) {
-						console.log("\tSpawn dry run failed: " + dry_run);
 						return null;
 					}
 					let new_name = role.name + Game.time;
@@ -186,7 +165,6 @@ module.exports = {
 					let result = spawn.spawnCreep(creep.parts, new_name, {
 						memory: creep_memory,
 					});
-					console.log("\tSpawn result: " + result);
 					used_spawners.push(spawn.id);
 					if (spawn.memory.recycling) {
 						Memory.creeps[spawn.memory.recycling].recycle = false;
