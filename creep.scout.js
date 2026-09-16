@@ -79,12 +79,16 @@ module.exports = {
 				switch (route[0].exit) {
 					case FIND_EXIT_TOP:
 						direction = "North";
+						break;
 					case FIND_EXIT_RIGHT:
 						direction = "East";
+						break;
 					case FIND_EXIT_BOTTOM:
 						direction = "South";
+						break;
 					case FIND_EXIT_LEFT:
 						direction = "West";
+						break;
 				}
 				console.log(
 					"Scout [" +
