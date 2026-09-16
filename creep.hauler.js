@@ -133,6 +133,9 @@ function get_collection_target(
 					option.pos.x + x,
 					option.pos.y + y,
 				);
+				if (pos == null) {
+					continue;
+				}
 				accessable = _.every(pos.look(), function (item) {
 					if (item.type == LOOK_TERRAIN) {
 						return item.terrain !== "wall";
