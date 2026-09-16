@@ -203,11 +203,11 @@ module.exports = {
 			},
 			{
 				name: "quartermaster",
-				max: 1 ? storage_count > 0 : 0,
+				max: storage_count > 0 ? 1 : 0,
 			},
 			{
 				name: "scout",
-				max: 1 ? unexplored > 0 : 0,
+				max: unexplored > 0 ? 1 : 0,
 			},
 			{
 				name: "worker",
