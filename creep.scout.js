@@ -65,8 +65,6 @@ module.exports = {
 			creep.memory.recycle = home.memory.core;
 		} else {
 			let exit = creep.pos.findClosestByPath(route[0].exit);
-			console.log(route[0].exit);
-			console.log(exit);
 			if (
 				[0, 49].indexOf(creep.pos.x) != -1 ||
 				[0, 49].indexOf(creep.pos.y) != -1
