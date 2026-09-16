@@ -516,6 +516,7 @@ function remove_structure(pos, structure_type, memory_list) {
 }
 
 module.exports = {
+	can_build_here: can_build_here,
 	create_construction_sites: function (room, path, structure_type) {
 		let unfinished_count = 0;
 		let coord_list = room.memory[path];
