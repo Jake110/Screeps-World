@@ -65,7 +65,7 @@ module.exports = {
 					"\tCreep Role [" +
 						role.name +
 						"] currently has [" +
-						creep.length +
+						creeps.length +
 						"/" +
 						role.max +
 						"]",
