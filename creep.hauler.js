@@ -12,14 +12,15 @@ function get_collection_target(
 	let creep_memory = creep.memory;
 	let room = creep.room;
 	let options = [];
-	if (
-		find_list.includes(FIND_STRUCTURES) &&
-		!dismantle &&
-		room.memory.links[0]
-	) {
+	try {
+		storage_link = room.memory.links[0];
+	} catch {
+		storage_link = null;
+	}
+	if (find_list.includes(FIND_STRUCTURES) && !dismantle && storage_link) {
 		let core_link = quartermaster.get_structure(
 			room,
-			room.memory.links[0],
+			storage_link,
 			STRUCTURE_LINK,
 		);
 		if (core_link) {
