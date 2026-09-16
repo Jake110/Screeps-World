@@ -100,6 +100,7 @@ module.exports = {
 						}
 					}
 				}
+				break;
 			case "worker":
 				set_cost = 200;
 				if (energy >= set_cost) {
