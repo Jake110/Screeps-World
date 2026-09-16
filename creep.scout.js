@@ -101,6 +101,8 @@ module.exports = {
 				if (y_options.length == 0) {
 					y_options = [creep.pos.y - 1, creep.pos.y, creep.pos.y + 1];
 				}
+				console.log("X's: " + x_options);
+				console.log("Y's: " + y_options);
 				let options = [];
 				for (x in x_options) {
 					for (y in y_options) {
