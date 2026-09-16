@@ -97,9 +97,11 @@ module.exports = {
 				for (x in x_options) {
 					for (y in y_options) {
 						let option = creep.room.getPositionAt(x, y);
+						console.log("Option: " + option);
 						if (
 							_.every(option.look(), function (item) {
 								if (item.type == LOOK_TERRAIN) {
+									console.log("\tTerrain: " + item.terrain);
 									return item.terrain !== "wall";
 								} else if (
 									[
@@ -108,12 +110,13 @@ module.exports = {
 										LOOK_POWER_CREEPS,
 									].indexOf(item.type) != -1
 								) {
+									console.log("\tOccupied");
 									return false;
 								}
 								return true;
 							})
 						) {
-							console.log("Option: " + option);
+							console.log("\tApproved");
 							options.push(option);
 						}
 					}
