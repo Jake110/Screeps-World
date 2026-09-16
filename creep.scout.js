@@ -20,10 +20,23 @@ module.exports = {
 		if (target == null) {
 			creep.memory.recycle = home.memory.core;
 		} else {
+			let direction;
+			switch (route[0].exit) {
+				case FIND_EXIT_TOP:
+					direction = "North";
+				case FIND_EXIT_RIGHT:
+					direction = "East";
+				case FIND_EXIT_BOTTOM:
+					direction = "South";
+				case FIND_EXIT_LEFT:
+					direction = "West";
+			}
 			console.log(
 				"Scout [" +
 					creep.name +
-					"] heading to [" +
+					"] heading [" +
+					direction +
+					"] to [" +
 					target +
 					"] via [" +
 					route[0].room +
