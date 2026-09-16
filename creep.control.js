@@ -198,7 +198,7 @@ module.exports = {
 			},
 			{
 				name: "harvester",
-				max: source_count,
+				max: room.controller.level >= 6 ? 1 : source_count,
 			},
 			{
 				name: "hauler",
