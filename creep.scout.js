@@ -117,9 +117,7 @@ module.exports = {
 						}
 					}
 				}
-				console.log(exit);
-				console.log(exit.pos);
-				let spot = exit.pos.findClosestByPath(options);
+				let spot = exit.findClosestByPath(options);
 				creep.moveTo(spot);
 			} else {
 				let direction;
