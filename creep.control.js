@@ -183,7 +183,6 @@ module.exports = {
 				unexplored++;
 			}
 		}
-		console.log("Unexplored rooms: " + unexplored);
 		return [
 			{
 				name: "grunt",
