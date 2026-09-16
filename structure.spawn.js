@@ -61,6 +61,15 @@ module.exports = {
 						);
 					},
 				});
+				console.log(
+					"\tCreep Role [" +
+						role.name +
+						"] currently has [" +
+						creep.length +
+						"/" +
+						role.max +
+						"]",
+				);
 				while (creeps.length - role.max > 0) {
 					let creep;
 					let timer = 10000;
