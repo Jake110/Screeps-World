@@ -128,7 +128,11 @@ module.exports = {
 		for (let name in Game.creeps) {
 			let creep = Game.creeps[name];
 			let creep_memory = creep.memory;
-			if (!creep_memory.recycle && !creep_memory.renew) {
+			if (
+				!creep_memory.recycle &&
+				!creep_memory.renew &&
+				!creep.spawning
+			) {
 				switch (creep_memory.role) {
 					case "grunt":
 						role_grunt.run(creep);
