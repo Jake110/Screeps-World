@@ -61,6 +61,18 @@ module.exports = {
 						);
 					},
 				});
+				let multi_room_roles = ["scout"];
+				if (multi_room_roles.indexOf(role.name) != -1) {
+					Game.creeps.forEach(function (creep) {
+						if (
+							multi_room_roles(creep.memory.role) == -1 ||
+							creep.memory.home != room.name
+						) {
+							return null;
+						}
+						creeps.push(creep);
+					});
+				}
 				while (creeps.length - role.max > 0) {
 					let creep;
 					let timer = 10000;
