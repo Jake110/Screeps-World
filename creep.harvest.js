@@ -6,6 +6,42 @@ const worker = require("creep.worker");
 module.exports = {
 	/** @param {Creep} creep **/
 	harvest: function (creep) {
+		if (creep.body.length == 49) {
+			let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
+				filter: function (source) {
+					let valid = false;
+					source.pos
+						.findInRange(FIND_STRUCTURES, 2, {
+							filter: function (structure) {
+								return (
+									structure.structureType ==
+										STRUCTURE_CONTAINER ||
+									(structure.structureType ==
+										STRUCTURE_LINK &&
+										structure.my)
+								);
+							},
+						})
+						.forEach(function (structure) {
+							if (
+								structure.store.getFreeCapacity(
+									RESOURCE_ENERGY,
+								) > 0
+							) {
+								valid = true;
+							}
+						});
+					return valid;
+				},
+			});
+			if (source) {
+				if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+					creep.moveTo(source, {
+						visualizePathStyle: { stroke: "#fff23e" },
+					});
+				}
+			}
+		}
 		if (creep.body.length > 4 && creep.room.memory.containers.length > 0) {
 			let sources = creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1);
 			let harvested = false;
@@ -66,25 +102,19 @@ module.exports = {
 				}
 			}
 		} else {
-			let harvest_target = creep.pos.findClosestByPath(FIND_SOURCES, {
-				filter: function (source) {
-					return combat.safe_check(source);
+			let harvest_target = creep.pos.findClosestByPath(
+				FIND_SOURCES_ACTIVE,
+				{
+					filter: function (source) {
+						return combat.safe_check(source);
+					},
 				},
-			});
+			);
 			if (harvest_target) {
-				let result = creep.harvest(harvest_target);
-				if (result == ERR_NOT_IN_RANGE) {
+				if (creep.harvest(harvest_target) == ERR_NOT_IN_RANGE) {
 					creep.moveTo(harvest_target, {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
-				} else if (
-					result == ERR_NOT_ENOUGH_RESOURCES &&
-					creep.ticksToLive < 1000
-				) {
-					let closest_spawn = creep.pos.findClosestByPath(
-						creep.room.find(FIND_MY_SPAWNS),
-					);
-					creep.memory.renew = memory.pos_to_coord(closest_spawn.pos);
 				}
 			}
 		}
