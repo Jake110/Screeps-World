@@ -93,7 +93,7 @@ module.exports = {
 				if (y_options.length == 0) {
 					y_options = [creep.pos.y - 1, creep.pos.y, creep.pos.y + 1];
 				}
-				let options;
+				let options = [];
 				for (x in x_options) {
 					for (y in y_options) {
 						let option = creep.room.getPositionAt(x, y);
