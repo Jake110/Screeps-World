@@ -23,7 +23,7 @@ module.exports = {
 			console.log(
 				"Scout [" +
 					creep.name +
-					"] hesding to [" +
+					"] heading to [" +
 					target +
 					"] via [" +
 					route[0].room +
