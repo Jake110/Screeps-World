@@ -74,6 +74,7 @@ module.exports.loop = function () {
 		builder.place_walls(room);
 		builder.place_storage(room);
 		builder.place_links(room);
+		builder.place_spawns(room);
 	}
 	/*console.log(
 		"CPU this tick: " + Game.cpu.getUsed() + "/" + Game.cpu.tickLimit,

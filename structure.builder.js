@@ -703,6 +703,27 @@ module.exports = {
 			room_memory.source_connections[mode].push(_source.id);
 		}
 	},
+	place_spawns: function (room) {
+		let spawn_count = room.memory.spawns.length;
+		let spawn_max = 1;
+		if (room.controller.level >= 7) {
+			spawn_max++;
+		}
+		if (room.controller.level == 8) {
+			spawn_max++;
+		}
+		while (spawn_count < spawn_max) {
+			let new_site = get_next_adjacent(
+				room,
+				memory.coord_to_pos(room.memory.core, room),
+				2,
+			);
+			remove_road(new_site);
+			place_road_around(room, new_site, "roads");
+			room.memory.spawns.push(memory.pos_to_coord(new_site));
+		}
+		this.create_construction_sites(room, "spawns", STRUCTURE_SPAWN);
+	},
 	place_storage: function (room) {
 		let room_memory = room.memory;
 		if (room.controller.level >= 5 && !room_memory.storage) {
