@@ -721,6 +721,7 @@ module.exports = {
 			remove_road(new_site);
 			place_road_around(room, new_site, "roads");
 			room.memory.spawns.push(memory.pos_to_coord(new_site));
+			spawn_count++;
 		}
 		this.create_construction_sites(room, "spawns", STRUCTURE_SPAWN);
 	},
