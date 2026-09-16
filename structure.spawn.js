@@ -109,6 +109,7 @@ module.exports = {
 						role.name,
 						spawn.store[RESOURCE_ENERGY] + extension_energy,
 					);
+					console.log("\tCreep to spawn: " + creep);
 					if (creep.cost == 0) {
 						console.log("\tNot enough energy available");
 						// Not enough energy for this roles cheapest creep
