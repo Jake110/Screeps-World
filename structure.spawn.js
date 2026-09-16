@@ -69,7 +69,7 @@ module.exports = {
 							multi_room_roles.indexOf(creep.memory.role) == -1 ||
 							creep.memory.home != room.name
 						) {
-							return null;
+							continue;
 						}
 						creeps.push(creep);
 					}
