@@ -61,15 +61,6 @@ module.exports = {
 						);
 					},
 				});
-				console.log(
-					"Creep Role [" +
-						role.name +
-						"] currently has [" +
-						creeps.length +
-						"/" +
-						role.max +
-						"]",
-				);
 				while (creeps.length - role.max > 0) {
 					let creep;
 					let timer = 10000;
@@ -94,6 +85,27 @@ module.exports = {
 					});
 				}
 				let role_count = creeps.length;
+				room.find(FIND_MY_SPAWNS, {
+					filter: function (spawner) {
+						return spawner.spawning;
+					},
+				}).forEach(function (spawner) {
+					if (
+						Game.creeps[spawner.spawning.name].memory.role ==
+						role.name
+					) {
+						role_count++;
+					}
+				});
+				console.log(
+					"Creep Role [" +
+						role.name +
+						"] currently has [" +
+						creeps.length +
+						"/" +
+						role.max +
+						"]",
+				);
 				let role_additions = 0;
 				while (role_count + role_additions < role.max) {
 					console.log(
