@@ -4,6 +4,7 @@ const role_harvester = require("role.harvester");
 const role_hauler = require("role.hauler");
 const role_medic = require("role.medic");
 const role_quartermaster = require("role.quartermaster");
+const role_scout = require("role.scount");
 const role_worker = require("role.worker");
 
 module.exports = {
@@ -88,6 +89,17 @@ module.exports = {
 					}
 				}
 				break;
+			case "scout":
+				set_cost = 60;
+				if (energy >= set_cost) {
+					while (energy - cost >= set_cost) {
+						parts = [TOUGH].concat(parts, [MOVE]);
+						cost += set_cost;
+						if (parts.length == 50) {
+							break;
+						}
+					}
+				}
 			case "worker":
 				set_cost = 200;
 				if (energy >= set_cost) {
@@ -132,6 +144,9 @@ module.exports = {
 					case "quartermaster":
 						role_quartermaster.run(creep);
 						break;
+					case "scout":
+						role_scout.run(creep);
+						break;
 					case "worker":
 						if (hauler.can_work(creep)) {
 							role_worker.run(creep);
@@ -162,14 +177,16 @@ module.exports = {
 			filter: { structureType: STRUCTURE_STORAGE },
 		}).length;
 		let hostiles = 0; //room.find(FIND_HOSTILE_CREEPS).length;
+		let unexplored = 0;
+		for (room_name in room.memory.map) {
+			if (room.memory.map[room_name].status == "pending") {
+				unexplored++;
+			}
+		}
 		return [
 			{
 				name: "grunt",
 				max: hostiles * 4,
-			},
-			{
-				name: "medic",
-				max: hostiles * 2,
 			},
 			{
 				name: "harvester",
@@ -180,8 +197,16 @@ module.exports = {
 				max: Math.max(1, container_count - link_count),
 			},
 			{
+				name: "medic",
+				max: hostiles * 2,
+			},
+			{
 				name: "quartermaster",
 				max: 1 ? storage_count > 0 : 0,
+			},
+			{
+				name: "scout",
+				max: 1 ? unexplored > 0 : 0,
 			},
 			{
 				name: "worker",

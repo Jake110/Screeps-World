@@ -68,6 +68,20 @@ module.exports = {
 		}
 	},
 	coord_to_pos: coord_to_pos,
+	map: function (map, room_name, range) {
+		if (!(room_name in map)) {
+			map[room_name] = {
+				range: range,
+				status: "pending",
+			};
+		}
+		if (range < 5) {
+			let exits = Game.map.describeExits(room_name);
+			for (key in exits) {
+				this.map(map, exits[key], range + 1);
+			}
+		}
+	},
 	pos_to_coord: pos_to_coord,
 	set_up: function (room) {
 		let spawns = room.find(FIND_MY_SPAWNS);
@@ -75,6 +89,10 @@ module.exports = {
 		if (spawns.length > 0) {
 			if (!room_memory.core) {
 				room_memory.core = pos_to_coord(spawns[0].pos);
+			}
+			if (!room_memory.map) {
+				room_memory.map = {};
+				this.map(room.memory.map, room.name, 0);
 			}
 			this.tracker_names.forEach(function (name) {
 				if (!room_memory[name]) {
@@ -96,5 +114,5 @@ module.exports = {
 	},
 	set_up_list: set_up_list,
 	structure_names: structure_names,
-	tracker_names: structure_names.concat(["ramparts", "roads"]),
+	tracker_names: structure_names.concat(["ramparts", "remotes", "roads"]),
 };

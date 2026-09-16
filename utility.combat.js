@@ -49,13 +49,13 @@ function weigh_targets(pos, range, hostiles) {
 }
 
 module.exports = {
-	safe_check: function (target) {
+	safe_check: function (target, range = 10) {
 		let pos = target;
 		if (target.pos) {
 			pos = target.pos;
 		}
 		return (
-			pos.findInRange(FIND_HOSTILE_CREEPS, 10, {
+			pos.findInRange(FIND_HOSTILE_CREEPS, range, {
 				filter: function (object) {
 					return (
 						object.getActiveBodyparts(ATTACK) != 0 ||
