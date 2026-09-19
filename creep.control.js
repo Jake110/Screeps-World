@@ -1,5 +1,5 @@
 const combat = require("utility.combat");
-const harvester = require("creep.harvester");
+const harvester = require("creep.harvest");
 const hauler = require("creep.hauler");
 const role_grunt = require("role.grunt");
 const role_harvester = require("role.harvester");
