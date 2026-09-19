@@ -91,7 +91,7 @@ module.exports = {
 		room.find(FIND_MY_CREEPS, {
 			filter: function (creep) {
 				if (creep.memory.role == "harvester") {
-					best_harvester = max(best_harvester, creep.body.length);
+					best_harvester = Math.max(best_harvester, creep.body.length);
 				}
 			},
 		});
