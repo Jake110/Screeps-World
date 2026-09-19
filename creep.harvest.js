@@ -6,97 +6,51 @@ const worker = require("creep.worker");
 module.exports = {
 	/** @param {Creep} creep **/
 	harvest: function (creep) {
-		if (creep.body.length == 49) {
+		if (creep.room.memory.containers.length > 0) {
+			let max_harvesters = this.harvester_per_source(creep.room);
 			let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
 				filter: function (source) {
-					let valid = false;
-					source.pos
-						.findInRange(FIND_STRUCTURES, 2, {
-							filter: function (structure) {
-								return (
-									structure.structureType ==
-										STRUCTURE_CONTAINER ||
-									(structure.structureType ==
-										STRUCTURE_LINK &&
-										structure.my)
-								);
-							},
-						})
-						.forEach(function (structure) {
-							if (
-								structure.store.getFreeCapacity(
-									RESOURCE_ENERGY,
-								) > 0
-							) {
-								valid = true;
-							}
-						});
-					return valid;
+					if (combat.safe_check(source.pos)) {
+						let valid = false;
+						source.pos
+							.findInRange(FIND_STRUCTURES, 2, {
+								filter: function (structure) {
+									return (
+										structure.structureType ==
+											STRUCTURE_CONTAINER ||
+										(structure.structureType ==
+											STRUCTURE_LINK &&
+											structure.my)
+									);
+								},
+							})
+							.forEach(function (structure) {
+								if (
+									structure.store.getFreeCapacity(
+										RESOURCE_ENERGY,
+									) > 0
+								) {
+									valid = true;
+								}
+							});
+						if (valid) {
+							return (harvesters =
+								creep.room.find(FIND_MY_CREEPS, {
+									filter: function (_creep) {
+										return (
+											_creep.memory.role == "harvester" &&
+											_creep.memory.target == source.id
+										);
+									},
+								}).length < max_harvesters);
+						}
+					}
 				},
 			});
 			if (source) {
+				creep.memory.target = source.id;
 				if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
 					creep.moveTo(source, {
-						visualizePathStyle: { stroke: "#fff23e" },
-					});
-				}
-			}
-		}
-		if (creep.body.length > 4 && creep.room.memory.containers.length > 0) {
-			let sources = creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1);
-			let harvested = false;
-			if (sources.length > 0) {
-				if (creep.harvest(sources[0]) != ERR_NOT_ENOUGH_RESOURCES) {
-					harvested = true;
-				}
-			}
-			if (!harvested) {
-				let chosen_pos = null;
-				let chosen_dist = 999;
-				creep.room.memory.containers.forEach(function (coord) {
-					let pos = memory.coord_to_pos(coord, creep.room);
-					if (!combat.safe_check(pos)) {
-						return null;
-					}
-					let dist = creep.pos.findPathTo(pos).length;
-					if (
-						creep.room.find(FIND_MY_CREEPS, {
-							filter: function (_creep) {
-								let _creep_memory = _creep.memory;
-								if (
-									_creep_memory.role != "harvester" ||
-									_creep.name == creep.name
-								) {
-									return false;
-								}
-								let at_pos =
-									_creep.pos.x == pos.x &&
-									_creep.pos.y == pos.y;
-								let get_there_first = false;
-								if (_creep_memory._move) {
-									let target =
-										_creep_memory._move.dest.x == pos.x &&
-										_creep_memory._move.dest.y == pos.y;
-									let closer =
-										_creep.pos.findPathTo(pos).length <
-										dist;
-									if (target && closer) {
-										get_there_first = true;
-									}
-								}
-								return at_pos || get_there_first;
-							},
-						}).length > 0
-					) {
-						return null;
-					}
-					if (dist < chosen_dist) {
-						chosen_pos = pos;
-						chosen_dist = dist;
-					}
-				});
-				if (chosen_pos) {
-					creep.moveTo(chosen_pos, {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
 				}
@@ -118,11 +72,11 @@ module.exports = {
 				}
 			}
 		}
-		let deposit_target = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {
+		let deposit_target = creep.pos.findInRange(FIND_MY_STRUCTURES, 3, {
 			filter: { structureType: STRUCTURE_LINK },
 		});
 		if (deposit_target.length == 0) {
-			deposit_target = creep.pos.findInRange(FIND_STRUCTURES, 1, {
+			deposit_target = creep.pos.findInRange(FIND_STRUCTURES, 3, {
 				filter: { structureType: STRUCTURE_CONTAINER },
 			});
 		}
@@ -131,9 +85,21 @@ module.exports = {
 			creep.transfer(deposit_target, RESOURCE_ENERGY);
 		}
 	},
-
+	/** @param {Room} room **/
+	harvester_per_source: function (room) {
+		let best_harvester = 3;
+		room.find(FIND_MY_CREEPS, {
+			filter: function (creep) {
+				if (creep.memory.role == "harvester") {
+					best_harvester = max(best_harvester, creep.body.length);
+				}
+			},
+		});
+		return 3000 / (best_harvester - 1) / 300;
+	},
 	/** @param {Creep} creep **/
 	deposit: function (creep) {
+		this.reset_target(creep);
 		let invalid_target_check = function (target_list) {
 			let invalid = true;
 			if (target_list.length > 0) {
@@ -183,5 +149,8 @@ module.exports = {
 				});
 			}
 		}
+	},
+	reset_target: function (creep) {
+		creep.memory.target = null;
 	},
 };

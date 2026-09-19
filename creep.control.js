@@ -1,3 +1,5 @@
+const combat = require("utility.combat");
+const harvester = require("creep.harvester");
 const hauler = require("creep.hauler");
 const role_grunt = require("role.grunt");
 const role_harvester = require("role.harvester");
@@ -176,8 +178,10 @@ module.exports = {
 		let source_count = room.find(FIND_SOURCES, {
 			filter: function (_source) {
 				return (
-					_source.pos.findInRange(FIND_HOSTILE_STRUCTURES, 20)
-						.length == 0 || room.memory.towers.length > 0
+					(_source.pos.findInRange(FIND_HOSTILE_STRUCTURES, 20)
+						.length == 0 &&
+						combat.safe_check(_source)) ||
+					room.memory.towers.length > 0
 				);
 			},
 		}).length;
@@ -198,7 +202,13 @@ module.exports = {
 			},
 			{
 				name: "harvester",
-				max: room.controller.level >= 6 ? 1 : source_count,
+				max: max(
+					1,
+					Math.ceil(
+						source_count *
+							min(3, harvester.harvester_per_source(room)),
+					),
+				),
 			},
 			{
 				name: "hauler",

@@ -1,6 +1,7 @@
 const builder = require("structure.builder");
 const combat = require("utility.combat");
 const creeper = require("creep.control");
+const harvester = require("creep.harvest");
 const memory = require("utility.memory");
 
 function get_spawn(room, used_spawners, recycle_check = false) {
@@ -239,7 +240,7 @@ module.exports = {
 				creep.body.forEach(function (part) {
 					creep_body.push(part.type);
 				});
-				if (spawn) {
+				if (spawn && !creep.memory.renew) {
 					let spawn_body = creeper.body(
 						role,
 						spawn.store[RESOURCE_ENERGY] + extension_energy,
@@ -263,12 +264,19 @@ module.exports = {
 							creep.memory.recycle = memory.pos_to_coord(
 								spawn.pos,
 							);
+							if (role == "harvester") {
+								harvester.reset_target(creep);
+							}
 							spawn.memory.recycling = creep.name;
 							spawn = get_spawn(room, used_spawners, true);
 						}
 					}
 				}
-				if (creep.ticksToLive < 200 && !creep_body.includes(CLAIM)) {
+				if (
+					creep.ticksToLive < 200 &&
+					!creep_body.includes(CLAIM) &&
+					!creep.memory.recycle
+				) {
 					// If a creep has less than 200 ticks left
 					// and doesn't have a CLAIM part, trigger renew process
 					let nearest_spawn = creep.pos.findClosestByPath(spawns);
@@ -276,6 +284,9 @@ module.exports = {
 						creep.memory.renew = memory.pos_to_coord(
 							nearest_spawn.pos,
 						);
+						if (creep.memory.role == "harvester") {
+							harvester.reset_target(creep);
+						}
 					}
 				}
 			}
@@ -294,8 +305,7 @@ module.exports = {
 					// The spawn no longer exists, reset recycle
 					creep.memory.recycle = false;
 				}
-			}
-			if (creep.memory.renew) {
+			} else if (creep.memory.renew) {
 				let _spawn = saved_spawn(room, creep, "renew");
 				if (_spawn) {
 					let result = _spawn.renewCreep(creep);
