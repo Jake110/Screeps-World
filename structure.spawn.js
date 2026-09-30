@@ -191,9 +191,9 @@ module.exports = {
 			// If all roads have been built, map the next batch
 			if (unfinished_road == 0 && core_spawn) {
 				let mode = "roads";
-				/*if (room.controller.level > 4) {
+				if (room.controller.level > 4) {
 					mode = "tunnels";
-				}*/
+				}
 				builder.place_controller_road(core_spawn, mode);
 				builder.place_source_roads(core_spawn, mode);
 			}
