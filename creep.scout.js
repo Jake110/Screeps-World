@@ -49,24 +49,19 @@ module.exports = {
 				}
 			}
 		}
-		if (
-			target == null &&
-			pending_rooms > 0 &&
-			creep.room.name != home.name
-		) {
-			target = home.name;
-			route = Game.map.findRoute(creep.room, home.name, {
-				routeCallback(roomName, fromRoomName) {
-					if (avoid_rooms.indexOf(roomName) != -1) {
-						// avoid this room
-						return Infinity;
-					}
-					return 1;
-				},
-			});
-		}
 		if (target == null) {
+			console.log(
+				"Scout [" +
+					creep.name +
+					"] cannot reach any more unexplored rooms. Recycling...",
+			);
 			creep.memory.recycle = home.memory.core;
+			for (room_name in map) {
+				if (map[room_name].status == "pending") {
+					console.log("\tMarking [" + room_name + "] as blocked");
+					map[room_name].status = "blocked";
+				}
+			}
 		} else {
 			let exit = creep.pos.findClosestByPath(route[0].exit);
 			let direction;
