@@ -69,7 +69,7 @@ module.exports = {
 			creep.memory.recycle = home.memory.core;
 		} else {
 			let exit = creep.pos.findClosestByPath(route[0].exit);
-			if (
+			/*if (
 				[0, 49].indexOf(creep.pos.x) != -1 ||
 				[0, 49].indexOf(creep.pos.y) != -1
 			) {
@@ -132,38 +132,38 @@ module.exports = {
 						}
 					});
 				});
-				let spot = exit.findClosestByPath(options);*/
+				let spot = exit.findClosestByPath(options);
 				console.log("Spot: " + spot);
 				creep.moveTo(spot);
-			} else {
-				let direction;
-				switch (route[0].exit) {
-					case FIND_EXIT_TOP:
-						direction = "North";
-						break;
-					case FIND_EXIT_RIGHT:
-						direction = "East";
-						break;
-					case FIND_EXIT_BOTTOM:
-						direction = "South";
-						break;
-					case FIND_EXIT_LEFT:
-						direction = "West";
-						break;
-				}
-				console.log(
-					"Scout [" +
-						creep.name +
-						"] heading [" +
-						direction +
-						"] to [" +
-						target +
-						"] via [" +
-						route[0].room +
-						"]",
-				);
-				creep.moveTo(exit);
+			} else {*/
+			let direction;
+			switch (route[0].exit) {
+				case FIND_EXIT_TOP:
+					direction = "North";
+					break;
+				case FIND_EXIT_RIGHT:
+					direction = "East";
+					break;
+				case FIND_EXIT_BOTTOM:
+					direction = "South";
+					break;
+				case FIND_EXIT_LEFT:
+					direction = "West";
+					break;
 			}
+			console.log(
+				"Scout [" +
+					creep.name +
+					"] heading [" +
+					direction +
+					"] to [" +
+					target +
+					"] via [" +
+					route[0].room +
+					"]",
+			);
+			creep.moveTo(exit, { maxRooms: 1 });
+			//}
 		}
 	},
 	map: function (home, creep) {
