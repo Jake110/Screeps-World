@@ -69,73 +69,6 @@ module.exports = {
 			creep.memory.recycle = home.memory.core;
 		} else {
 			let exit = creep.pos.findClosestByPath(route[0].exit);
-			/*if (
-				[0, 49].indexOf(creep.pos.x) != -1 ||
-				[0, 49].indexOf(creep.pos.y) != -1
-			) {
-				let x_options = [];
-				let y_options = [];
-				switch (creep.pos.x) {
-					case 0:
-						x_options.push(1);
-						break;
-					case 49:
-						x_options.push(48);
-						break;
-					case _:
-						break;
-				}
-				switch (creep.pos.y) {
-					case 0:
-						y_options.push(1);
-						break;
-					case 49:
-						y_options.push(48);
-						break;
-					case _:
-						break;
-				}
-				if (x_options.length == 0) {
-					x_options = [creep.pos.x]; //[creep.pos.x - 1, creep.pos.x, creep.pos.x + 1];
-				}
-				if (y_options.length == 0) {
-					y_options = [creep.pos.y]; //[creep.pos.y - 1, creep.pos.y, creep.pos.y + 1];
-				}
-				console.log("X's: " + x_options);
-				console.log("Y's: " + y_options);
-				let spot = creep.room.getPositionAt(x_options[0], y_options[0]);
-				/*let options = [];
-				x_options.forEach(function (x) {
-					y_options.forEach(function (y) {
-						let option = creep.room.getPositionAt(x, y);
-						console.log("Option: " + option);
-						if (
-							_.every(option.look(), function (item) {
-								if (item.type == LOOK_TERRAIN) {
-									console.log("\tTerrain: " + item.terrain);
-									return item.terrain !== "wall";
-								} else if (
-									[
-										LOOK_CREEPS,
-										LOOK_STRUCTURES,
-										LOOK_POWER_CREEPS,
-									].indexOf(item.type) != -1
-								) {
-									console.log("\tOccupied");
-									return false;
-								}
-								return true;
-							})
-						) {
-							console.log("\tApproved");
-							options.push(option);
-						}
-					});
-				});
-				let spot = exit.findClosestByPath(options);
-				console.log("Spot: " + spot);
-				creep.moveTo(spot);
-			} else {*/
 			let direction;
 			switch (route[0].exit) {
 				case FIND_EXIT_TOP:
@@ -163,7 +96,6 @@ module.exports = {
 					"]",
 			);
 			creep.moveTo(exit, { maxRooms: 1 });
-			//}
 		}
 	},
 	map: function (home, creep) {
