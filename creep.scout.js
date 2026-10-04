@@ -96,14 +96,15 @@ module.exports = {
 						break;
 				}
 				if (x_options.length == 0) {
-					x_options = [creep.pos.x - 1, creep.pos.x, creep.pos.x + 1];
+					x_options = [creep.pos.x]; //[creep.pos.x - 1, creep.pos.x, creep.pos.x + 1];
 				}
 				if (y_options.length == 0) {
-					y_options = [creep.pos.y - 1, creep.pos.y, creep.pos.y + 1];
+					y_options = [creep.pos.y]; //[creep.pos.y - 1, creep.pos.y, creep.pos.y + 1];
 				}
 				console.log("X's: " + x_options);
 				console.log("Y's: " + y_options);
-				let options = [];
+				let spot = creep.room.getPositionAt(x_options[0], y_options[0]);
+				/*let options = [];
 				x_options.forEach(function (x) {
 					y_options.forEach(function (y) {
 						let option = creep.room.getPositionAt(x, y);
@@ -131,7 +132,7 @@ module.exports = {
 						}
 					});
 				});
-				let spot = exit.findClosestByPath(options);
+				let spot = exit.findClosestByPath(options);*/
 				console.log("Spot: " + spot);
 				creep.moveTo(spot);
 			} else {
