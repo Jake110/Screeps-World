@@ -2,52 +2,54 @@ const builder = require("structure.builder");
 const combat = require("utility.combat");
 const memory = require("utility.memory");
 
+function get_route(room_start, room_end, avoid_list) {
+	return Game.map.findRoute(room_start, room_end, {
+		routeCallback(roomName, fromRoomName) {
+			if (avoid_list.indexOf(roomName) != -1) {
+				// avoid this room
+				return Infinity;
+			}
+			return 1;
+		},
+	});
+}
+
 module.exports = {
 	explore: function (home, creep) {
 		let map = home.memory.map;
-		let target = null;
+		let target = creep.memory.target;
 		let route;
-		let range = 100;
 		let avoid_rooms = [];
-		let pending_rooms = 0;
-		let active_rooms = [];
-		for (room_name in Game.rooms) {
-			active_rooms.push(room_name);
-		}
 		for (room_name in map) {
 			if (map[room_name].status == "owned") {
-				let avoid = true;
-				if (active_rooms.indexOf(room_name) != -1) {
-					if (Game.rooms[room_name].memory.core) {
-						avoid = false;
-					}
+				if (Game.rooms[room_name].memory.core) {
+					continue;
 				}
-				if (avoid) {
-					avoid_rooms.push(room_name);
-				}
+				avoid_rooms.push(room_name);
 			}
 		}
-		for (room_name in map) {
-			if (map[room_name].status == "pending") {
-				pending_rooms++;
-				let path = Game.map.findRoute(creep.room, room_name, {
-					routeCallback(roomName, fromRoomName) {
-						if (avoid_rooms.indexOf(roomName) != -1) {
-							// avoid this room
-							return Infinity;
-						}
-						return 1;
-					},
-				});
-				if (
-					path.length < range &&
-					creep.pos.findClosestByPath(path[0].exit)
-				) {
-					target = room_name;
-					route = path;
-					range = path.length;
+		if (target == null) {
+			let range = 100;
+			let pending_rooms = 0;
+			for (room_name in map) {
+				if (map[room_name].status == "pending") {
+					pending_rooms++;
+					let path = get_route(creep.room, room_name, avoid_rooms);
+					if (
+						path.length < range &&
+						creep.pos.findClosestByPath(path[0].exit)
+					) {
+						target = room_name;
+						route = path;
+						range = path.length;
+					}
 				}
 			}
+			if (target != null) {
+				creep.memory.target = target;
+			}
+		} else {
+			route = get_route(creep.room, target, avoid_rooms);
 		}
 		if (target == null) {
 			console.log(
@@ -120,6 +122,7 @@ module.exports = {
 		} else {
 			map.status = "hostile";
 		}
+		creep.memory.target = null;
 	},
 	return: function (home, creep) {
 		creep.moveTo(memory.coord_to_pos(home.memory.core, home));
