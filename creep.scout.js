@@ -22,7 +22,7 @@ module.exports = {
 		let avoid_rooms = [];
 		for (room_name in map) {
 			if (map[room_name].status == "owned") {
-				if (Game.rooms[room_name].memory.core) {
+				if (Game.rooms[room_name].controller.my) {
 					continue;
 				}
 				avoid_rooms.push(room_name);
