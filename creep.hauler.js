@@ -292,7 +292,7 @@ module.exports = {
 				return (
 					structure.structureType == STRUCTURE_TOWER &&
 					structure.store[RESOURCE_ENERGY] <
-						structure.store.getCapacity(RESOURCE_ENERGY) / 3
+						(structure.store.getCapacity(RESOURCE_ENERGY) * 3) / 4
 				);
 			},
 		});

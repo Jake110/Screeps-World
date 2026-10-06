@@ -64,7 +64,7 @@ module.exports = {
 					tower.repair(weakest);
 				} else if (
 					tower.store[RESOURCE_ENERGY] >
-					tower.store.getCapacity(RESOURCE_ENERGY) / 2
+					(tower.store.getCapacity(RESOURCE_ENERGY) * 3) / 4
 				) {
 					towers.push(tower);
 				}
