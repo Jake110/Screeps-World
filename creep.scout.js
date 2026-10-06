@@ -35,7 +35,7 @@ module.exports = {
 		let map = home.memory.map;
 		let target = creep.memory.target;
 		let route;
-		let avoid_rooms = self.avoid_rooms(home);
+		let avoid_rooms = this.avoid_rooms(home);
 		if (target == null) {
 			let range = 100;
 			let pending_rooms = 0;
@@ -133,7 +133,7 @@ module.exports = {
 		creep.memory.target = null;
 	},
 	return: function (home, creep) {
-		let avoid_rooms = self.avoid_rooms(home);
+		let avoid_rooms = this.avoid_rooms(home);
 		creep.moveTo(memory.coord_to_pos(home.memory.core, home), {
 			routeCallback(roomName, fromRoomName) {
 				if (avoid_list.indexOf(roomName) != -1) {
