@@ -159,6 +159,13 @@ module.exports = {
 	},
 	map: function (home, creep) {
 		let map = home.memory.map[creep.room.name];
+		if (map == null) {
+			map = {
+				range: Game.map.findRoute(creep.room.name, home.name).length,
+				status: "pending"
+			}
+			home.memory.map[creep.room.name] = map
+		}
 		let sources = creep.room.find(FIND_SOURCES);
 		if (sources.length > 0) {
 			map.sources = [];
