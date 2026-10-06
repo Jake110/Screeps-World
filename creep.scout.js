@@ -15,10 +15,8 @@ function get_route(room_start, room_end, avoid_list) {
 }
 
 module.exports = {
-	explore: function (home, creep) {
+	avoid_rooms: function (home) {
 		let map = home.memory.map;
-		let target = creep.memory.target;
-		let route;
 		let avoid_rooms = [];
 		for (room_name in map) {
 			if (map[room_name].status == "owned") {
@@ -31,6 +29,13 @@ module.exports = {
 				avoid_rooms.push(room_name);
 			}
 		}
+		return avoid_rooms;
+	},
+	explore: function (home, creep) {
+		let map = home.memory.map;
+		let target = creep.memory.target;
+		let route;
+		let avoid_rooms = self.avoid_rooms(home);
 		if (target == null) {
 			let range = 100;
 			let pending_rooms = 0;
@@ -128,6 +133,15 @@ module.exports = {
 		creep.memory.target = null;
 	},
 	return: function (home, creep) {
-		creep.moveTo(memory.coord_to_pos(home.memory.core, home));
+		let avoid_rooms = self.avoid_rooms(home);
+		creep.moveTo(memory.coord_to_pos(home.memory.core, home), {
+			routeCallback(roomName, fromRoomName) {
+				if (avoid_list.indexOf(roomName) != -1) {
+					// avoid this room
+					return Infinity;
+				}
+				return 1;
+			},
+		});
 	},
 };
