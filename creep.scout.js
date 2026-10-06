@@ -2,12 +2,16 @@ const builder = require("structure.builder");
 const combat = require("utility.combat");
 const memory = require("utility.memory");
 
-function get_route(room_start, room_end, avoid_list) {
+function get_route(room_start, room_end, avoid_list, blocked = null) {
 	return Game.map.findRoute(room_start, room_end, {
 		routeCallback(roomName, fromRoomName) {
 			if (avoid_list.indexOf(roomName) != -1) {
 				// avoid this room
 				return Infinity;
+			} else if (blocked != null) {
+				if (roomName == blocked[1] && fromRoomName == blocked[0]) {
+					return Infinity;
+				}
 			}
 			return 1;
 		},
@@ -55,9 +59,8 @@ module.exports = {
 			}
 			if (target != null) {
 				creep.memory.target = target;
+				creep.memory.route = route;
 			}
-		} else {
-			route = get_route(creep.room, target, avoid_rooms);
 		}
 		if (target == null) {
 			console.log(
@@ -68,14 +71,35 @@ module.exports = {
 			creep.memory.recycle = home.memory.core;
 			for (room_name in map) {
 				if (map[room_name].status == "pending") {
-					console.log("\tMarking [" + room_name + "] as blocked");
+					console.log("\tMarking [" + room_name + "] as [blocked]");
 					map[room_name].status = "blocked";
 				}
 			}
 		} else {
-			let exit = creep.pos.findClosestByPath(route[0].exit);
+			let next_step = creep.memory.route.shift();
+			let exit = creep.pos.findClosestByPath(next_step.exit);
+			let blocked_exits = [];
+			while (creep.moveTo(exit, { maxRooms: 1 }) == ERR_NO_PATH) {
+				blocked_exits.push([creep.room.name, next_step.room]);
+				let route = get_route(
+					creep.room.name,
+					target,
+					avoid_rooms,
+					blocked_exits,
+				);
+				if (route == ERR_NO_PATH) {
+					console.log("Marking [" + target + "] as [blocked]");
+					map[target].status = "blocked";
+					creep.memory.target = null;
+					creep.memory.route = null;
+					return null;
+				}
+				next_step = route.shift();
+				exit = creep.pos.findClosestByPath(next_step.exit);
+				creep.memory.route = route;
+			}
 			let direction;
-			switch (route[0].exit) {
+			switch (next_step.exit) {
 				case FIND_EXIT_TOP:
 					direction = "North";
 					break;
@@ -97,10 +121,9 @@ module.exports = {
 					"] to [" +
 					target +
 					"] via [" +
-					route[0].room +
+					next_step.room +
 					"]",
 			);
-			creep.moveTo(exit, { maxRooms: 1 });
 		}
 	},
 	map: function (home, creep) {
@@ -131,6 +154,7 @@ module.exports = {
 			map.status = "hostile";
 		}
 		creep.memory.target = null;
+		creep.memory.route = null;
 	},
 	return: function (home, creep) {
 		let avoid_rooms = this.avoid_rooms(home);
