@@ -84,8 +84,6 @@ module.exports = {
 				creep.memory.route = route;
 			}
 		}
-		console.log("Target: " + target);
-		console.log("Route: " + creep.memory.route);
 		if (target == null) {
 			console.log(
 				"Scout [" +
@@ -112,25 +110,12 @@ module.exports = {
 					creep.moveTo(exit, { maxRooms: 1 }),
 				) != -1
 			) {
-				if (blocked_exits.length > 6) {
-					console.log("Scout stuck");
-					return null;
-				}
 				blocked_exits.push([creep.room.name, next_step.room]);
-				console.log("Blocked exits: " + blocked_exits);
 				let route = get_route(
 					creep.room.name,
 					target,
 					avoid_rooms,
 					blocked_exits,
-				);
-				console.log("New route: " + route);
-				console.log(
-					"Going [" +
-						get_direction(route[0].exit) +
-						"] to [" +
-						route[0].room +
-						"]",
 				);
 				if (route == ERR_NO_PATH) {
 					console.log("Marking [" + target + "] as [blocked]");
@@ -199,8 +184,8 @@ module.exports = {
 	return: function (home, creep) {
 		let avoid_rooms = this.avoid_rooms(home);
 		creep.moveTo(memory.coord_to_pos(home.memory.core, home), {
-			routeCallback(room_name, from_room_name) {
-				if (avoid_list.indexOf(room_name) != -1) {
+			routeCallback(room_name) {
+				if (avoid_rooms.indexOf(room_name) != -1) {
 					// avoid this room
 					return Infinity;
 				}
