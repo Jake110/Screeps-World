@@ -39,6 +39,9 @@ module.exports = {
 		let map = home.memory.map;
 		let target = creep.memory.target;
 		let avoid_rooms = this.avoid_rooms(home);
+		if (creep.memory.route == []) {
+			target = null
+		}
 		if (target == null) {
 			let route = null;
 			let range = 100;
