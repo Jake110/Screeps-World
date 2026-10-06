@@ -28,14 +28,14 @@ function get_route(room_start, room_end, avoid_list, blocked = null) {
 				// avoid this room
 				return Infinity;
 			} else if (blocked != null) {
-				let deny = false
+				let deny = false;
 				blocked.forEach(function (block) {
 					if (room_name == block[1] && from_room_name == block[0]) {
-						deny = true
+						deny = true;
 					}
 				});
 				if (deny) {
-					return Infinity
+					return Infinity;
 				}
 			}
 			return 1;
@@ -162,9 +162,8 @@ module.exports = {
 		if (map == null) {
 			map = {
 				range: Game.map.findRoute(creep.room.name, home.name).length,
-				status: "pending"
-			}
-			home.memory.map[creep.room.name] = map
+				status: "pending",
+			};
 		}
 		let sources = creep.room.find(FIND_SOURCES);
 		if (sources.length > 0) {
@@ -193,6 +192,9 @@ module.exports = {
 		}
 		creep.memory.target = null;
 		creep.memory.route = null;
+		if (!home.memory.map[creep.room.name]) {
+			home.memory.map[creep.room.name] = map;
+		}
 	},
 	return: function (home, creep) {
 		let avoid_rooms = this.avoid_rooms(home);
