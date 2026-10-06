@@ -23,12 +23,12 @@ function get_direction(exit) {
 
 function get_route(room_start, room_end, avoid_list, blocked = null) {
 	return Game.map.findRoute(room_start, room_end, {
-		routeCallback(roomName, fromRoomName) {
-			if (avoid_list.indexOf(roomName) != -1) {
+		routeCallback(room_name, from_room_name) {
+			if (avoid_list.indexOf(room_name) != -1) {
 				// avoid this room
 				return Infinity;
 			} else if (blocked != null) {
-				if (roomName == blocked[1] && fromRoomName == blocked[0]) {
+				if (room_name == blocked[1] && from_room_name == blocked[0]) {
 					return Infinity;
 				}
 			}
@@ -184,8 +184,8 @@ module.exports = {
 	return: function (home, creep) {
 		let avoid_rooms = this.avoid_rooms(home);
 		creep.moveTo(memory.coord_to_pos(home.memory.core, home), {
-			routeCallback(roomName, fromRoomName) {
-				if (avoid_list.indexOf(roomName) != -1) {
+			routeCallback(room_name, from_room_name) {
+				if (avoid_list.indexOf(room_name) != -1) {
 					// avoid this room
 					return Infinity;
 				}

@@ -178,10 +178,10 @@ function place_road(
 	route = origin.findPathTo(target, {
 		ignoreCreeps: true,
 		ignoreRoads: true,
-		costCallback: function (roomName, costMatrix) {
+		costCallback: function (room_name, costMatrix) {
 			let _room = null;
 			try {
-				_room = Game.rooms[roomName];
+				_room = Game.rooms[room_name];
 			} catch (error) {}
 			if (_room != null) {
 				let adjust_matrix = function (pos) {
@@ -344,10 +344,10 @@ function can_get_to_core(room, pos) {
 	let pos_core = memory.coord_to_pos(room_memory.core, room);
 	let route = pos.findPathTo(pos_core, {
 		ignoreCreeps: true,
-		costCallback: function (roomName, costMatrix) {
+		costCallback: function (room_name, costMatrix) {
 			let _room = null;
 			try {
-				_room = Game.rooms[roomName];
+				_room = Game.rooms[room_name];
 			} catch (error) {}
 			if (_room != null) {
 				let adjust_matrix = function (pos) {
