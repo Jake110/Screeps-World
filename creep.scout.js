@@ -106,6 +106,10 @@ module.exports = {
 					creep.moveTo(exit, { maxRooms: 1 }),
 				) != -1
 			) {
+				if (blocked_exits.length > 6) {
+					console.log("Scout stuck");
+					return null;
+				}
 				blocked_exits.push([creep.room.name, next_step.room]);
 				console.log("Blocked exits: " + blocked_exits);
 				let route = get_route(
