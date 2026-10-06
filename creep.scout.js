@@ -38,9 +38,9 @@ module.exports = {
 	explore: function (home, creep) {
 		let map = home.memory.map;
 		let target = creep.memory.target;
-		let route;
 		let avoid_rooms = this.avoid_rooms(home);
 		if (target == null) {
+			let route = null;
 			let range = 100;
 			let pending_rooms = 0;
 			for (room_name in map) {
@@ -62,6 +62,8 @@ module.exports = {
 				creep.memory.route = route;
 			}
 		}
+		console.log("Target: " + target);
+		console.log("Route: " + creep.memory.route);
 		if (target == null) {
 			console.log(
 				"Scout [" +
