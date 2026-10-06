@@ -88,12 +88,14 @@ module.exports = {
 				) != -1
 			) {
 				blocked_exits.push([creep.room.name, next_step.room]);
+				console.log("Blocked exits: " + blocked_exits);
 				let route = get_route(
 					creep.room.name,
 					target,
 					avoid_rooms,
 					blocked_exits,
 				);
+				console.log("New route: " + route);
 				if (route == ERR_NO_PATH) {
 					console.log("Marking [" + target + "] as [blocked]");
 					map[target].status = "blocked";
