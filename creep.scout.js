@@ -75,7 +75,11 @@ module.exports = {
 				}
 			}
 		} else {
-			let next_step = creep.memory.route.shift();
+			let next_step = creep.memory.route[0];
+			if (next_step.room == creep.room.name) {
+				creep.memory.route.shift()
+				next_step = creep.memory.route[0]
+			}
 			let exit = creep.pos.findClosestByPath(next_step.exit);
 			let blocked_exits = [];
 			while (creep.moveTo(exit, { maxRooms: 1 }) == ERR_NO_PATH) {
@@ -93,7 +97,7 @@ module.exports = {
 					creep.memory.route = null;
 					return null;
 				}
-				next_step = route.shift();
+				next_step = route[0];
 				exit = creep.pos.findClosestByPath(next_step.exit);
 				creep.memory.route = route;
 			}
