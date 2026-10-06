@@ -39,9 +39,6 @@ module.exports = {
 		let map = home.memory.map;
 		let target = creep.memory.target;
 		let avoid_rooms = this.avoid_rooms(home);
-		if (creep.memory.route == null) {
-			target = null
-		}
 		if (target == null) {
 			let route = null;
 			let range = 100;
@@ -50,10 +47,7 @@ module.exports = {
 				if (map[room_name].status == "pending") {
 					pending_rooms++;
 					let path = get_route(creep.room, room_name, avoid_rooms);
-					if (
-						path.length < range &&
-						creep.pos.findClosestByPath(path[0].exit)
-					) {
+					if (path.length < range) {
 						target = room_name;
 						route = path;
 						range = path.length;
