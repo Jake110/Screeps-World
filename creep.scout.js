@@ -77,8 +77,8 @@ module.exports = {
 		} else {
 			let next_step = creep.memory.route[0];
 			if (next_step.room == creep.room.name) {
-				creep.memory.route.shift()
-				next_step = creep.memory.route[0]
+				creep.memory.route.shift();
+				next_step = creep.memory.route[0];
 			}
 			let exit = creep.pos.findClosestByPath(next_step.exit);
 			let blocked_exits = [];
@@ -101,6 +101,7 @@ module.exports = {
 				exit = creep.pos.findClosestByPath(next_step.exit);
 				creep.memory.route = route;
 			}
+			console.log(creep.moveTo(exit, { maxRooms: 1 }));
 			let direction;
 			switch (next_step.exit) {
 				case FIND_EXIT_TOP:
