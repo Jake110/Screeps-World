@@ -28,8 +28,14 @@ function get_route(room_start, room_end, avoid_list, blocked = null) {
 				// avoid this room
 				return Infinity;
 			} else if (blocked != null) {
-				if (room_name == blocked[1] && from_room_name == blocked[0]) {
-					return Infinity;
+				let deny = false
+				blocked.forEach(function (block) {
+					if (room_name == block[1] && from_room_name == block[0]) {
+						deny = true
+					}
+				});
+				if (deny) {
+					return Infinity
 				}
 			}
 			return 1;
