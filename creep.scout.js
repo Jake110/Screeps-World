@@ -2,6 +2,25 @@ const builder = require("structure.builder");
 const combat = require("utility.combat");
 const memory = require("utility.memory");
 
+function get_direction(exit) {
+	let direction;
+	switch (exit) {
+		case FIND_EXIT_TOP:
+			direction = "North";
+			break;
+		case FIND_EXIT_RIGHT:
+			direction = "East";
+			break;
+		case FIND_EXIT_BOTTOM:
+			direction = "South";
+			break;
+		case FIND_EXIT_LEFT:
+			direction = "West";
+			break;
+	}
+	return direction;
+}
+
 function get_route(room_start, room_end, avoid_list, blocked = null) {
 	return Game.map.findRoute(room_start, room_end, {
 		routeCallback(roomName, fromRoomName) {
@@ -96,6 +115,13 @@ module.exports = {
 					blocked_exits,
 				);
 				console.log("New route: " + route);
+				console.log(
+					"Going [" +
+						get_direction(route[0].exit) +
+						"] to [" +
+						route[0].room +
+						"]",
+				);
 				if (route == ERR_NO_PATH) {
 					console.log("Marking [" + target + "] as [blocked]");
 					map[target].status = "blocked";
@@ -107,21 +133,7 @@ module.exports = {
 				exit = creep.pos.findClosestByPath(next_step.exit);
 				creep.memory.route = route;
 			}
-			let direction;
-			switch (next_step.exit) {
-				case FIND_EXIT_TOP:
-					direction = "North";
-					break;
-				case FIND_EXIT_RIGHT:
-					direction = "East";
-					break;
-				case FIND_EXIT_BOTTOM:
-					direction = "South";
-					break;
-				case FIND_EXIT_LEFT:
-					direction = "West";
-					break;
-			}
+			let direction = get_direction(next_step.exit);
 			console.log(
 				"Scout [" +
 					creep.name +
