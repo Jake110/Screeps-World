@@ -10,9 +10,9 @@ module.exports = {
 		} else if (map.status == "pending") {
 			pending = true;
 		}
-		if (pending) {
+		if (pending && creep.hits == creep.hitsMax) {
 			scout.map(home, creep);
-		} else if (creep.ticksToLive < 500) {
+		} else if (creep.ticksToLive < 500 || creep.hits < creep.hitsMax) {
 			scout.return(home, creep);
 		} else {
 			scout.explore(home, creep);
