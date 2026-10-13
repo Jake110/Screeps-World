@@ -80,10 +80,10 @@ module.exports = {
 		if (range < 3) {
 			console.log("Adding [" + room_name + "] to Defend list");
 			console.log("\tDefend lit before: " + home.memory.defend);
-			console.log("\t\tType: " + typeof home.memory.defend);
+			console.log("\t\tlist? " + home.memory.defend instanceof Array);
 			home.memory.defend.push(room_name);
 			console.log("\tAfter: " + home.memory.defend);
-			console.log("\t\tType: " + typeof home.memory.defend);
+			console.log("\t\tlist? " + home.memory.defend instanceof Array);
 		}
 		if (range < 5) {
 			if (range > 1) {
