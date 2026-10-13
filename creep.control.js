@@ -176,7 +176,7 @@ module.exports = {
 		console.log("Room lists for [" + room.name + "]");
 		console.log("\tDefend: " + room.memory.defend);
 		console.log("\tExpand: " + room.memory.expand);
-		let room_list = room.memory.defend + room.memory.expand;
+		let room_list = room.memory.defend.concat(room.memory.expand);
 		console.log("\tRoom list: " + room_list);
 		/*room_list.forEach(function (room_name) {
 			console.log("Checking Room [" + room_name + "]");
