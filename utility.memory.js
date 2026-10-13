@@ -73,6 +73,7 @@ module.exports = {
 	build_map: function (map, home, room_name, range) {
 		if (!(room_name in map)) {
 			map[room_name] = {
+				last_checked: Game.time,
 				status: "pending",
 			};
 		}
@@ -150,7 +151,7 @@ module.exports = {
 			if (!room.memory.core) {
 				room.memory.core = pos_to_coord(spawns[0].pos);
 			}
-			if (!room.memory.defend || room.memory.defend instanceof String) {
+			if (!room.memory.defend || true) {
 				room.memory.defend = [];
 				room.memory.expand = [];
 				this.build_map(Memory.map, room, room.name, 0);
