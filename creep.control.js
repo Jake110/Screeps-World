@@ -173,6 +173,9 @@ module.exports = {
 		}).length;
 		let hostile = 0;
 		let unexplored = 0;
+		console.log("Room lists for [" + room.name + "]");
+		console.log("\tDefend: " + room.memory.defend);
+		console.log("\tExpand: " + room.memory.expand);
 		for (room_name in room.memory.defend + room.memory.expand) {
 			console.log("Checking Room [" + room_name + "]");
 			let map = Memory.map[room_name];
