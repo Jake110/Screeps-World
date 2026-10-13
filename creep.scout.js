@@ -60,11 +60,13 @@ module.exports = {
 				"\tLooking for rooms with a status of [" + room_status + "]",
 			);
 			for (room_name in map) {
+				console.log("\t\tChecking Room [" + room_name + "]");
 				if (
 					map[room_name].status == room_status &&
 					room_list.indexOf(room_name) != -1
 				) {
 					let path = get_route(creep.room, room_name, avoid_rooms);
+					console.log("\t\t\tPath length: " + path.length);
 					if (path.length < range) {
 						target = room_name;
 						route = path;
