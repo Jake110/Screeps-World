@@ -126,14 +126,14 @@ module.exports = {
 			if (sources.length > 0) {
 				map.sources = [];
 				sources.forEach(function (source) {
-					map.sources.push(this.pos_to_coord(source.pos));
+					map.sources.push(pos_to_coord(source.pos));
 				});
 			}
 			let minerals = creep.room.find(FIND_MINERALS);
 			if (minerals.length > 0) {
 				map.mineral = {
 					type: minerals[0].mineralType,
-					coord: this.pos_to_coord(minerals[0].pos),
+					coord: pos_to_coord(minerals[0].pos),
 				};
 			}
 		}
