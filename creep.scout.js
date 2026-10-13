@@ -43,6 +43,7 @@ function get_route(room_start, room_end, avoid_list, blocked = null) {
 
 module.exports = {
 	explore: function (home, creep) {
+		console.log("["+creep.name+"] exploring...")
 		let map = Memory.map;
 		let target = creep.memory.target;
 		let avoid_rooms = this.get_enemy_rooms();
@@ -55,6 +56,7 @@ module.exports = {
 				room_status = "hostile";
 				room_list = home.memory.defend;
 			}
+			console.log("\tLooking for rooms with a status of ["+room_status+"]")
 			for (room_name in map) {
 				if (
 					map[room_name].status == room_status &&
@@ -73,6 +75,7 @@ module.exports = {
 				creep.memory.route = route;
 			}
 		}
+		console.log("\tTarget: "+creep.memory.target)
 		if (creep.memory.target == null) {
 			let log =
 				"Scout [" +
