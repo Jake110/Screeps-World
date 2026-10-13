@@ -91,19 +91,20 @@ module.exports = {
 		}
 	},
 	map_room: function (home, creep) {
-		if (
-			[0, 49].indexOf(creep.pos.x) == -1 &&
-			[0, 49].indexOf(creep.pos.y) == -1 &&
-			creep.memory.role
-		) {
-			// Only run mapping when at an exit
-			return null;
-		}
 		let map = home.memory.map[creep.room.name];
 		if (map == null) {
 			map = {
 				status: "pending",
 			};
+		}
+		if (
+			[0, 49].indexOf(creep.pos.x) == -1 &&
+			[0, 49].indexOf(creep.pos.y) == -1 &&
+			creep.memory.role &&
+			map.status != "pending"
+		) {
+			// Only run mapping when at an exit
+			return null;
 		}
 		if (map.status == "pending") {
 			if (creep.memory.role) {
