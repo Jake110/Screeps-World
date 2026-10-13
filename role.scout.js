@@ -1,3 +1,4 @@
+const memory = require("utility.memory");
 const scout = require("creep.scout");
 
 module.exports = {
