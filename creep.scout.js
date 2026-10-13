@@ -51,7 +51,7 @@ module.exports = {
 			let route = null;
 			let range = 100;
 			let room_status = "pending";
-			let room_list = home.memory.defend + home.memory.expand;
+			let room_list = home.memory.defend.concat(home.memory.expand);
 			if (creep.memory.role == "guard") {
 				room_status = "hostile";
 				room_list = home.memory.defend;
@@ -61,6 +61,10 @@ module.exports = {
 			);
 			for (room_name in map) {
 				console.log("\t\tChecking Room [" + room_name + "]");
+				console.log("\t\t\tStatus: " + map[room_name].status);
+				console.log(
+					"\t\t\tIn room list index: " + room_list.indexOf(room_name),
+				);
 				if (
 					map[room_name].status == room_status &&
 					room_list.indexOf(room_name) != -1
@@ -92,7 +96,9 @@ module.exports = {
 			console.log(log);
 			creep.memory.recycle = home.memory.core;
 			if (creep.memory.role == "scout") {
-				for (room_name in home.memory.defend + home.memory.expand) {
+				for (room_name in home.memory.defend.concat(
+					home.memory.expand,
+				)) {
 					if (map[room_name].status == "pending") {
 						console.log(
 							"\tMarking [" + room_name + "] as [blocked]",
