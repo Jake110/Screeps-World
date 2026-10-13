@@ -146,28 +146,27 @@ module.exports = {
 	pos_to_coord: pos_to_coord,
 	set_up: function (room) {
 		let spawns = room.find(FIND_MY_SPAWNS);
-		let room_memory = room.memory;
 		if (spawns.length > 0) {
-			if (!room_memory.core) {
-				room_memory.core = pos_to_coord(spawns[0].pos);
+			if (!room.memory.core) {
+				room.memory.core = pos_to_coord(spawns[0].pos);
 			}
-			if (!room_memory.defend) {
-				room_memory.defend = [];
-				room_memory.expand = [];
+			if (!room.memory.defend || room.memory.defend instanceof String) {
+				room.memory.defend = [];
+				room.memory.expand = [];
 				this.build_map(Memory.map, room, room.name, 0);
 			}
 			this.tracker_names.forEach(function (name) {
-				if (!room_memory[name]) {
+				if (!room.memory[name]) {
 					set_up_list(room, [name]);
 				}
 			});
 			spawns.forEach(function (spawn) {
 				let coord = pos_to_coord(spawn.pos);
-				if (!room_memory.spawns.includes(coord)) {
-					room_memory.spawns.push(coord);
+				if (!room.memory.spawns.includes(coord)) {
+					room.memory.spawns.push(coord);
 				}
 			});
-			if (!room_memory.source_connections) {
+			if (!room.memory.source_connections) {
 				["roads", "tunnels"].forEach(function (mode) {
 					set_up_list(room, ["source_connections", mode]);
 				});
