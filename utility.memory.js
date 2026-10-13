@@ -165,6 +165,8 @@ module.exports = {
 				room.memory.core = pos_to_coord(spawns[0].pos);
 			}
 			if (!room.memory.defend || true) {
+				delete room.memory.defend
+				delete room.memory.expand
 				this.build_map(Memory.map, room, room.name, 0);
 			}
 			this.tracker_names.forEach(function (name) {
