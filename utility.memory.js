@@ -1,3 +1,5 @@
+const combat = require("utility.combat");
+
 let structure_names = [
 	"containers",
 	"extensions",
@@ -68,18 +70,77 @@ module.exports = {
 		}
 	},
 	coord_to_pos: coord_to_pos,
-	map: function (map, room_name, range) {
+	build_map: function (map, home, room_name, range) {
 		if (!(room_name in map)) {
 			map[room_name] = {
-				range: range,
 				status: "pending",
 			};
 		}
+		if (range < 3) {
+			home.memory.defend.push(room_name);
+		}
 		if (range < 5) {
+			if (range > 1) {
+				home.memory.expand.push(room_name);
+			}
 			let exits = Game.map.describeExits(room_name);
 			for (key in exits) {
-				this.map(map, exits[key], range + 1);
+				this.build_map(map, home, exits[key], range + 1);
 			}
+		}
+	},
+	map_room: function (home, creep) {
+		if (
+			[0, 49].indexOf(creep.pos.x) == -1 &&
+			[0, 49].indexOf(creep.pos.y) == -1 &&
+			creep.memory.role
+		) {
+			// Only run mapping when at an exit
+			return null;
+		}
+		let map = home.memory.map[creep.room.name];
+		if (map == null) {
+			map = {
+				status: "pending",
+			};
+		}
+		if (map.status == "pending") {
+			if (creep.memory.role) {
+				creep.memory.target = null;
+				creep.memory.route = null;
+			}
+			let sources = creep.room.find(FIND_SOURCES);
+			if (sources.length > 0) {
+				map.sources = [];
+				sources.forEach(function (source) {
+					map.sources.push(memory.pos_to_coord(source.pos));
+				});
+			}
+			let minerals = creep.room.find(FIND_MINERALS);
+			if (minerals.length > 0) {
+				map.mineral = {
+					type: minerals[0].mineralType,
+					coord: memory.pos_to_coord(minerals[0].pos),
+				};
+			}
+		}
+		let controller = creep.room.controller;
+		let owned = false;
+		if (controller) {
+			if (controller.level > 0) {
+				owned = true;
+			}
+		}
+		if (owned) {
+			map.status = "owned";
+		} else if (combat.safe_check(creep, 50)) {
+			map.status = "explored";
+		} else {
+			map.status = "hostile";
+		}
+		map.last_checked = Game.time;
+		if (!home.memory.map[creep.room.name]) {
+			home.memory.map[creep.room.name] = map;
 		}
 	},
 	pos_to_coord: pos_to_coord,
@@ -90,9 +151,10 @@ module.exports = {
 			if (!room_memory.core) {
 				room_memory.core = pos_to_coord(spawns[0].pos);
 			}
-			if (!room_memory.map) {
-				room_memory.map = {};
-				this.map(room.memory.map, room.name, 0);
+			if (!room_memory.defend) {
+				room_memory.defend = [];
+				room_memory.expand = [];
+				this.build_map(Memory.map, room, room.name, 0);
 			}
 			this.tracker_names.forEach(function (name) {
 				if (!room_memory[name]) {

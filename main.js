@@ -10,6 +10,11 @@ module.exports.loop = function () {
 	// Memory Cleanup
 	memory.clear();
 
+	// Setup Map
+	if (!Memory.map) {
+		Memory.map = {}
+	}
+
 	// Creep Control
 	creep.main();
 
@@ -67,7 +72,10 @@ module.exports.loop = function () {
 		});
 
 		// Active Defence Check
-		creep.active_defence_check(room);
+		//creep.active_defence_check(room);
+
+		// Spawn Defence Creeps
+		
 
 		// Construction
 		builder.place_towers(room);

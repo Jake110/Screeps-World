@@ -1,7 +1,7 @@
 const combat = require("utility.combat");
 const harvester = require("creep.harvest");
 const hauler = require("creep.hauler");
-const role_grunt = require("role.grunt");
+const role_guard = require("role.guard");
 const role_harvester = require("role.harvester");
 const role_hauler = require("role.hauler");
 const role_medic = require("role.medic");
@@ -10,12 +10,12 @@ const role_scout = require("role.scout");
 const role_worker = require("role.worker");
 
 module.exports = {
-	active_defence_check: function (room) {
+	/*active_defence_check: function (room) {
 		let hostiles = room.find(FIND_HOSTILE_CREEPS).length;
 		if (hostiles > 0) {
-			let grunts = room.find(FIND_MY_CREEPS, {
+			let guards = room.find(FIND_MY_CREEPS, {
 				filter: function (creep) {
-					return creep.memory.role == "grunt";
+					return creep.memory.role == "guard";
 				},
 			});
 			let medics = room.find(FIND_MY_CREEPS, {
@@ -23,13 +23,13 @@ module.exports = {
 					return creep.memory.role == "medic";
 				},
 			}).length;
-			if (grunts.length == hostiles * 4 && medics == hostiles * 2) {
-				grunts.forEach(function (grunt) {
-					grunt.memory.active_defence = true;
+			if (guards.length == hostiles * 4 && medics == hostiles * 2) {
+				guards.forEach(function (guard) {
+					guard.memory.active_defence = true;
 				});
 			}
 		}
-	},
+	},*/
 	body: function (role, energy) {
 		if (role == "quartermaster") {
 			role = "hauler";
@@ -38,18 +38,21 @@ module.exports = {
 		let cost = 0;
 		let set_cost;
 		switch (role) {
-			case "grunt":
+			case "guard":
 				set_cost = 60;
 				if (energy >= 130) {
+					tough = [];
 					parts = [ATTACK, MOVE];
 					cost = 130;
 					while (energy - cost >= set_cost) {
-						parts = [TOUGH].concat(parts, [MOVE]);
+						tough.push(TOUGH);
+						parts = parts.concat([ATTACK, MOVE]);
 						cost += set_cost;
-						if (parts.length == 50) {
+						if (tough.length == 16) {
 							break;
 						}
 					}
+					parts = tough.concat(parts);
 				}
 				break;
 			case "harvester":
@@ -139,8 +142,8 @@ module.exports = {
 				!creep.spawning
 			) {
 				switch (creep_memory.role) {
-					case "grunt":
-						role_grunt.run(creep);
+					case "guard":
+						role_guard.run(creep);
 						break;
 					case "harvester":
 						role_harvester.run(creep);
@@ -188,17 +191,24 @@ module.exports = {
 		let storage_count = room.find(FIND_MY_STRUCTURES, {
 			filter: { structureType: STRUCTURE_STORAGE },
 		}).length;
-		let hostiles = 0; //room.find(FIND_HOSTILE_CREEPS).length;
+		let hostile = 0;
 		let unexplored = 0;
-		for (room_name in room.memory.map) {
-			if (room.memory.map[room_name].status == "pending") {
+		for (room_name in room.memory.defend + room.memory.expand) {
+			let map = Memory.map[room_name]
+			if (map.status == "pending") {
 				unexplored++;
+			}
+			if (
+				room.memory.defend.indexOf(room_name) != -1 &&
+				map.status == "hostile"
+			) {
+				hostile++;
 			}
 		}
 		return [
 			{
-				name: "grunt",
-				max: hostiles * 4,
+				name: "guard",
+				max: hostile > 0 ? 1 : 0,
 			},
 			{
 				name: "harvester",
@@ -216,7 +226,7 @@ module.exports = {
 			},
 			{
 				name: "medic",
-				max: hostiles * 2,
+				max: hostile > 0 ? 1 : 0,
 			},
 			{
 				name: "quartermaster",

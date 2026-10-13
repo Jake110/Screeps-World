@@ -50,6 +50,11 @@ module.exports = {
 			.coord_to_pos(room.memory.core, room)
 			.lookFor(LOOK_STRUCTURES)[0];
 
+		// Ensure the room is mapped
+		if (Memory.map[room.name].status == "pending") {
+			memory.map_room(room, core_spawn);
+		}
+
 		// Spawn Creeps
 		let used_spawners = [];
 		if (Game.time % 7 == 0) {
@@ -155,15 +160,15 @@ module.exports = {
 						renew: false,
 						role: role.name,
 					};
-					if (["grunt", "medic"].includes(role.name)) {
+					if (["guard", "medic"].includes(role.name)) {
 						creep_memory.stand_down_in = combat.stand_down_in;
-						if (role.name == "grunt") {
+						if (role.name == "guard") {
 							creep_memory.active_defence = false;
 						}
 					} else {
 						creep_memory.full = false;
 					}
-					let result = spawn.spawnCreep(creep.parts, new_name, {
+					spawn.spawnCreep(creep.parts, new_name, {
 						memory: creep_memory,
 					});
 					used_spawners.push(spawn.id);

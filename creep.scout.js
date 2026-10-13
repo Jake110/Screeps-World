@@ -1,5 +1,3 @@
-const builder = require("structure.builder");
-const combat = require("utility.combat");
 const memory = require("utility.memory");
 
 function get_direction(exit) {
@@ -44,33 +42,24 @@ function get_route(room_start, room_end, avoid_list, blocked = null) {
 }
 
 module.exports = {
-	avoid_rooms: function (home) {
-		let map = home.memory.map;
-		let avoid_rooms = [];
-		for (room_name in map) {
-			if (map[room_name].status == "owned") {
-				room = Game.rooms[room_name];
-				if (room != null) {
-					if (room.controller.my) {
-						continue;
-					}
-				}
-				avoid_rooms.push(room_name);
-			}
-		}
-		return avoid_rooms;
-	},
 	explore: function (home, creep) {
-		let map = home.memory.map;
+		let map = Memory.map;
 		let target = creep.memory.target;
-		let avoid_rooms = this.avoid_rooms(home);
+		let avoid_rooms = this.get_enemy_rooms();
 		if (target == null) {
 			let route = null;
 			let range = 100;
-			let pending_rooms = 0;
+			let room_status = "pending";
+			let room_list = home.memory.defend + home.memory.expand;
+			if (creep.memory.role == "guard") {
+				room_status = "hostile";
+				room_list = home.memory.defend;
+			}
 			for (room_name in map) {
-				if (map[room_name].status == "pending") {
-					pending_rooms++;
+				if (
+					map[room_name].status == room_status &&
+					room_list.indexOf(room_name) != -1
+				) {
 					let path = get_route(creep.room, room_name, avoid_rooms);
 					if (path.length < range) {
 						target = room_name;
@@ -84,19 +73,37 @@ module.exports = {
 				creep.memory.route = route;
 			}
 		}
-		if (target == null) {
-			console.log(
+		if (creep.memory.target == null) {
+			let log =
 				"Scout [" +
-					creep.name +
-					"] cannot reach any more unexplored rooms. Recycling...",
-			);
+				creep.name +
+				"] cannot reach any more unexplored rooms. Recycling...";
+			if (creep.memory.role == "guard") {
+				log = "Guard [" + creep.name + "] standing down. Recycling...";
+			}
+			console.log(log);
 			creep.memory.recycle = home.memory.core;
-			for (room_name in map) {
-				if (map[room_name].status == "pending") {
-					console.log("\tMarking [" + room_name + "] as [blocked]");
-					map[room_name].status = "blocked";
+			if (creep.memory.role == "scout") {
+				for (room_name in home.memory.defend + home.memory.expand) {
+					if (map[room_name].status == "pending") {
+						console.log(
+							"\tMarking [" + room_name + "] as [blocked]",
+						);
+						map[room_name].status = "blocked";
+					}
 				}
 			}
+		} else if (
+			creep.memory.role == "guard" &&
+			length(
+				creep.pos.findInRange(FIND_MY_CREEPS, 1, {
+					filter: function (_creep) {
+						return _creep.memory.role == "medic";
+					},
+				}),
+			) == 0
+		) {
+			console.log("Guard [" + creep.name + "] awaiting arrival of Medic");
 		} else {
 			let next_step = creep.memory.route[0];
 			if (next_step.room == creep.room.name) {
@@ -130,7 +137,7 @@ module.exports = {
 			}
 			let direction = get_direction(next_step.exit);
 			console.log(
-				"Scout [" +
+				"Creep [" +
 					creep.name +
 					"] heading [" +
 					direction +
@@ -142,47 +149,24 @@ module.exports = {
 			);
 		}
 	},
-	map: function (home, creep) {
-		let map = home.memory.map[creep.room.name];
-		if (map == null) {
-			map = {
-				range: Game.map.findRoute(creep.room.name, home.name).length,
-				status: "pending",
-			};
-		}
-		let sources = creep.room.find(FIND_SOURCES);
-		if (sources.length > 0) {
-			map.sources = [];
-			sources.forEach(function (source) {
-				map.sources.push(memory.pos_to_coord(source.pos));
-			});
-		}
-		let minerals = creep.room.find(FIND_MINERALS);
-		if (minerals.length > 0) {
-			map.mineral = minerals[0].mineralType;
-		}
-		let controller = creep.room.controller;
-		let owned = false;
-		if (controller) {
-			if (controller.level > 0) {
-				owned = true;
+	get_enemy_rooms: function () {
+		let map = Memory.map;
+		let avoid_rooms = [];
+		for (room_name in map) {
+			if (map[room_name].status == "owned") {
+				room = Game.rooms[room_name];
+				if (room != null) {
+					if (room.controller.my) {
+						continue;
+					}
+				}
+				avoid_rooms.push(room_name);
 			}
 		}
-		if (owned) {
-			map.status = "owned";
-		} else if (combat.safe_check(creep, 50)) {
-			map.status = "explored";
-		} else {
-			map.status = "hostile";
-		}
-		creep.memory.target = null;
-		creep.memory.route = null;
-		if (!home.memory.map[creep.room.name]) {
-			home.memory.map[creep.room.name] = map;
-		}
+		return avoid_rooms;
 	},
 	return: function (home, creep) {
-		let avoid_rooms = this.avoid_rooms(home);
+		let avoid_rooms = this.get_enemy_rooms();
 		creep.moveTo(memory.coord_to_pos(home.memory.core, home), {
 			routeCallback(room_name) {
 				if (avoid_rooms.indexOf(room_name) != -1) {

@@ -1,42 +1,46 @@
-const combat = require("utility.combat");
+const scout = require("creep.scout");
 
 module.exports = {
 	run: function (creep) {
-		let creep_memory = creep.memory;
-		let target = combat.heal_target(creep);
-		if (target) {
-			creep_memory.stand_down_in = combat.stand_down_in;
-			if (creep.heal(target) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(target, {
-					visualizePathStyle: { stroke: "#008000" },
-				});
+		let guard_name = creep.memory.guard;
+		let guard;
+		if (guard_name) {
+			guard = Game.creeps[guard_name];
+		} else {
+			let guards = [];
+			let guard_names = [];
+			let medics = [];
+			for (let name in Game.creeps) {
+				let _creep = Game.creeps[name];
+				if (_creep.memory.role == "guard") {
+					guards.push(_creep);
+					guard_names.push(_creep.name);
+				} else if (_creep.memory.role == "medic") {
+					medics.push(_creep);
+				}
+			}
+			medics.forEach(function (medic) {
+				let index = guard_names.indexOf(medic.guard);
+				if (index == -1) {
+					guards.splice(index, 1);
+					guard_names.splice(index, 1);
+				}
+			});
+			guard = creep.pos.findClosestByPath(guards);
+		}
+		if (guard) {
+			let target = guard;
+			if (creep.hits < creep.hitsMax && guard.hits == guard.hitsMax) {
+				target = creep;
+			}
+			if (creep.pos.findInRange(target, 1)) {
+				creep.heal(target);
+			} else {
 				creep.rangedHeal(target);
 			}
-		} else if (creep_memory.stand_down_in == 0) {
-			let spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
-			if (spawn.recycleCreep(creep) == ERR_NOT_IN_RANGE) {
-				creep.moveTo(spawn, {
-					visualizePathStyle: { stroke: "#000000" },
-				});
-			}
+			creep.moveTo(guard);
 		} else {
-			let grunt = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-				filter: function (_creep) {
-					return _creep.memory.role == "grunt";
-				},
-			});
-			if (grunt) {
-				creep.moveTo(grunt, {
-					visualizePathStyle: { stroke: "#008000" },
-					range: 1,
-				});
-			} else {
-				creep_memory.stand_down_in--;
-				creep.moveTo(creep.room.controller, {
-					visualizePathStyle: { stroke: "#008000" },
-					range: 1,
-				});
-			}
+			scout.return(Game.rooms[(creep.memory.home, creep)]);
 		}
 	},
 };

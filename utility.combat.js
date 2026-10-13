@@ -112,7 +112,7 @@ module.exports = {
 				distance = new_target.distance;
 			}
 		});
-		if (!target && creep.memory.active_defence) {
+		if (!target) {
 			target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
 			if (!target) {
 				target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
@@ -121,6 +121,23 @@ module.exports = {
 			}
 			if (!target) {
 				target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES);
+			}
+			if (!target) {
+				target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+					filter: function (structure) {
+						if (structure.structureType != STRUCTURE_WALL) {
+							return false;
+						}
+						if (creep.room.memory.walls) {
+							return (
+								creep.room.memory.walls.indexOf(
+									memory.pos_to_coord(structure.pos),
+								) == -1
+							);
+						}
+						return true;
+					},
+				});
 			}
 		}
 		return target;
