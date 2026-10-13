@@ -173,15 +173,9 @@ module.exports = {
 		}).length;
 		let hostile = 0;
 		let unexplored = 0;
-		console.log("Room lists for [" + room.name + "]");
-		console.log("\tDefend: " + room.memory.defend);
-		console.log("\tExpand: " + room.memory.expand);
 		let room_list = room.memory.defend.concat(room.memory.expand);
-		console.log("\tRoom list: " + room_list);
 		room_list.forEach(function (room_name) {
-			console.log("Checking Room [" + room_name + "]");
 			let map = Memory.map[room_name];
-			console.log("\tMap: " + map);
 			if (map) {
 				if (map.status == "pending") {
 					unexplored++;
@@ -194,7 +188,6 @@ module.exports = {
 				}
 			}
 		});
-		console.log("Unexplored rooms: " + unexplored);
 
 		return [
 			{

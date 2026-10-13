@@ -151,7 +151,7 @@ module.exports = {
 			if (!room.memory.core) {
 				room.memory.core = pos_to_coord(spawns[0].pos);
 			}
-			if (!room.memory.defend || true) {
+			if (!room.memory.defend) {
 				room.memory.defend = [];
 				room.memory.expand = [];
 				this.build_map(Memory.map, room, room.name, 0);
