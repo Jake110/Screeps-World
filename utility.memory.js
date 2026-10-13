@@ -97,6 +97,7 @@ module.exports = {
 				status: "pending",
 			};
 		}
+		console.log("Mapping room: " + creep.room.name);
 		if (
 			[0, 49].indexOf(creep.pos.x) == -1 &&
 			[0, 49].indexOf(creep.pos.y) == -1 &&
@@ -104,6 +105,9 @@ module.exports = {
 			map.status != "pending"
 		) {
 			// Only run mapping when at an exit
+			console.log("\tSkipping");
+			console.log("\tPos: " + creep.pos);
+			console.log("\tRoom status: " + map.status);
 			return null;
 		}
 		if (map.status == "pending") {
