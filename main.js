@@ -11,7 +11,7 @@ module.exports.loop = function () {
 	memory.clear();
 
 	// Setup Map
-	if (!Memory.map) {
+	if (!Memory.map || true) {
 		Memory.map = {}
 	}
 
