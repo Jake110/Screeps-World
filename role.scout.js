@@ -4,7 +4,7 @@ const scout = require("creep.scout");
 module.exports = {
 	run: function (creep) {
 		let home = Game.rooms[creep.memory.home];
-		memory.map_room(home, creep);
+		memory.map_room(creep);
 		console.log("Scout [" + creep.name + "]");
 		console.log("\tTicks to live: " + creep.ticksToLive);
 		console.log("\tHealth: " + creep.hits + "/" + creep.hitsMax);

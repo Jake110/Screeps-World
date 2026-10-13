@@ -52,7 +52,7 @@ module.exports = {
 
 		// Ensure the room is mapped
 		if (Memory.map[room.name].status == "pending") {
-			memory.map_room(room, core_spawn);
+			memory.map_room(core_spawn);
 		}
 
 		// Spawn Creeps

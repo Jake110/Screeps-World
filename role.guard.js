@@ -5,7 +5,7 @@ const scout = require("creep.scout");
 module.exports = {
 	run: function (creep) {
 		let home = Game.rooms[creep.memory.home];
-		memory.map_room(home, creep);
+		memory.map_room(creep);
 		let target = combat.melee_target(creep);
 		if (target) {
 			creep.attack(target);

@@ -90,7 +90,7 @@ module.exports = {
 			}
 		}
 	},
-	map_room: function (home, creep) {
+	map_room: function (creep) {
 		let map = Memory.map[creep.room.name];
 		if (map == null) {
 			map = {
@@ -126,14 +126,14 @@ module.exports = {
 			if (sources.length > 0) {
 				map.sources = [];
 				sources.forEach(function (source) {
-					map.sources.push(memory.pos_to_coord(source.pos));
+					map.sources.push(this.pos_to_coord(source.pos));
 				});
 			}
 			let minerals = creep.room.find(FIND_MINERALS);
 			if (minerals.length > 0) {
 				map.mineral = {
 					type: minerals[0].mineralType,
-					coord: memory.pos_to_coord(minerals[0].pos),
+					coord: this.pos_to_coord(minerals[0].pos),
 				};
 			}
 		}
