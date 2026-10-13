@@ -193,9 +193,9 @@ module.exports = {
 		}).length;
 		let hostile = 0;
 		let unexplored = 0;
-		if (Memory.map != {}) {
-			for (room_name in room.memory.defend + room.memory.expand) {
-				let map = Memory.map[room_name]
+		for (room_name in room.memory.defend + room.memory.expand) {
+			let map = Memory.map[room_name];
+			if (map) {
 				if (map.status == "pending") {
 					unexplored++;
 				}
@@ -207,6 +207,7 @@ module.exports = {
 				}
 			}
 		}
+
 		return [
 			{
 				name: "guard",
