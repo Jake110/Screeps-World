@@ -91,7 +91,7 @@ module.exports = {
 		}
 	},
 	map_room: function (home, creep) {
-		let map = home.memory.map[creep.room.name];
+		let map = Memory.map[creep.room.name];
 		if (map == null) {
 			map = {
 				status: "pending",
@@ -152,8 +152,8 @@ module.exports = {
 			map.status = "hostile";
 		}
 		map.last_checked = Game.time;
-		if (!home.memory.map[creep.room.name]) {
-			home.memory.map[creep.room.name] = map;
+		if (!Memory.map[creep.room.name]) {
+			Memory.map[creep.room.name] = map;
 		}
 	},
 	pos_to_coord: pos_to_coord,
