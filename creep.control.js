@@ -178,7 +178,7 @@ module.exports = {
 		console.log("\tExpand: " + room.memory.expand);
 		let room_list = room.memory.defend.concat(room.memory.expand);
 		console.log("\tRoom list: " + room_list);
-		/*room_list.forEach(function (room_name) {
+		room_list.forEach(function (room_name) {
 			console.log("Checking Room [" + room_name + "]");
 			let map = Memory.map[room_name];
 			console.log("\tMap: " + map);
@@ -193,7 +193,7 @@ module.exports = {
 					hostile++;
 				}
 			}
-		});*/
+		});
 		console.log("Unexplored rooms: " + unexplored);
 
 		return [

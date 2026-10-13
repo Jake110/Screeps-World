@@ -78,12 +78,7 @@ module.exports = {
 			};
 		}
 		if (range < 3 && home.memory.defend.indexOf(room_name) == -1) {
-			console.log("Adding [" + room_name + "] to Defend list");
-			console.log("\tDefend lit before: " + home.memory.defend);
-			console.log("\t\tlist? " + home.memory.defend instanceof Array);
 			home.memory.defend.push(room_name);
-			console.log("\tAfter: " + home.memory.defend);
-			console.log("\t\tlist? " + home.memory.defend instanceof Array);
 		}
 		if (range < 5) {
 			if (range > 1 && home.memory.expand.indexOf(room_name) == -1) {
