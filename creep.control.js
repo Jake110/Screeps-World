@@ -193,16 +193,18 @@ module.exports = {
 		}).length;
 		let hostile = 0;
 		let unexplored = 0;
-		for (room_name in room.memory.defend + room.memory.expand) {
-			let map = Memory.map[room_name]
-			if (map.status == "pending") {
-				unexplored++;
-			}
-			if (
-				room.memory.defend.indexOf(room_name) != -1 &&
-				map.status == "hostile"
-			) {
-				hostile++;
+		if (Memory.map != {}) {
+			for (room_name in room.memory.defend + room.memory.expand) {
+				let map = Memory.map[room_name]
+				if (map.status == "pending") {
+					unexplored++;
+				}
+				if (
+					room.memory.defend.indexOf(room_name) != -1 &&
+					map.status == "hostile"
+				) {
+					hostile++;
+				}
 			}
 		}
 		return [
