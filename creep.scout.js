@@ -81,7 +81,7 @@ module.exports = {
 		}
 		console.log("\tTarget: " + creep.memory.target);
 		console.log("\tRoute length: " + creep.memory.route.length);
-		console.log("tStatus: " + map[creep.memory.target].status);
+		console.log("\tStatus: " + map[creep.memory.target].status);
 		console.log(
 			"\tIn room list index: " +
 				home.memory.defend
