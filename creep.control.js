@@ -187,6 +187,7 @@ module.exports = {
 				}
 			}
 		}
+		console.log("Unexplored rooms: " + unexplored);
 
 		return [
 			{
