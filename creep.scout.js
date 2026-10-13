@@ -61,10 +61,6 @@ module.exports = {
 			);
 			for (room_name in map) {
 				console.log("\t\tChecking Room [" + room_name + "]");
-				console.log("\t\t\tStatus: " + map[room_name].status);
-				console.log(
-					"\t\t\tIn room list index: " + room_list.indexOf(room_name),
-				);
 				if (
 					map[room_name].status == room_status &&
 					room_list.indexOf(room_name) != -1
@@ -84,7 +80,11 @@ module.exports = {
 			}
 		}
 		console.log("\tTarget: " + creep.memory.target);
-		console.log("\tRoute: " + creep.memory.route);
+		console.log("\tRoute length: " + creep.memory.route.length);
+		console.log("tStatus: " + map[creep.memory.target].status);
+		console.log(
+			"\tIn room list index: " + room_list.indexOf(creep.memory.target),
+		);
 		if (creep.memory.target == null) {
 			let log =
 				"Scout [" +
