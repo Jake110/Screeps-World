@@ -10,26 +10,6 @@ const role_scout = require("role.scout");
 const role_worker = require("role.worker");
 
 module.exports = {
-	/*active_defence_check: function (room) {
-		let hostiles = room.find(FIND_HOSTILE_CREEPS).length;
-		if (hostiles > 0) {
-			let guards = room.find(FIND_MY_CREEPS, {
-				filter: function (creep) {
-					return creep.memory.role == "guard";
-				},
-			});
-			let medics = room.find(FIND_MY_CREEPS, {
-				filter: function (creep) {
-					return creep.memory.role == "medic";
-				},
-			}).length;
-			if (guards.length == hostiles * 4 && medics == hostiles * 2) {
-				guards.forEach(function (guard) {
-					guard.memory.active_defence = true;
-				});
-			}
-		}
-	},*/
 	body: function (role, energy) {
 		if (role == "quartermaster") {
 			role = "hauler";
