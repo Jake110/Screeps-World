@@ -108,6 +108,13 @@ module.exports = {
 			console.log("\tSkipping");
 			console.log("\tPos: " + creep.pos);
 			console.log("\tRoom status: " + map.status);
+			if (
+				creep.memory.target == creep.room.name &&
+				creep.memory.role == "scout"
+			) {
+				creep.memory.target = null;
+				creep.memory.route = null;
+			}
 			return null;
 		}
 		if (map.status == "pending") {
