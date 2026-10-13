@@ -81,21 +81,13 @@ module.exports = {
 			console.log("Adding [" + room_name + "] to Defend list");
 			console.log("\tDefend lit before: " + home.memory.defend);
 			console.log("\t\tlist? " + home.memory.defend instanceof Array);
-			if (home.memory.defend) {
-				home.memory.defend.push(room_name);
-			} else {
-				home.memory.defend = [room_name];
-			}
+			home.memory.defend.push(room_name);
 			console.log("\tAfter: " + home.memory.defend);
 			console.log("\t\tlist? " + home.memory.defend instanceof Array);
 		}
 		if (range < 5) {
 			if (range > 1 && home.memory.expand.indexOf(room_name) == -1) {
-				if (home.memory.expand) {
-					home.memory.expand.push(room_name);
-				} else {
-					home.memory.expand = [room_name];
-				}
+				home.memory.expand.push(room_name);
 			}
 			let exits = Game.map.describeExits(room_name);
 			for (key in exits) {
@@ -165,8 +157,8 @@ module.exports = {
 				room.memory.core = pos_to_coord(spawns[0].pos);
 			}
 			if (!room.memory.defend || true) {
-				delete room.memory.defend;
-				delete room.memory.expand;
+				room.memory.defend = [];
+				room.memory.expand = [];
 				this.build_map(Memory.map, room, room.name, 0);
 			}
 			this.tracker_names.forEach(function (name) {
