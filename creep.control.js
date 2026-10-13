@@ -174,7 +174,9 @@ module.exports = {
 		let hostile = 0;
 		let unexplored = 0;
 		for (room_name in room.memory.defend + room.memory.expand) {
+			console.log("Checking Room [" + room_name + "]");
 			let map = Memory.map[room_name];
+			console.log("\tMap: " + map);
 			if (map) {
 				if (map.status == "pending") {
 					unexplored++;
