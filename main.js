@@ -17,7 +17,7 @@ module.exports.loop = function () {
 	}
 
 	// Check for remotes
-	//remote.update_remote_list()
+	remote.update_remote_list()
 	
 	// Creep Control
 	creep.main();
