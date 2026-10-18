@@ -2,6 +2,7 @@ const builder = require("structure.builder");
 const creep = require("creep.control");
 const memory = require("utility.memory");
 const quartermaster = require("creep.quartermaster");
+const remote = require("creep.remote")
 const spawn = require("structure.spawn");
 const tower = require("structure.tower");
 
@@ -15,12 +16,15 @@ module.exports.loop = function () {
 		Memory.map = {}
 	}
 
+	// Check for remotes
+	remote.update_remote_list()
+	
 	// Creep Control
 	creep.main();
 
 	// Loop Through Rooms
-	for (let name in Game.rooms) {
-		let room = Game.rooms[name];
+	for (let room_name in Game.rooms) {
+		let room = Game.rooms[room_name];
 
 		if (!room.memory.core) {
 			// Skip rooms we don't have colonies in
@@ -73,9 +77,6 @@ module.exports.loop = function () {
 
 		// Active Defence Check
 		//creep.active_defence_check(room);
-
-		// Spawn Defence Creeps
-		
 
 		// Construction
 		builder.place_towers(room);

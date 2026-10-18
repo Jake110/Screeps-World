@@ -57,7 +57,7 @@ module.exports = {
 
 		// Spawn Creeps
 		let used_spawners = [];
-		if (Game.time % 7 == 0) {
+		if (Game.time % 11 == 0) {
 			roles.forEach(function (role) {
 				let creeps = room.find(FIND_MY_CREEPS, {
 					filter: function (creep) {
