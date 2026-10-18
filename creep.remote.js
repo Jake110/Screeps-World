@@ -2,7 +2,7 @@ const memory = require("utility.memory");
 
 module.exports = {
     update_remote_list: function () {
-        if (Game.time % 53 == 0) {
+       // if (Game.time % 53 == 0) {
             let remotes = []
             let rooms = []
             let room_names=[]
@@ -30,6 +30,6 @@ module.exports = {
                     });
                 }
             }
-        }
+      //  }
     }
 }
