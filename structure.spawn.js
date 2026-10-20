@@ -67,7 +67,7 @@ module.exports = {
 						);
 					},
 				});
-				let multi_room_roles = ["scout"];
+				let multi_room_roles = ["guard", "medic","remote", "scout"];
 				if (multi_room_roles.indexOf(role.name) != -1) {
 					for (creep_name in Game.creeps) {
 						creep = Game.creeps[creep_name];
