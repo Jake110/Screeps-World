@@ -14,6 +14,9 @@ module.exports = {
 		if (role == "quartermaster") {
 			role = "hauler";
 		}
+		if (role == "remote") {
+			role = "worker"
+		}
 		let parts = [];
 		let cost = 0;
 		let set_cost;
@@ -215,6 +218,10 @@ module.exports = {
 			{
 				name: "quartermaster",
 				max: storage_count > 0 ? 1 : 0,
+			},
+			{
+				name: "remote",
+				max: room.memory.remotes.length,
 			},
 			{
 				name: "scout",

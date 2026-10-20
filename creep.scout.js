@@ -122,48 +122,15 @@ module.exports = {
 		) {
 			console.log("Guard [" + creep.name + "] awaiting arrival of Medic");
 		} else {
-			let next_step = creep.memory.route[0];
-			if (next_step.room == creep.room.name) {
-				creep.memory.route.shift();
-				next_step = creep.memory.route[0];
-			}
-			let exit = creep.pos.findClosestByPath(next_step.exit);
-			let blocked_exits = [];
-			while (
-				[ERR_NO_PATH, ERR_INVALID_TARGET].indexOf(
-					creep.moveTo(exit, { maxRooms: 1 }),
-				) != -1
-			) {
-				blocked_exits.push([creep.room.name, next_step.room]);
-				let route = get_route(
-					creep.room.name,
-					target,
-					avoid_rooms,
-					blocked_exits,
+			if (!this.travel(creep.memory.target, creep, true)) {
+				console.log(
+					"Marking [" + creep.memory.target + "] as [blocked]",
 				);
-				if (route == ERR_NO_PATH) {
-					console.log("Marking [" + target + "] as [blocked]");
-					map[target].status = "blocked";
-					creep.memory.target = null;
-					creep.memory.route = null;
-					return null;
-				}
-				next_step = route[0];
-				exit = creep.pos.findClosestByPath(next_step.exit);
-				creep.memory.route = route;
+				map[creep.memory.target].status = "blocked";
+				creep.memory.target = null;
+				creep.memory.route = null;
+				return null;
 			}
-			let direction = get_direction(next_step.exit);
-			console.log(
-				"Creep [" +
-					creep.name +
-					"] heading [" +
-					direction +
-					"] to [" +
-					target +
-					"] via [" +
-					next_step.room +
-					"]",
-			);
 		}
 	},
 	get_enemy_rooms: function () {
@@ -193,5 +160,78 @@ module.exports = {
 				return 1;
 			},
 		});
+	},
+	travel: function (target, creep, avoid_hostiles, road_placement) {
+		let avoid = [];
+		if (avoid_hostiles) {
+			avoid = this.get_enemy_rooms();
+		}
+		if (!creep.memory.route) {
+			creep.memory.route = get_route(creep.room.name, target, avoid);
+		}
+		let next_step = creep.memory.route[0];
+		if (next_step.room == creep.room.name) {
+			creep.memory.route.shift();
+			next_step = creep.memory.route[0];
+		}
+		let exit = creep.pos.findClosestByPath(next_step.exit);
+		let blocked_exits = [];
+		let options = { maxRooms: 1 };
+		if (road_placement) {
+			options.ignoreCreeps = true;
+			options.swampCost = 1;
+		}
+		while (
+			[ERR_NO_PATH, ERR_INVALID_TARGET].indexOf(
+				creep.moveTo(exit, options),
+			) != -1
+		) {
+			if (creep.getActiveBodyparts(WORK) != 0) {
+				// Check for blocking walls to dismantle
+				let wall = creep.pos.findClosestByPath(
+					exit.findInRange(FIND_STRUCTURE, 5, {
+						filter: { structureType: STRUCTURE_WALL },
+					}),
+				);
+				if (wall) {
+					if (wall.hits) {
+						creep.attack(wall);
+						creep.rangedAttack(wall);
+						creep.dismantle(wall);
+						creep.moveTo(target, {
+							visualizePathStyle: { stroke: "#FF0000" },
+						});
+						return true;
+					}
+				}
+			}
+			blocked_exits.push([creep.room.name, next_step.room]);
+			let route = get_route(
+				creep.room.name,
+				target,
+				avoid,
+				blocked_exits,
+			);
+			if (route == ERR_NO_PATH) {
+				// All exits blocked, cannot reach target room
+				return false;
+			}
+			next_step = route[0];
+			exit = creep.pos.findClosestByPath(next_step.exit);
+			creep.memory.route = route;
+		}
+		let direction = get_direction(next_step.exit);
+		console.log(
+			"Creep [" +
+				creep.name +
+				"] heading [" +
+				direction +
+				"] via [" +
+				next_step.room +
+				"] to [" +
+				target +
+				"]",
+		);
+		return true;
 	},
 };

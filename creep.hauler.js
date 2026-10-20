@@ -83,7 +83,7 @@ function get_collection_target(
 					}
 					if (option.body) {
 						let _creep_memory = option.memory;
-						let target_roles = ["harvester"];
+						let target_roles = ["harvester", "remote"];
 						if (creep_memory.role == "worker") {
 							target_roles.push("hauler");
 						}

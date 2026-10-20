@@ -1,5 +1,3 @@
-const memory = require("utility.memory");
-
 module.exports = {
 	update_remote_list: function () {
 		if (Game.time % 53 == 0) {
