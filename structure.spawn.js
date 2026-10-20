@@ -67,12 +67,12 @@ module.exports = {
 						);
 					},
 				});
-				let multi_room_roles = ["guard", "medic","remote", "scout"];
+				let multi_room_roles = ["guard", "medic", "remote", "scout"];
 				if (multi_room_roles.indexOf(role.name) != -1) {
 					for (creep_name in Game.creeps) {
 						creep = Game.creeps[creep_name];
 						if (
-							multi_room_roles.indexOf(creep.memory.role) == -1 ||
+							creep.memory.role != role.name ||
 							creep.memory.home != room.name
 						) {
 							continue;
