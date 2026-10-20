@@ -15,7 +15,7 @@ module.exports = {
 			role = "hauler";
 		}
 		if (role == "remote") {
-			role = "worker"
+			role = "worker";
 		}
 		let parts = [];
 		let cost = 0;
@@ -221,7 +221,7 @@ module.exports = {
 			},
 			{
 				name: "remote",
-				max: room.memory.remotes.length,
+				max: room.memory.remotes.length > 0 ? 1 : 0,
 			},
 			{
 				name: "scout",
