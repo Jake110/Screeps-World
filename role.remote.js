@@ -80,7 +80,11 @@ module.exports = {
 							target = item.source;
 						}
 					});
-				if (creep.harvest(target) == ERR_NOT_IN_RANGE) {
+				if (
+					[ERR_NOT_ENOUGH_RESOURCES, ERR_NOT_IN_RANGE].indexOf(
+						creep.harvest(target),
+					) != -1
+				) {
 					creep.moveTo(target, {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
