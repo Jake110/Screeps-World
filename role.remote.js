@@ -1,9 +1,11 @@
 const hauler = require("creep.hauler");
 const memory = require("utility.memory");
 const scout = require("creep.scout");
+const worker = require("creep.worker");
 
 module.exports = {
 	run: function (creep) {
+		worker.build(creep);
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
 		if (!creep.memory.remote) {
 			let remotes = Memory.rooms[creep.memory.home].remotes;
@@ -45,34 +47,6 @@ module.exports = {
 		let target_room = creep.memory.remote.split("_")[0];
 		if (creep.memory.full) {
 			target_room = creep.memory.home;
-			let road = creep.pos.findInRange(FIND_STRUCTURES, 0, {
-				filter: { structureType: STRUCTURE_ROAD },
-			});
-			console.log("Road: " + road);
-			if (road.length > 0) {
-				console.log(creep.repair(road[0]));
-			} else {
-				let site = creep.pos.findInRange(
-					FIND_MY_CONSTRUCTION_SITES,
-					0,
-					{
-						filter: { structureType: STRUCTURE_ROAD },
-					},
-				);
-				console.log("Site: " + site);
-				if (site.length == 0) {
-					creep.pos.createConstructionSite(STRUCTURE_ROAD);
-					site = creep.pos.findInRange(
-						FIND_MY_CONSTRUCTION_SITES,
-						0,
-						{
-							filter: { structureType: STRUCTURE_ROAD },
-						},
-					);
-					console.log("New Site: " + site);
-				}
-				console.log(creep.build(site[0]));
-			}
 		}
 		if (creep.room.name == target_room) {
 			if (creep.memory.remote == creep.memory.home) {

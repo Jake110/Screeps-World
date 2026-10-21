@@ -36,10 +36,13 @@ module.exports = {
 			});
 		}
 		if (target) {
-			if (creep.build(target) == ERR_NOT_IN_RANGE) {
+			let result = creep.build(target);
+			if (result == ERR_NOT_IN_RANGE) {
 				creep.moveTo(target, {
 					visualizePathStyle: { stroke: "#00ffff" },
 				});
+			} else if (result == ERR_NOT_ENOUGH_RESOURCES) {
+				return false;
 			}
 			return true;
 		}
