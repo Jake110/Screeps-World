@@ -6,9 +6,10 @@ const scout = require("creep.scout");
 module.exports = {
 	run: function (creep) {
 		if (creep.ticksToLive < 200 || creep.hits < creep.hitsMax) {
-			scout.return(home, creep);
+			scout.return(Game.rooms[creep.memory.home], creep);
 			return null;
 		}
+		//remote.road_check(creep)
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
 		remote.confirm_remote_source(creep);
 		if (remote.build_and_scavenge(creep)) {
