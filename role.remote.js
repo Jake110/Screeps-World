@@ -28,7 +28,7 @@ module.exports = {
 		let target_room = creep.memory.remote.split("_")[0];
 		if (creep.memory.full) {
 			target_room = creep.memory.home;
-			let road = creep.pos.findInRange(FIND_STRUCTURE, 0, {
+			let road = creep.pos.findInRange(FIND_STRUCTURES, 0, {
 				filter: { structureType: STRUCTURE_ROAD },
 			});
 			if (road) {
