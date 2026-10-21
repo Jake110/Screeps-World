@@ -68,10 +68,17 @@ module.exports = {
 					});
 				}
 			} else {
-				let target = memory.coord_to_pos(
+				let target = null
+				memory.coord_to_pos(
 					creep.memory.remote.split("_")[1],
 					creep.room,
-				);
+				).look().forEach(
+					function (item) {
+						if (item.energyCapacity) {
+							target = item
+						}
+					}
+				)
 				let result = creep.harvest(target);
 				console.log(
 					"Creep [" + creep.name + "] harvest result: " + result,
