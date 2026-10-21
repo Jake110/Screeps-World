@@ -125,9 +125,13 @@ module.exports = {
 		if (invalid_target_check(deposit_target)) {
 			if (creep.body.length > 4) {
 				// We want to focus on building the container if it's missing
-				let sites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1, {
-					filter: { structureType: STRUCTURE_CONTAINER },
-				});
+				let sites = creep.pos.findInRange(
+					FIND_MY_CONSTRUCTION_SITES,
+					1,
+					{
+						filter: { structureType: STRUCTURE_CONTAINER },
+					},
+				);
 				if (sites.length > 0) {
 					creep.build(sites[0]);
 					return null;

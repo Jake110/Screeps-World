@@ -52,15 +52,23 @@ module.exports = {
 			if (road.length > 0) {
 				console.log(creep.repair(road[0]));
 			} else {
-				let site = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 0, {
-					filter: { structureType: STRUCTURE_ROAD },
-				});
+				let site = creep.pos.findInRange(
+					FIND_MY_CONSTRUCTION_SITES,
+					0,
+					{
+						filter: { structureType: STRUCTURE_ROAD },
+					},
+				);
 				console.log("Site: " + site);
 				if (site.length == 0) {
 					creep.pos.createConstructionSite(STRUCTURE_ROAD);
-					site = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 0, {
-						filter: { structureType: STRUCTURE_ROAD },
-					});
+					site = creep.pos.findInRange(
+						FIND_MY_CONSTRUCTION_SITES,
+						0,
+						{
+							filter: { structureType: STRUCTURE_ROAD },
+						},
+					);
 					console.log("New Site: " + site);
 				}
 				console.log(creep.build(site[0]));

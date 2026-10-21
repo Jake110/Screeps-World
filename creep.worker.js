@@ -3,13 +3,13 @@ const memory = require("utility.memory");
 
 module.exports = {
 	build: function (creep) {
-		let target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
+		let target = creep.pos.findClosestByPath(FIND_MY_CONSTRUCTION_SITES, {
 			filter: function (site) {
 				return site.structureType == STRUCTURE_SPAWN;
 			},
 		});
 		if (!target) {
-			target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
+			target = creep.pos.findClosestByPath(FIND_MY_CONSTRUCTION_SITES, {
 				filter: function (site) {
 					return ![
 						STRUCTURE_RAMPART,
@@ -20,7 +20,7 @@ module.exports = {
 			});
 		}
 		if (!target) {
-			target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
+			target = creep.pos.findClosestByPath(FIND_MY_CONSTRUCTION_SITES, {
 				filter: function (site) {
 					return [STRUCTURE_RAMPART, STRUCTURE_WALL].includes(
 						site.structureType,
@@ -29,7 +29,7 @@ module.exports = {
 			});
 		}
 		if (!target) {
-			target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
+			target = creep.pos.findClosestByPath(FIND_MY_CONSTRUCTION_SITES, {
 				filter: function (site) {
 					return site.structureType == STRUCTURE_ROAD;
 				},
