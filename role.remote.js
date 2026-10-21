@@ -31,19 +31,22 @@ module.exports = {
 			let road = creep.pos.findInRange(FIND_STRUCTURES, 0, {
 				filter: { structureType: STRUCTURE_ROAD },
 			});
+			console.log("Road: "+road)
 			if (road) {
-				creep.repair(road[0]);
+				console.log(creep.repair(road[0]))
 			} else {
 				let site = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 0, {
 					filter: { structureType: STRUCTURE_ROAD },
 				});
+				console.log("Site: "+site)
 				if (!site) {
 					creep.pos.createConstructionSite(STRUCTURE_ROAD);
 					site = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 0, {
 						filter: { structureType: STRUCTURE_ROAD },
 					});
+					console.log("New Site: "+site)
 				}
-				creep.build(site[0]);
+				console.log(creep.build(site[0]))
 			}
 		}
 		if (creep.room.name != creep.memory.home && !creep.memory.full) {
@@ -60,7 +63,6 @@ module.exports = {
 				} else {
 					result = target.transfer(creep, RESOURCE_ENERGY);
 				}
-				console.log(result)
 				if (result == ERR_NOT_IN_RANGE) {
 					creep.moveTo(target, {
 						visualizePathStyle: { stroke: "#fff23e" },
