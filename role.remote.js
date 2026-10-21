@@ -72,7 +72,11 @@ module.exports = {
 					creep.memory.remote.split("_")[1],
 					creep.room,
 				);
-				if (creep.harvest(target) == ERR_NOT_IN_RANGE) {
+				let result = creep.harvest(target);
+				console.log(
+					"Creep [" + creep.name + "] harvest result: " + result,
+				);
+				if (result == ERR_NOT_IN_RANGE) {
 					creep.moveTo(target, {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
