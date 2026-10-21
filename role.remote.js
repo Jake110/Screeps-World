@@ -74,7 +74,7 @@ module.exports = {
 					.look()
 					.forEach(function (item) {
 						console.log(Object.keys(item));
-						if (item.energyCapacity) {
+						if (item.source) {
 							target = item;
 						}
 					});
