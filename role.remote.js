@@ -31,22 +31,22 @@ module.exports = {
 			let road = creep.pos.findInRange(FIND_STRUCTURES, 0, {
 				filter: { structureType: STRUCTURE_ROAD },
 			});
-			console.log("Road: "+road)
-			if (road) {
-				console.log(creep.repair(road[0]))
+			console.log("Road: " + road);
+			if (road.length > 0) {
+				console.log(creep.repair(road[0]));
 			} else {
 				let site = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 0, {
 					filter: { structureType: STRUCTURE_ROAD },
 				});
-				console.log("Site: "+site)
-				if (!site) {
+				console.log("Site: " + site);
+				if (site.length == 0) {
 					creep.pos.createConstructionSite(STRUCTURE_ROAD);
 					site = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 0, {
 						filter: { structureType: STRUCTURE_ROAD },
 					});
-					console.log("New Site: "+site)
+					console.log("New Site: " + site);
 				}
-				console.log(creep.build(site[0]))
+				console.log(creep.build(site[0]));
 			}
 		}
 		if (creep.room.name != creep.memory.home && !creep.memory.full) {
@@ -68,7 +68,7 @@ module.exports = {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
 				}
-			
+
 				return null;
 			}
 		}
