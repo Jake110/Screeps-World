@@ -66,8 +66,9 @@ module.exports = {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
 				}
+			
+				return null;
 			}
-			return null;
 		}
 		if (creep.room.name == target_room) {
 			if (creep.memory.remote == creep.memory.home) {
