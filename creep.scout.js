@@ -59,7 +59,7 @@ module.exports = {
 			console.log(
 				"\tLooking for rooms with a status of [" + room_status + "]",
 			);
-			for (room_name in map) {
+			for (let room_name in map) {
 				console.log("\t\tChecking Room [" + room_name + "]");
 				if (
 					map[room_name].status == room_status &&
@@ -99,7 +99,7 @@ module.exports = {
 			console.log(log);
 			creep.memory.recycle = home.memory.core;
 			if (creep.memory.role == "scout") {
-				for (room_name in home.memory.defend.concat(
+				for (let room_name in home.memory.defend.concat(
 					home.memory.expand,
 				)) {
 					if (map[room_name].status == "pending") {
@@ -136,7 +136,7 @@ module.exports = {
 	get_enemy_rooms: function () {
 		let map = Memory.map;
 		let avoid_rooms = [];
-		for (room_name in map) {
+		for (let room_name in map) {
 			if (map[room_name].status == "owned") {
 				room = Game.rooms[room_name];
 				if (room != null) {

@@ -1,50 +1,14 @@
 const hauler = require("creep.hauler");
 const memory = require("utility.memory");
+const remote = require("creep.remote");
 const scout = require("creep.scout");
 const worker = require("creep.worker");
 
 module.exports = {
 	run: function (creep) {
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
-		if (!creep.memory.remote) {
-			let remotes = Memory.rooms[creep.memory.home].remotes;
-			for (name in Game.creeps) {
-				let _creep = Game.creeps[name];
-				if (
-					_creep.memory.role != "remote" ||
-					_creep.memory.home != creep.memory.home ||
-					!_creep.memory.remote
-				) {
-					continue;
-				}
-				remotes.splice(remotes.indexOf(_creep.memory.remote), 1);
-			}
-			if (remotes.length == 0) {
-				// This remote creep is not needed, recycling...
-				creep.memory.remote = creep.memory.home;
-			} else {
-				creep.memory.remote = remotes[0];
-			}
-		}
-		if (creep.memory.full) {
-			worker.build(creep);
-		} else {
-			let target = hauler.get_collection_target(
-				creep,
-				[FIND_DROPPED_RESOURCES, FIND_TOMBSTONES],
-				false,
-				false,
-				1,
-			);
-			if (target) {
-				if (!target.store) {
-					result = creep.pickup(target);
-				} else {
-					result = target.transfer(creep, RESOURCE_ENERGY);
-				}
-				hauler.capacity_check(creep, RESOURCE_ENERGY);
-			}
-		}
+		remote.confirm_remote_source(creep);
+		remote.build_and_scavenge(creep);
 		let target_room = creep.memory.remote.split("_")[0];
 		if (creep.memory.full) {
 			target_room = creep.memory.home;

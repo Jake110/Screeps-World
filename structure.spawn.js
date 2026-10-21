@@ -69,8 +69,8 @@ module.exports = {
 				});
 				let multi_room_roles = ["guard", "medic", "remote", "scout"];
 				if (multi_room_roles.indexOf(role.name) != -1) {
-					for (creep_name in Game.creeps) {
-						creep = Game.creeps[creep_name];
+					for (let creep_name in Game.creeps) {
+						let creep = Game.creeps[creep_name];
 						if (
 							creep.memory.role != role.name ||
 							creep.memory.home != room.name

@@ -85,7 +85,7 @@ module.exports = {
 				home.memory.expand.push(room_name);
 			}
 			let exits = Game.map.describeExits(room_name);
-			for (key in exits) {
+			for (let key in exits) {
 				this.build_map(map, home, exits[key], range + 1);
 			}
 		}
