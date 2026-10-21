@@ -73,17 +73,11 @@ module.exports = {
 					.coord_to_pos(creep.memory.remote.split("_")[1], creep.room)
 					.look()
 					.forEach(function (item) {
-						console.log(Object.keys(item));
 						if (item.source) {
 							target = item.source;
 						}
 					});
-				let result = creep.harvest(target);
-				console.log(
-					"Creep [" + creep.name + "] harvest result: " + result,
-				);
-				console.log("\tTarget: " + target);
-				if (result == ERR_NOT_IN_RANGE) {
+				if (creep.harvest(target) == ERR_NOT_IN_RANGE) {
 					creep.moveTo(target, {
 						visualizePathStyle: { stroke: "#fff23e" },
 					});
