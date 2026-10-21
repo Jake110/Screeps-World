@@ -17,7 +17,7 @@ module.exports = {
 				if (!target.store) {
 					result = creep.pickup(target);
 				} else {
-					result = target.transfer(creep, RESOURCE_ENERGY);
+					result = creep.withdraw(target, RESOURCE_ENERGY);
 				}
 				hauler.capacity_check(creep, RESOURCE_ENERGY);
 			}
