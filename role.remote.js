@@ -87,7 +87,7 @@ module.exports = {
 				if (
 					creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
 				) {
-					creep.moveTo(deposit_target, {
+					creep.moveTo(target, {
 						visualizePathStyle: { stroke: "#2bff00" },
 					});
 				}
