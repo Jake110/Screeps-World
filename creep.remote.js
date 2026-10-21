@@ -1,3 +1,5 @@
+const worker = require("creep.worker");
+
 module.exports = {
 	build_and_scavenge: function (creep) {
 		if (creep.memory.full) {

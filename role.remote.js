@@ -2,7 +2,6 @@ const hauler = require("creep.hauler");
 const memory = require("utility.memory");
 const remote = require("creep.remote");
 const scout = require("creep.scout");
-const worker = require("creep.worker");
 
 module.exports = {
 	run: function (creep) {
