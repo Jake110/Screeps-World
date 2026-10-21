@@ -1,3 +1,4 @@
+const hauler = require("creep.hauler");
 const worker = require("creep.worker");
 
 module.exports = {
