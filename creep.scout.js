@@ -190,7 +190,16 @@ module.exports = {
 				creep.moveTo(exit, options),
 			) != -1
 		) {
-			if (creep.getActiveBodyparts(WORK) != 0) {
+			if (
+				creep.getActiveBodyparts(WORK) +
+					creep.getActiveBodyparts(ATTACK) +
+					creep.getActiveBodyparts(RANGED_ATTACK) >
+				0
+			) {
+				if (exit == null) {
+					exit = creep.pos.findClosestByRange(next_step.exit);
+					
+				}
 				// Check for blocking walls to dismantle
 				let wall = creep.pos.findClosestByPath(
 					exit.findInRange(FIND_STRUCTURE, 5, {
