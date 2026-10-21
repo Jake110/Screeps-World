@@ -4,7 +4,7 @@ const worker = require("creep.worker");
 module.exports = {
 	build_and_scavenge: function (creep) {
 		if (creep.memory.full) {
-			worker.build(creep);
+			return worker.build(creep);
 		} else {
 			let target = hauler.get_collection_target(
 				creep,
@@ -22,6 +22,7 @@ module.exports = {
 				hauler.capacity_check(creep, RESOURCE_ENERGY);
 			}
 		}
+		return false;
 	},
 	confirm_remote_source: function (creep) {
 		if (!creep.memory.remote) {

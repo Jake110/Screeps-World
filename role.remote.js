@@ -5,9 +5,15 @@ const scout = require("creep.scout");
 
 module.exports = {
 	run: function (creep) {
+		if (creep.ticksToLive < 200 || creep.hits < creep.hitsMax) {
+			scout.return(home, creep);
+			return null;
+		}
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
 		remote.confirm_remote_source(creep);
-		remote.build_and_scavenge(creep);
+		if (remote.build_and_scavenge(creep)) {
+			return null;
+		}
 		let target_room = creep.memory.remote.split("_")[0];
 		if (creep.memory.full) {
 			target_room = creep.memory.home;
