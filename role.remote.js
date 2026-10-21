@@ -80,14 +80,25 @@ module.exports = {
 							target = item.source;
 						}
 					});
+				let result = creep.harvest(target);
 				if (
 					[ERR_NOT_ENOUGH_RESOURCES, ERR_NOT_IN_RANGE].indexOf(
-						creep.harvest(target),
+						result,
 					) != -1
 				) {
-					creep.moveTo(target, {
-						visualizePathStyle: { stroke: "#fff23e" },
-					});
+					if (
+						result == ERR_NOT_ENOUGH_RESOURCES &&
+						target.ticksToRegeneration > 150 &&
+						creep.store.getUsedCapacity() >
+							creep.store.getFreeCapacity()
+					) {
+						// If we're over half full and the source is empty, move on
+						creep.memory.full = true;
+					} else {
+						creep.moveTo(target, {
+							visualizePathStyle: { stroke: "#fff23e" },
+						});
+					}
 				}
 			}
 		} else {
