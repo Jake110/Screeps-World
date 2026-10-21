@@ -60,6 +60,7 @@ module.exports = {
 				} else {
 					result = target.transfer(creep, RESOURCE_ENERGY);
 				}
+				console.log(result)
 				if (result == ERR_NOT_IN_RANGE) {
 					creep.moveTo(target, {
 						visualizePathStyle: { stroke: "#fff23e" },
