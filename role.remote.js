@@ -5,7 +5,6 @@ const worker = require("creep.worker");
 
 module.exports = {
 	run: function (creep) {
-		worker.build(creep);
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
 		if (!creep.memory.remote) {
 			let remotes = Memory.rooms[creep.memory.home].remotes;
@@ -27,7 +26,9 @@ module.exports = {
 				creep.memory.remote = remotes[0];
 			}
 		}
-		if (!creep.memory.full) {
+		if (creep.memory.full) {
+			worker.build(creep);
+		} else {
 			let target = hauler.get_collection_target(
 				creep,
 				[FIND_DROPPED_RESOURCES, FIND_TOMBSTONES],
