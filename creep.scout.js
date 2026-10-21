@@ -202,7 +202,7 @@ module.exports = {
 				}
 				// Check for blocking walls to dismantle
 				let wall = creep.pos.findClosestByPath(
-					exit.findInRange(FIND_STRUCTURE, 5, {
+					exit.findInRange(FIND_STRUCTURES, 5, {
 						filter: { structureType: STRUCTURE_WALL },
 					}),
 				);
