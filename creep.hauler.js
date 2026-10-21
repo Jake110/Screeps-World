@@ -7,7 +7,7 @@ function get_collection_target(
 	find_list,
 	storage_override = false,
 	extension_override = false,
-	range = null,
+	range = 50,
 ) {
 	let creep_memory = creep.memory;
 	let room = creep.room;
@@ -70,7 +70,7 @@ function get_collection_target(
 		);
 	}
 	find_list.forEach(function (find_name) {
-		if (range == null) {
+		if (range == 50) {
 			options = options.concat(
 				room.find(find_name, { filter: find_filter }),
 			);
@@ -84,67 +84,71 @@ function get_collection_target(
 	});
 	let chosen = null;
 	let chosen_distance = 999;
-	options.forEach(function (option) {
-		let energy;
-		if (option.store) {
-			energy = option.store[RESOURCE_ENERGY];
-		} else {
-			energy = option.amount;
-		}
-		let accessable = false;
-		for (let x = -1; x <= 1; x++) {
-			for (let y = -1; y <= 1; y++) {
-				if ((x == 0) & (y == 0) || accessable) {
-					continue;
-				}
-				let pos = room.getPositionAt(
-					option.pos.x + x,
-					option.pos.y + y,
-				);
-				if (pos == null) {
-					continue;
-				}
-				accessable = _.every(pos.look(), function (item) {
-					if (item.type == LOOK_TERRAIN) {
-						return item.terrain !== "wall";
+	if (range < 2) {
+		chosen = options[0];
+	} else {
+		options.forEach(function (option) {
+			let energy;
+			if (option.store) {
+				energy = option.store[RESOURCE_ENERGY];
+			} else {
+				energy = option.amount;
+			}
+			let accessable = false;
+			for (let x = -1; x <= 1; x++) {
+				for (let y = -1; y <= 1; y++) {
+					if ((x == 0) & (y == 0) || accessable) {
+						continue;
 					}
-					return true;
-				});
-			}
-		}
-		if (!accessable) {
-			return null;
-		}
-		let distance = creep.pos.findPathTo(option).length;
-		room.find(FIND_MY_CREEPS, {
-			filter: function (_creep) {
-				let creep_memory = _creep.memory;
-				if (
-					_creep.name == creep.name ||
-					!creep_memory._move ||
-					!["hauler", "worker"].includes(creep_memory.role) ||
-					creep_memory.full ||
-					distance < _creep.pos.findPathTo(option).length
-				) {
-					return false;
+					let pos = room.getPositionAt(
+						option.pos.x + x,
+						option.pos.y + y,
+					);
+					if (pos == null) {
+						continue;
+					}
+					accessable = _.every(pos.look(), function (item) {
+						if (item.type == LOOK_TERRAIN) {
+							return item.terrain !== "wall";
+						}
+						return true;
+					});
 				}
-				let dest = creep_memory._move.dest;
-				return (
-					dest.x == option.pos.x &&
-					dest.y == option.pos.y &&
-					dest.room == option.pos.roomName
-				);
-			},
-		}).forEach(function (_creep) {
-			energy -= _creep.store.getFreeCapacity();
-		});
-		if (energy > 0) {
-			if (distance < chosen_distance) {
-				chosen = option;
-				chosen_distance = distance;
 			}
-		}
-	});
+			if (!accessable) {
+				return null;
+			}
+			let distance = creep.pos.findPathTo(option).length;
+			room.find(FIND_MY_CREEPS, {
+				filter: function (_creep) {
+					let creep_memory = _creep.memory;
+					if (
+						_creep.name == creep.name ||
+						!creep_memory._move ||
+						!["hauler", "worker"].includes(creep_memory.role) ||
+						creep_memory.full ||
+						distance < _creep.pos.findPathTo(option).length
+					) {
+						return false;
+					}
+					let dest = creep_memory._move.dest;
+					return (
+						dest.x == option.pos.x &&
+						dest.y == option.pos.y &&
+						dest.room == option.pos.roomName
+					);
+				},
+			}).forEach(function (_creep) {
+				energy -= _creep.store.getFreeCapacity();
+			});
+			if (energy > 0) {
+				if (distance < chosen_distance) {
+					chosen = option;
+					chosen_distance = distance;
+				}
+			}
+		});
+	}
 	return chosen;
 }
 
