@@ -166,7 +166,11 @@ module.exports = {
 		if (avoid_hostiles) {
 			avoid = this.get_enemy_rooms();
 		}
-		if (!creep.memory.route || creep.memory.route.length == 0) {
+		if (
+			!creep.memory.route ||
+			creep.memory.route.length == 0 ||
+			creep.memory.route[creep.memory.route.length - 1].room != target
+		) {
 			creep.memory.route = get_route(creep.room.name, target, avoid);
 		}
 		let next_step = creep.memory.route[0];
