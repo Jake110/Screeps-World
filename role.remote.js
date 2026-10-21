@@ -75,7 +75,7 @@ module.exports = {
 					.forEach(function (item) {
 						console.log(Object.keys(item));
 						if (item.source) {
-							target = item;
+							target = item.source;
 						}
 					});
 				let result = creep.harvest(target);
