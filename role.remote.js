@@ -75,7 +75,7 @@ module.exports = {
 				// Creep was sent home for recycling
 				creep.memory.recycle = creep.room.memory.core;
 			} else if (target_room == creep.memory.home) {
-				let target = creep.pos.findClosestByPath(FIND_STRUCTURE, {
+				let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
 					filter: function (structure) {
 						return (
 							[STRUCTURE_LINK, STRUCTURE_STORAGE].indexOf(
