@@ -46,6 +46,28 @@ module.exports = {
 				creep.build(site[0]);
 			}
 		}
+		if (creep.room.name != creep.memory.home && !creep.memory.full) {
+			let target = hauler.get_collection_target(
+				creep,
+				[FIND_DROPPED_RESOURCES, FIND_TOMBSTONES],
+				false,
+				false,
+				1,
+			);
+			if (target) {
+				if (!target.store) {
+					result = creep.pickup(target);
+				} else {
+					result = target.transfer(creep, RESOURCE_ENERGY);
+				}
+				if (result == ERR_NOT_IN_RANGE) {
+					creep.moveTo(target, {
+						visualizePathStyle: { stroke: "#fff23e" },
+					});
+				}
+			}
+			return null;
+		}
 		if (creep.room.name == target_room) {
 			if (creep.memory.remote == creep.memory.home) {
 				// Creep was sent home for recycling

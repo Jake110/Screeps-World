@@ -7,7 +7,7 @@ function get_collection_target(
 	find_list,
 	storage_override = false,
 	extension_override = false,
-	dismantle = false,
+	range = null,
 ) {
 	let creep_memory = creep.memory;
 	let room = creep.room;
@@ -17,7 +17,7 @@ function get_collection_target(
 	} catch {
 		storage_link = null;
 	}
-	if (find_list.includes(FIND_STRUCTURES) && !dismantle && storage_link) {
+	if (find_list.includes(FIND_STRUCTURES) && storage_link) {
 		let core_link = quartermaster.get_structure(
 			room,
 			storage_link,
@@ -27,99 +27,66 @@ function get_collection_target(
 			options.push(core_link);
 		}
 	}
-	find_list.forEach(function (find_name) {
-		options = options.concat(
-			room.find(find_name, {
-				filter: function (option) {
-					if (!combat.safe_check(option)) {
-						return false;
-					}
-					if (extension_override) {
-						return (
-							option.structureType == STRUCTURE_EXTENSION &&
-							option.store[RESOURCE_ENERGY] > 0
-						);
-					}
-					if (dismantle) {
-						let coord = memory.pos_to_coord(option.pos);
-						switch (option.structureType) {
-							case STRUCTURE_CONTAINER:
-								coord_list = room.memory.containers;
-								break;
-							case STRUCTURE_EXTENSION:
-								coord_list = room.memory.extensions;
-								break;
-							case STRUCTURE_LINK:
-								coord_list = room.memory.links;
-								break;
-							case STRUCTURE_RAMPART:
-								coord_list = room.memory.ramparts;
-								break;
-							case STRUCTURE_ROAD:
-								coord_list = room.memory.roads;
-								break;
-							case STRUCTURE_SPAWN:
-								coord_list = room.memory.spawns;
-								break;
-							case STRUCTURE_STORAGE:
-								coord_list = [room.memory.storage];
-								break;
-							case STRUCTURE_TOWER:
-								coord_list = room.memory.towers;
-								break;
-							case STRUCTURE_WALL:
-								coord_list = room.memory.walls;
-								if (!option.hits) {
-									return false;
-								}
-								break;
-							default:
-								return false;
-						}
-						return !coord_list.includes(coord);
-					}
-					if (!option.store) {
-						return option.resourceType == RESOURCE_ENERGY;
-					}
-					if (option.body) {
-						let _creep_memory = option.memory;
-						let target_roles = ["harvester", "remote"];
-						if (creep_memory.role == "worker") {
-							target_roles.push("hauler");
-						}
-						if (room.controller.level >= 5) {
-							target_roles.shift();
-						}
-						return (
-							target_roles.includes(_creep_memory.role) &&
-							option.store.getFreeCapacity() > 0
-						);
-					}
-					if (option.deathTime || option.destroyTime) {
-						return option.store[RESOURCE_ENERGY] > 0;
-					}
-					let structure = STRUCTURE_CONTAINER;
-					if (
-						(creep_memory.role == "worker" && !storage_override) ||
-						(creep_memory.role == "hauler" && storage_override)
-					) {
-						structure = STRUCTURE_STORAGE;
-					}
-					return (
-						option.structureType == structure &&
-						option.store[RESOURCE_ENERGY] > 0
-					);
-				},
-			}),
+	function find_filter(option) {
+		if (!combat.safe_check(option)) {
+			return false;
+		}
+		if (extension_override) {
+			return (
+				option.structureType == STRUCTURE_EXTENSION &&
+				option.store[RESOURCE_ENERGY] > 0
+			);
+		}
+		if (!option.store) {
+			return option.resourceType == RESOURCE_ENERGY;
+		}
+		if (option.body) {
+			let _creep_memory = option.memory;
+			let target_roles = ["harvester", "remote"];
+			if (creep_memory.role == "worker") {
+				target_roles.push("hauler");
+			}
+			if (room.controller.level >= 5) {
+				target_roles.shift();
+			}
+			return (
+				target_roles.includes(_creep_memory.role) &&
+				option.store.getFreeCapacity() > 0
+			);
+		}
+		if (option.deathTime || option.destroyTime) {
+			return option.store[RESOURCE_ENERGY] > 0;
+		}
+		let structure = STRUCTURE_CONTAINER;
+		if (
+			(creep_memory.role == "worker" && !storage_override) ||
+			(creep_memory.role == "hauler" && storage_override)
+		) {
+			structure = STRUCTURE_STORAGE;
+		}
+		return (
+			option.structureType == structure &&
+			option.store[RESOURCE_ENERGY] > 0
 		);
+	}
+	find_list.forEach(function (find_name) {
+		if (range == null) {
+			options = options.concat(
+				room.find(find_name, { filter: find_filter }),
+			);
+		} else {
+			options = options.concat(
+				creep.pos.findInRange(find_name, range, {
+					filter: find_filter,
+				}),
+			);
+		}
 	});
 	let chosen = null;
 	let chosen_distance = 999;
 	options.forEach(function (option) {
 		let energy;
-		if (dismantle) {
-			energy = option.hits / 200;
-		} else if (option.store) {
+		if (option.store) {
 			energy = option.store[RESOURCE_ENERGY];
 		} else {
 			energy = option.amount;
