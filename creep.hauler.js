@@ -51,7 +51,7 @@ function get_collection_target(
 			}
 			return (
 				target_roles.includes(_creep_memory.role) &&
-				option.store.getFreeCapacity() > 0
+				option.store.getUsedCapacity(RESOURCE_ENERGY) > 0
 			);
 		}
 		if (option.deathTime || option.destroyTime) {
