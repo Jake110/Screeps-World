@@ -9,7 +9,7 @@ module.exports = {
 			scout.return(Game.rooms[creep.memory.home], creep);
 			return null;
 		}
-		//remote.road_check(creep)
+		remote.road_check(creep)
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
 		remote.confirm_remote_source(creep);
 		if (remote.build_and_scavenge(creep)) {

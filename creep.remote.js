@@ -1,5 +1,13 @@
+const builder = require("structure.builder");
 const hauler = require("creep.hauler");
 const worker = require("creep.worker");
+
+function set_up_road(creep, start, end) {
+	builder.place_road(creep.room, start, end, "tunnels", 0, true);
+	creep.room.memory.remote_roads.push(
+		creep.memory.home + "_" + creep.memory.remote,
+	);
+}
 
 module.exports = {
 	build_and_scavenge: function (creep) {
@@ -45,6 +53,65 @@ module.exports = {
 				creep.memory.remote = remotes[0];
 			}
 		}
+	},
+	road_check: function (creep) {
+		if (creep.room.name != creep.memory.route[0].room) {
+			// only trigger on the first tick in a new room
+			return null;
+		}
+		if (!creep.room.memory.remote_roads) {
+			creep.room.memory.remote_roads = [];
+		}
+		if (!creep.room.memory.roads) {
+			creep.room.memory.roads = [];
+		}
+		let tag = creep.memory.home + "_" + creep.memory.remote;
+		if (creep.room.memory.remote_roads.indexOf(tag) != -1) {
+			// road already setup
+			return null;
+		}
+		if (creep.room.name == creep.memory.home && creep.memory.full) {
+			// only when returning home when full
+			if (creep.room.memory.ramparts.length == 0) {
+				// only place the home road once the walls are built
+				return null;
+			}
+			// setup road from exit to rampart
+			let ramparts = [];
+			creep.room.memory.ramparts.forEach(function (rampart) {
+				ramparts.push(memory.coord_to_pos(rampart, creep.room));
+			});
+			let rampart = creep.pos.findClosestByRange(ramparts);
+			set_up_road(creep, creep.pos, rampart);
+			// setup road from rampart to dropoff
+			let dropoff = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+				ignoreCreeps: true,
+				swampCost: 1,
+				filter: function (structure) {
+					return (
+						[STRUCTURE_LINK, STRUCTURE_STORAGE].indexOf(
+							structure.structureType,
+						) != -1
+					);
+				},
+			});
+			set_up_road(creep, rampart, dropoff);
+		} else if (creep.room.name == creep.memory.remote.split("_")[0]) {
+			// only when entering target source room
+			set_up_road(
+				creep,
+				creep.pos,
+				memory.coord_to_pos(
+					creep.memory.remote.split("_")[1],
+					creep.room,
+				),
+			);
+		} else if (creep.memory.full) {
+			// only when entering a room on the way home
+			let exit = creep.pos.findClosestByRange(creep.memory.route[1].exit);
+			set_up_road(creep, creep.pos, exit);
+		}
+		builder.create_construction_sites(creep.room, "roads", STRUCTURE_ROAD);
 	},
 	update_remote_list: function () {
 		if (Game.time % 53 == 0) {

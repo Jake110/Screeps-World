@@ -164,46 +164,39 @@ function place_rampart(room, start, end) {
  * @param {RoomPosition} origin
  * @param {RoomPosition} target
  */
-function place_road(
-	room,
-	origin,
-	target,
-	mode,
-	range = 0,
-	link_points = null,
-	avoid = null,
-) {
+function place_road(room, origin, target, mode, range = 0, force_tunnel) {
 	let route = [];
-
-	route = origin.findPathTo(target, {
-		ignoreCreeps: true,
-		ignoreRoads: true,
-		costCallback: function (room_name, costMatrix) {
-			let _room = null;
-			try {
-				_room = Game.rooms[room_name];
-			} catch (error) {}
-			if (_room != null) {
-				let adjust_matrix = function (pos) {
-					// Set all positions to be non-walkable
-					costMatrix.set(pos.x, pos.y, 0xff);
-				};
-				memory.build_pos(_room).forEach(adjust_matrix);
-				if (avoid) {
-					avoid.forEach(function (coord) {
-						adjust_matrix(memory.coord_to_pos(coord, _room));
-					});
+	if (!force_tunnel) {
+		route = origin.findPathTo(target, {
+			ignoreCreeps: true,
+			ignoreRoads: true,
+			costCallback: function (room_name, costMatrix) {
+				let _room = null;
+				try {
+					_room = Game.rooms[room_name];
+				} catch (error) {}
+				if (_room != null) {
+					let adjust_matrix = function (pos) {
+						// Set all positions to be non-walkable
+						costMatrix.set(pos.x, pos.y, 0xff);
+					};
+					memory.build_pos(_room).forEach(adjust_matrix);
+					if (avoid) {
+						avoid.forEach(function (coord) {
+							adjust_matrix(memory.coord_to_pos(coord, _room));
+						});
+					}
 				}
-			}
-		},
-		swampCost: 1,
-	});
-	for (; range > 0; range--) {
-		route.pop();
-	}
-	if (!avoid) {
-		route.pop();
-		route.shift();
+			},
+			swampCost: 1,
+		});
+		for (; range > 0; range--) {
+			route.pop();
+		}
+		if (!avoid) {
+			route.pop();
+			route.shift();
+		}
 	}
 	if (mode == "tunnels") {
 		let tunnel_route = [];
@@ -218,7 +211,7 @@ function place_road(
 		for (; range > 0; range--) {
 			tunnel_route.pop();
 		}
-		if (tunnel_route.length < route.length / 2) {
+		if (tunnel_route.length < route.length / 2 || force_tunnel) {
 			tunnel_route.forEach(function (coord) {
 				save_road(room, coord);
 			});
@@ -226,19 +219,6 @@ function place_road(
 	} else {
 		route.forEach(function (step) {
 			save_road(room, memory.pos_to_coord(step));
-		});
-	}
-	if (link_points) {
-		link_points.outer.forEach(function (link_point) {
-			place_road(
-				room,
-				link_point,
-				target,
-				mode,
-				0,
-				null,
-				link_points.inner,
-			);
 		});
 	}
 }
@@ -669,6 +649,7 @@ module.exports = {
 		}
 		this.create_construction_sites(room, "links", STRUCTURE_LINK);
 	},
+	place_road: place_road,
 	place_source_roads: function (spawn, mode) {
 		let room_memory = spawn.room.memory;
 		_source = spawn.pos.findClosestByPath(FIND_SOURCES, {
