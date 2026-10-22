@@ -94,16 +94,16 @@ module.exports = {
 				}
 				break;
 			case "worker":
-				set_cost = 200;
+				set_cost = 250;
 				if (energy >= set_cost) {
 					let work = [];
 					let move = [];
 					while (energy - cost >= set_cost) {
 						work.push(WORK);
 						parts.push(CARRY);
-						move.push(MOVE);
+						move = move.concat([MOVE,MOVE]);
 						cost += set_cost;
-						if (parts.length == 16) {
+						if (parts.length == 12) {
 							break;
 						}
 					}
