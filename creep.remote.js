@@ -1,5 +1,6 @@
 const builder = require("structure.builder");
 const hauler = require("creep.hauler");
+const memory = require("utility.memory");
 const worker = require("creep.worker");
 
 function set_up_road(creep, start, end) {
