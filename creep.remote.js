@@ -101,11 +101,11 @@ module.exports = {
 			// only when entering target source room
 			set_up_road(
 				creep,
-				creep.pos,
 				memory.coord_to_pos(
 					creep.memory.remote.split("_")[1],
 					creep.room,
 				),
+				creep.pos,
 			);
 		} else if (creep.memory.full) {
 			// only when entering a room on the way home
