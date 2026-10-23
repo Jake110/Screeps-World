@@ -40,7 +40,7 @@ module.exports = {
 			}
 			creep.moveTo(guard);
 		} else {
-			scout.return(Game.rooms[(creep.memory.home, creep)]);
+			scout.return(creep);
 		}
 	},
 };

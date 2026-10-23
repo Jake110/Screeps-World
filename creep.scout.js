@@ -43,7 +43,8 @@ function get_route(room_start, room_end, avoid_list, blocked = null) {
 }
 
 module.exports = {
-	explore: function (home, creep) {
+	explore: function (creep) {
+		let home = Game.rooms[creep.memory.home]
 		console.log("[" + creep.name + "] exploring...");
 		let map = Memory.map;
 		let target = creep.memory.target;
@@ -152,19 +153,14 @@ module.exports = {
 		}
 		return avoid_rooms;
 	},
-	return: function (home, creep) {
-		let avoid_rooms = this.get_enemy_rooms();
-		creep.moveTo(memory.coord_to_pos(home.memory.core, home), {
-			routeCallback(room_name) {
-				if (avoid_rooms.indexOf(room_name) != -1) {
-					// avoid this room
-					return Infinity;
-				}
-				return 1;
-			},
-		});
+	return: function (creep) {
+		if (creep.room.name == creep.memory.home) {
+			creep.moveTo(memory.coord_to_pos(home.memory.core, home));
+		} else {
+			this.travel(creep.memory.home, creep, true);
+		}
 	},
-	travel: function (target, creep, avoid_hostiles, road_placement) {
+	travel: function (target, creep, avoid_hostiles) {
 		let avoid = [];
 		if (avoid_hostiles) {
 			avoid = this.get_enemy_rooms();

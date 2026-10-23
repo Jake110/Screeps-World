@@ -7,7 +7,7 @@ const spawn_util = require("utility.spawn");
 module.exports = {
 	run: function (creep) {
 		if (creep.ticksToLive < 300 || creep.hits < creep.hitsMax) {
-			scout.return(Game.rooms[creep.memory.home], creep);
+			scout.return(creep);
 			return null;
 		}
 		remote.road_check(creep);
