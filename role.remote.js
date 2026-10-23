@@ -6,7 +6,7 @@ const spawn_util = require("utility.spawn");
 
 module.exports = {
 	run: function (creep) {
-		if (creep.ticksToLive < 200 || creep.hits < creep.hitsMax) {
+		if (creep.ticksToLive < 300 || creep.hits < creep.hitsMax) {
 			scout.return(Game.rooms[creep.memory.home], creep);
 			return null;
 		}

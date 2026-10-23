@@ -12,7 +12,7 @@ module.exports = {
 			creep.moveTo(target, {
 				visualizePathStyle: { stroke: "#FF0000" },
 			});
-		} else if (creep.ticksToLive < 500 || creep.hits < creep.hitsMax) {
+		} else if (creep.ticksToLive < 400 || creep.hits < creep.hitsMax) {
 			scout.return(home, creep);
 		} else {
 			scout.explore(home, creep);

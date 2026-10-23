@@ -8,7 +8,7 @@ module.exports = {
 		console.log("Scout [" + creep.name + "]");
 		console.log("\tTicks to live: " + creep.ticksToLive);
 		console.log("\tHealth: " + creep.hits + "/" + creep.hitsMax);
-		if (creep.ticksToLive < 500 || creep.hits < creep.hitsMax) {
+		if (creep.ticksToLive < 400 || creep.hits < creep.hitsMax) {
 			scout.return(home, creep);
 		} else {
 			scout.explore(home, creep);
