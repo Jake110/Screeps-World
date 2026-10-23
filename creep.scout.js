@@ -1,4 +1,5 @@
 const memory = require("utility.memory");
+const spawn_util = require("utility.spawn");
 
 function get_direction(exit) {
 	let direction;
@@ -97,7 +98,9 @@ module.exports = {
 				log = "Guard [" + creep.name + "] standing down. Recycling...";
 			}
 			console.log(log);
-			creep.memory.recycle = home.memory.core;
+			let spawn = spawn_util.get_spawn(home);
+			creep.memory.recycle =
+				home.name + "_" + memory.pos_to_coord(spawn.pos);
 			if (creep.memory.role == "scout") {
 				for (let room_name in home.memory.defend.concat(
 					home.memory.expand,
@@ -180,14 +183,9 @@ module.exports = {
 		}
 		let exit = creep.pos.findClosestByPath(next_step.exit);
 		let blocked_exits = [];
-		let options = { maxRooms: 1 };
-		if (road_placement) {
-			options.ignoreCreeps = true;
-			options.swampCost = 1;
-		}
 		while (
 			[ERR_NO_PATH, ERR_INVALID_TARGET].indexOf(
-				creep.moveTo(exit, options),
+				creep.moveTo(exit, { maxRooms: 1 }),
 			) != -1
 		) {
 			if (
@@ -198,7 +196,6 @@ module.exports = {
 			) {
 				if (exit == null) {
 					exit = creep.pos.findClosestByRange(next_step.exit);
-					
 				}
 				// Check for blocking walls to dismantle
 				let wall = creep.pos.findClosestByPath(
@@ -211,7 +208,7 @@ module.exports = {
 						creep.attack(wall);
 						creep.rangedAttack(wall);
 						creep.dismantle(wall);
-						creep.moveTo(target, {
+						creep.moveTo(wall, {
 							visualizePathStyle: { stroke: "#FF0000" },
 						});
 						return true;

@@ -2,6 +2,7 @@ const hauler = require("creep.hauler");
 const memory = require("utility.memory");
 const remote = require("creep.remote");
 const scout = require("creep.scout");
+const spawn_util = require("utility.spawn");
 
 module.exports = {
 	run: function (creep) {
@@ -9,7 +10,7 @@ module.exports = {
 			scout.return(Game.rooms[creep.memory.home], creep);
 			return null;
 		}
-		remote.road_check(creep)
+		remote.road_check(creep);
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
 		remote.confirm_remote_source(creep);
 		if (remote.build_and_scavenge(creep)) {
@@ -20,10 +21,7 @@ module.exports = {
 			target_room = creep.memory.home;
 		}
 		if (creep.room.name == target_room) {
-			if (creep.memory.remote == creep.memory.home) {
-				// Creep was sent home for recycling
-				creep.memory.recycle = creep.room.memory.core;
-			} else if (target_room == creep.memory.home) {
+			if (target_room == creep.memory.home) {
 				let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
 					filter: function (structure) {
 						return (
@@ -74,7 +72,9 @@ module.exports = {
 		} else {
 			if (!scout.travel(target_room, creep, true)) {
 				// Cannot reach target room, recycling...
-				creep.memory.remote = creep.memory.home;
+				creep.memory.recycle = spawn_util.get_spawn_coord(
+					Game.rooms[creep.memory.home],
+				);
 			}
 		}
 	},

@@ -1,5 +1,6 @@
 const hauler = require("creep.hauler");
 const memory = require("utility.memory");
+const spawn_util = require("utility.spawn");
 
 module.exports = {
 	build: function (creep) {
@@ -90,11 +91,16 @@ module.exports = {
 				) {
 					// No Creeps are being recycled
 					// Recycle this creep so we can spawn a Harvester
-					let nearest_spawn =
-						creep.pos.findClosestByPath(FIND_MY_SPAWNS);
+					let nearest_spawn = spawn_util.get_spawn(
+						creep.room,
+						creep.pos,
+					);
 					if (nearest_spawn) {
-						creep.memory.recycle = memory.pos_to_coord(
-							nearest_spawn.pos,
+						creep.memory.recycle = spawn_util.get_spawn_coord(
+							null,
+							null,
+							null,
+							nearest_spawn,
 						);
 						console.log(
 							creep.room.name +

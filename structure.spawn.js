@@ -3,32 +3,22 @@ const combat = require("utility.combat");
 const creeper = require("creep.control");
 const harvester = require("creep.harvest");
 const memory = require("utility.memory");
+const scout = require("creep.scout");
+const spawn_util = require("utility.spawn");
 
-function get_spawn(room, used_spawners, recycle_check = false) {
-	let spawn = null;
-	let energy = -1;
-	room.find(FIND_MY_SPAWNS, {
-		filter: function (spawner) {
-			return (
-				!spawner.spawning &&
-				(!recycle_check || recycle_check != spawner.memory.recycling) &&
-				!used_spawners.includes(spawner.id)
-			);
-		},
-	}).forEach(function (spawner) {
-		let spawn_energy = spawner.store[RESOURCE_ENERGY];
-		if (spawn_energy > energy) {
-			spawn = spawner;
-			energy = spawn_energy;
-		}
-	});
-	return spawn;
-}
-
-function saved_spawn(room, creep, mode) {
-	return memory
-		.coord_to_pos(creep.memory[mode], room)
+function saved_spawn(creep, mode) {
+	let spawn_coord = creep.memory[mode].split("_");
+	let spawn = memory
+		.coord_to_pos(spawn_coord[1], Game.rooms[spawn_coord[0]])
 		.lookFor(LOOK_STRUCTURES)[0];
+	try {
+		if (spawn.structureType == STRUCTURE_SPAWN) {
+			return spawn;
+		}
+	} catch {
+		return null;
+	}
+	return null;
 }
 
 module.exports = {
@@ -91,16 +81,27 @@ module.exports = {
 							timer = _creep.ticksToLive;
 						}
 					});
+					let spawn_coord = [];
+					if (creep.room.name == room.name) {
+						spawn_coord = spawn_util.get_spawn_coord(
+							room,
+							creep.pos,
+						);
+					} else {
+						spawn_coord = spawn_util.get_spawn_coord(
+							Game.rooms[creep],
+						);
+					}
 					console.log(
 						"Recycling unnneeded [" +
 							role.name +
 							"] creep [" +
 							creep.name +
 							"] at [" +
-							room.memory.core +
+							spawn_coord +
 							"]",
 					);
-					creep.memory.recycle = room.memory.core;
+					creep.memory.recycle = spawn_coord;
 					creeps = creeps.filter(function (_creep) {
 						return _creep !== creep;
 					});
@@ -120,7 +121,7 @@ module.exports = {
 				});
 				let role_additions = 0;
 				while (role_count + role_additions < role.max) {
-					let spawn = get_spawn(room, used_spawners);
+					let spawn = spawn_util.get_spawn(room, null, used_spawners);
 					if (!spawn) {
 						// No spawn was available
 						return null;
@@ -172,10 +173,6 @@ module.exports = {
 						memory: creep_memory,
 					});
 					used_spawners.push(spawn.id);
-					if (spawn.memory.recycling) {
-						Memory.creeps[spawn.memory.recycling].recycle = false;
-						spawn.memory.recycling = false;
-					}
 				}
 			});
 		}
@@ -227,17 +224,9 @@ module.exports = {
 					{ color: "#2bff00", opacity: 0.8 },
 				);
 			}
-
-			// Creep Recycling Check
-			if (spawn.memory.recycling) {
-				if (!Game.creeps[spawn.memory.recycling]) {
-					spawn.memory.recycling = false;
-				}
-			}
 		});
 
 		// Renew & Recycle Creeps
-		let spawn = get_spawn(room, used_spawners, true);
 		room.find(FIND_MY_CREEPS).forEach(function (creep) {
 			if (Game.time % 7 == 0) {
 				let role = creep.memory.role;
@@ -245,7 +234,8 @@ module.exports = {
 				creep.body.forEach(function (part) {
 					creep_body.push(part.type);
 				});
-				if (spawn && !creep.memory.renew) {
+				let spawn = spawn_util.get_spawn(room, creep.pos, used_spawners);
+				if (spawn && !creep.memory.recycle) {
 					let spawn_body = creeper.body(
 						role,
 						spawn.store[RESOURCE_ENERGY] + extension_energy,
@@ -253,27 +243,36 @@ module.exports = {
 					let dry_run = spawn.spawnCreep(spawn_body, "TestSpawn", {
 						dryRun: true,
 					});
-					if (dry_run == OK) {
-						if (
-							creep_body.join("-") != spawn_body.join("-") &&
-							spawn_body.length > creep_body.length &&
-							!spawn.memory.recycling
-						) {
-							console.log(
-								room.name +
-									" - Recycling " +
-									role +
-									": " +
-									creep.name,
-							);
-							creep.memory.recycle = memory.pos_to_coord(
-								spawn.pos,
-							);
-							if (role == "harvester") {
-								harvester.reset_target(creep);
-							}
-							spawn.memory.recycling = creep.name;
-							spawn = get_spawn(room, used_spawners, true);
+					if (
+						dry_run == OK &&
+						creep_body.join("-") != spawn_body.join("-") &&
+						spawn_body.length >= creep_body.length
+					) {
+						console.log(
+							room.name +
+								" - Recycling " +
+								role +
+								": " +
+								creep.name,
+						);
+						let spawn_coord = spawn_util.get_spawn_coord(
+							null,
+							null,
+							null,
+							spawn,
+						);
+						console.log(
+							"Recycling obsolete [" +
+								role.name +
+								"] creep [" +
+								creep.name +
+								"] at [" +
+								spawn_coord +
+								"]",
+						);
+						creep.memory.recycle = spawn_coord;
+						if (role == "harvester") {
+							harvester.reset_target(creep);
 						}
 					}
 				}
@@ -284,53 +283,58 @@ module.exports = {
 				) {
 					// If a creep has less than 200 ticks left
 					// and doesn't have a CLAIM part, trigger renew process
-					let nearest_spawn = creep.pos.findClosestByPath(spawns);
+					let nearest_spawn = spawn_util.get_spawn_coord(room, creep.pos, used_spawners)
 					if (nearest_spawn) {
-						creep.memory.renew = memory.pos_to_coord(
-							nearest_spawn.pos,
-						);
+						creep.memory.renew = nearest_spawn
 						if (creep.memory.role == "harvester") {
 							harvester.reset_target(creep);
 						}
 					}
 				}
 			}
-			if (creep.memory.recycle) {
-				let _spawn = saved_spawn(room, creep, "recycle");
-				if (_spawn) {
-					let result = _spawn.recycleCreep(creep);
-					if (result == ERR_NOT_IN_RANGE) {
-						creep.moveTo(_spawn, {
-							visualizePathStyle: { stroke: "#000000" },
-						});
-					} else if (result == OK) {
-						_spawn.memory.recycling = false;
-					}
-				} else {
-					// The spawn no longer exists, reset recycle
-					creep.memory.recycle = false;
+			if (creep.memory.recycle || creep.memory.renew) {
+				let mode = "renew";
+				if (creep.memory.recycle) {
+					mode = "recycle";
 				}
-			} else if (creep.memory.renew) {
-				let _spawn = saved_spawn(room, creep, "renew");
+				let _spawn = saved_spawn(creep, mode);
+				if (!_spawn || _spawn.spawning) {
+					_spawn = spawn_util.get_spawn(
+						Game.rooms[creep.memory.recycle.split("_")[0]],
+						creep.pos,
+						used_spawners,
+					);
+				}
 				if (_spawn) {
-					let result = _spawn.renewCreep(creep);
-					if (result == ERR_NOT_IN_RANGE) {
-						creep.moveTo(_spawn, {
-							visualizePathStyle: { stroke: "#000000" },
-						});
-					} else if (result == ERR_NOT_ENOUGH_ENERGY) {
-						if (
-							creep.transfer(_spawn, RESOURCE_ENERGY) ==
-							ERR_NOT_ENOUGH_RESOURCES
-						) {
+					if (creep.room == _spawn.room) {
+						let result = null;
+						if (mode == "recycle") {
+							result = _spawn.recycleCreep(creep);
+						} else {
+							result = _spawn.renewCreep(creep);
+						}
+						if (result == ERR_NOT_IN_RANGE) {
+							creep.moveTo(_spawn, {
+								visualizePathStyle: { stroke: "#000000" },
+							});
+						} else if (result == ERR_NOT_ENOUGH_ENERGY) {
+							// will only trigger for renew
+							if (
+								creep.transfer(_spawn, RESOURCE_ENERGY) ==
+								ERR_NOT_ENOUGH_RESOURCES
+							) {
+								creep.memory.renew = false;
+							}
+						}
+						if (creep.ticksToLive >= 1300) {
 							creep.memory.renew = false;
 						}
-					}
-					if (creep.ticksToLive >= 1300) {
-						creep.memory.renew = false;
+					} else {
+						scout.travel(_spawn.room.name, creep, true);
 					}
 				} else {
-					// The spawn no longer exists, reset renew
+					// The spawn no longer exists, reset
+					creep.memory.recycle = false;
 					creep.memory.renew = false;
 				}
 			}
