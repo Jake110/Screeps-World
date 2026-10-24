@@ -90,14 +90,16 @@ module.exports = {
 			}
 		}
 	},
-	map_room: function (creep) {
-		try {
-			if (creep.room.name != creep.memory.route[0].room) {
-				// only trigger on the first tick in a new room
+	map_room: function (creep, override = false) {
+		if (!override) {
+			try {
+				if (creep.room.name != creep.memory.route[0].room) {
+					// only trigger on the first tick in a new room
+					return null;
+				}
+			} catch {
 				return null;
 			}
-		} catch {
-			return null;
 		}
 		let map = Memory.map[creep.room.name];
 		if (map == null) {

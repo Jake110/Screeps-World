@@ -1,3 +1,4 @@
+const combat = require("utility.combat");
 const hauler = require("creep.hauler");
 const memory = require("utility.memory");
 const remote = require("creep.remote");
@@ -7,6 +8,9 @@ const spawn_util = require("utility.spawn");
 module.exports = {
 	run: function (creep) {
 		if (creep.ticksToLive < 300 || creep.hits < creep.hitsMax) {
+			if (!combat.safe_check(creep, 50)) {
+				memory.map_room(creep, true);
+			}
 			scout.return(creep);
 			return null;
 		}

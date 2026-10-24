@@ -9,10 +9,19 @@ module.exports = {
 			creep.moveTo(target, {
 				visualizePathStyle: { stroke: "#FF0000" },
 			});
-		} else if (creep.ticksToLive < 400 || creep.hits < creep.hitsMax) {
-			scout.return(creep);
 		} else {
-			scout.explore(creep);
+			if (
+				["enemy", "hostile"].includes(
+					Memory.map[creep.room.name].status,
+				)
+			) {
+				memory.map_room(creep, true);
+			}
+			if (creep.ticksToLive < 400 || creep.hits < creep.hitsMax) {
+				scout.return(creep);
+			} else {
+				scout.explore(creep);
+			}
 		}
 	},
 };
