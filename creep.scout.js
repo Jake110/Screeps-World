@@ -44,7 +44,7 @@ function get_route(room_start, room_end, avoid_list, blocked = null) {
 
 module.exports = {
 	explore: function (creep) {
-		let home = Game.rooms[creep.memory.home]
+		let home = Game.rooms[creep.memory.home];
 		console.log("[" + creep.name + "] exploring...");
 		let map = Memory.map;
 		let target = creep.memory.target;
@@ -155,7 +155,8 @@ module.exports = {
 	},
 	return: function (creep) {
 		if (creep.room.name == creep.memory.home) {
-			creep.moveTo(memory.coord_to_pos(Game.rooms[creep.memory.home].memory.core, home));
+			let home = Game.rooms[creep.memory.home];
+			creep.moveTo(memory.coord_to_pos(home.core, home));
 		} else {
 			this.travel(creep.memory.home, creep, true);
 		}
