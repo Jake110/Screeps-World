@@ -103,9 +103,7 @@ module.exports = {
 				log = "Guard [" + creep.name + "] standing down. Recycling...";
 			}
 			console.log(log);
-			let spawn = spawn_util.get_spawn(home);
-			creep.memory.recycle =
-				home.name + "_" + memory.pos_to_coord(spawn.pos);
+			creep.memory.recycle = spawn_util.get_spawn_coord(home)
 			if (creep.memory.role == "scout") {
 				for (let room_name in home.memory.defend.concat(
 					home.memory.expand,
@@ -160,6 +158,7 @@ module.exports = {
 		}
 	},
 	travel: function (target, creep, avoid_hostiles) {
+		memory.map_room(creep);
 		let avoid = [];
 		if (avoid_hostiles) {
 			avoid = this.get_enemy_rooms();

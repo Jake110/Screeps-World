@@ -1,10 +1,8 @@
 const combat = require("utility.combat");
-const memory = require("utility.memory");
 const scout = require("creep.scout");
 
 module.exports = {
 	run: function (creep) {
-		memory.map_room(creep);
 		let target = combat.melee_target(creep);
 		if (target) {
 			creep.attack(target);
