@@ -56,23 +56,29 @@ module.exports = {
 		if (target == null) {
 			let route = null;
 			let range = 100;
-			let room_status = ["pending"];
-			let room_list = home.memory.defend.concat(home.memory.expand);
-			if (creep.memory.role == "guard") {
-				room_status = ["hostile", "rival"];
-				room_list = home.memory.defend;
-			}
-			console.log(
-				"\tLooking for rooms with a statuses of: " + room_status,
-			);
+			let current_tick = Game.time;
 			for (let room_name in map) {
-				console.log("\t\tChecking Room [" + room_name + "]");
+				let room_map = map[room_name];
+				console.log(
+					"\tChecking Room [" +
+						room_name +
+						"] with status [" +
+						room_map.status +
+						"]",
+				);
 				if (
-					room_status.includes(map[room_name].status) &&
-					room_list.indexOf(room_name) != -1
+					(creep.memory.role == "scout" &&
+						(room_map.status == "pending" ||
+							room_map.last_checked < current_tick - 500) &&
+						home.memory.defend
+							.concat(home.memory.expand)
+							.includes(room_name)) ||
+					(creep.memory.role == "guard" &&
+						["hostile", "rival"].includes(room_map.status) &&
+						home.memory.defend.includes(room_name))
 				) {
 					let path = get_route(creep.room, room_name, avoid_rooms);
-					console.log("\t\t\tPath length: " + path.length);
+					console.log("\t\tPath length: " + path.length);
 					if (path.length < range) {
 						target = room_name;
 						route = path;
@@ -88,12 +94,6 @@ module.exports = {
 		console.log("\tTarget: " + creep.memory.target);
 		console.log("\tRoute length: " + creep.memory.route.length);
 		console.log("\tStatus: " + map[creep.memory.target].status);
-		console.log(
-			"\tIn room list index: " +
-				home.memory.defend
-					.concat(home.memory.expand)
-					.indexOf(creep.memory.target),
-		);
 		if (creep.memory.target == null) {
 			let log =
 				"Scout [" +

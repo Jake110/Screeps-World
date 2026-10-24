@@ -181,10 +181,14 @@ module.exports = {
 		let hostile = 0;
 		let unexplored = 0;
 		let room_list = room.memory.defend.concat(room.memory.expand);
+		let current_tick = Game.time;
 		room_list.forEach(function (room_name) {
 			let map = Memory.map[room_name];
 			if (map) {
-				if (map.status == "pending") {
+				if (
+					map.status == "pending" ||
+					map.last_checked < current_tick - 500
+				) {
 					unexplored++;
 				}
 				if (
