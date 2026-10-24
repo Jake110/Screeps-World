@@ -300,7 +300,7 @@ module.exports = {
 				let _spawn = saved_spawn(creep, mode);
 				if (!_spawn || _spawn.spawning) {
 					_spawn = spawn_util.get_spawn(
-						Game.rooms[creep.memory.recycle.split("_")[0]],
+						Game.rooms[creep.memory[mode].split("_")[0]],
 						creep.pos,
 						used_spawners,
 					);
