@@ -256,7 +256,7 @@ module.exports = {
 								creep.name,
 						);
 						let spawn_coord = spawn_util.get_spawn_coord(
-							null,
+							spawn.room,
 							null,
 							null,
 							spawn,

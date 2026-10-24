@@ -97,7 +97,7 @@ module.exports = {
 					);
 					if (nearest_spawn) {
 						creep.memory.recycle = spawn_util.get_spawn_coord(
-							null,
+							nearest_spawn.room,
 							null,
 							null,
 							nearest_spawn,
