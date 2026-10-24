@@ -56,9 +56,13 @@ module.exports = {
 		}
 	},
 	road_check: function (creep) {
-		if (creep.room.name != creep.memory.route[0].room) {
-			// only trigger on the first tick in a new room
-			return null;
+		try {
+			if (creep.room.name != creep.memory.route[0].room) {
+				// only trigger on the first tick in a new room
+				return null;
+			}
+		} catch {
+			return null
 		}
 		if (!creep.room.memory.remote_roads) {
 			creep.room.memory.remote_roads = [];
