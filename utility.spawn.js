@@ -31,6 +31,9 @@ module.exports = {
 		if (!spawn) {
 			spawn = this.get_spawn(room, pos, used_spawners);
 		}
-		return room.name + "_" + memory.pos_to_coord(spawn.pos);
+		if (spawn) {
+			return room.name + "_" + memory.pos_to_coord(spawn.pos);
+		}
+		return null;
 	},
 };
