@@ -118,7 +118,7 @@ module.exports = {
 			return null;
 		}
 		if (map.status == "pending") {
-			if (creep.memory.role) {
+			if (creep.memory.role== "scout") {
 				creep.memory.target = null;
 				creep.memory.route = null;
 			}
