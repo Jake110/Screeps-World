@@ -91,6 +91,14 @@ module.exports = {
 		}
 	},
 	map_room: function (creep) {
+		try {
+			if (creep.room.name != creep.memory.route[0].room) {
+				// only trigger on the first tick in a new room
+				return null;
+			}
+		} catch {
+			return null;
+		}
 		let map = Memory.map[creep.room.name];
 		if (map == null) {
 			map = {
@@ -98,30 +106,11 @@ module.exports = {
 			};
 		}
 		console.log("Mapping room: " + creep.room.name);
-		if (
-			[0, 49].indexOf(creep.pos.x) == -1 &&
-			[0, 49].indexOf(creep.pos.y) == -1 &&
-			creep.memory.role &&
-			map.status != "pending"
-		) {
-			// Only run mapping when at an exit
-			console.log("\tSkipping");
-			console.log("\tPos: " + creep.pos);
-			console.log("\tRoom status: " + map.status);
-			if (
-				creep.memory.target == creep.room.name &&
-				creep.memory.role == "scout"
-			) {
-				creep.memory.target = null;
-				creep.memory.route = null;
-			}
-			return null;
+		if (creep.room.name == creep.memory.target) {
+			creep.memory.target = null;
+			creep.memory.route = null;
 		}
 		if (map.status == "pending") {
-			if (creep.memory.role== "scout") {
-				creep.memory.target = null;
-				creep.memory.route = null;
-			}
 			let sources = creep.room.find(FIND_SOURCES);
 			if (sources.length > 0) {
 				map.sources = [];
@@ -145,7 +134,7 @@ module.exports = {
 			}
 		}
 		if (owned) {
-			map.status = "owned";
+			map.status = controller.my ? "mine":"enemy";
 		} else if (combat.safe_check(creep, 50)) {
 			map.status = "explored";
 		} else {

@@ -48,6 +48,10 @@ module.exports = {
 		console.log("[" + creep.name + "] exploring...");
 		let map = Memory.map;
 		let target = creep.memory.target;
+		if (creep.room.name == target) {
+			// find new target if already in room
+			target = null
+		}
 		let avoid_rooms = this.get_enemy_rooms();
 		if (target == null) {
 			let route = null;
@@ -141,13 +145,7 @@ module.exports = {
 		let map = Memory.map;
 		let avoid_rooms = [];
 		for (let room_name in map) {
-			if (map[room_name].status == "owned") {
-				room = Game.rooms[room_name];
-				if (room != null) {
-					if (room.controller.my) {
-						continue;
-					}
-				}
+			if (map[room_name].status == "enemy") {
 				avoid_rooms.push(room_name);
 			}
 		}
