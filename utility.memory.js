@@ -138,7 +138,11 @@ module.exports = {
 		if (owned) {
 			map.status = controller.my ? "mine":"enemy";
 		} else if (combat.safe_check(creep, 50)) {
-			map.status = "explored";
+			if (combat.rival_check(creep, 50)) {
+				map.status == "rival"
+			} else {
+				map.status = "explored";
+			}
 		} else {
 			map.status = "hostile";
 		}

@@ -11,7 +11,7 @@ module.exports = {
 			});
 		} else {
 			if (
-				["enemy", "hostile"].includes(
+				["enemy", "hostile", "rival"].includes(
 					Memory.map[creep.room.name].status,
 				)
 			) {

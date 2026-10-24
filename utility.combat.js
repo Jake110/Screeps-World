@@ -49,22 +49,6 @@ function weigh_targets(pos, range, hostiles) {
 }
 
 module.exports = {
-	safe_check: function (target, range = 10) {
-		let pos = target;
-		if (target.pos) {
-			pos = target.pos;
-		}
-		return (
-			pos.findInRange(FIND_HOSTILE_CREEPS, range, {
-				filter: function (object) {
-					return (
-						object.getActiveBodyparts(ATTACK) != 0 ||
-						object.getActiveBodyparts(RANGED_ATTACK) != 0
-					);
-				},
-			}).length == 0
-		);
-	},
 	heal_target: function (creep) {
 		return creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 			filter: function (my_creep) {
@@ -129,10 +113,23 @@ module.exports = {
 							return false;
 						}
 						if (creep.room.memory.walls) {
-							return (
-								creep.room.memory.walls.indexOf(
-									memory.pos_to_coord(structure.pos),
-								) == -1
+							return creep.room.memory.walls.includes(
+								memory.pos_to_coord(structure.pos),
+							);
+						}
+						return true;
+					},
+				});
+			}
+			if (!target) {
+				target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+					filter: function (structure) {
+						if (structure.structureType != STRUCTURE_ROAD) {
+							return false;
+						}
+						if (creep.room.memory.roads) {
+							return creep.room.memory.roads.includes(
+								memory.pos_to_coord(structure.pos),
 							);
 						}
 						return true;
@@ -151,5 +148,36 @@ module.exports = {
 		});
 		return weigh_targets(pos, range, hostiles.concat(towers));
 	},
-	stand_down_in: 500,
+	rival_check: function (target, range = 10) {
+		let pos = target;
+		if (target.pos) {
+			pos = target.pos;
+		}
+		return (
+			pos.findInRange(FIND_HOSTILE_CREEPS, range, {
+				filter: function (object) {
+					return (
+						object.getActiveBodyparts(CARRY) != 0 ||
+						object.getActiveBodyparts(WORK) != 0
+					);
+				},
+			}).length == 0
+		);
+	},
+	safe_check: function (target, range = 10) {
+		let pos = target;
+		if (target.pos) {
+			pos = target.pos;
+		}
+		return (
+			pos.findInRange(FIND_HOSTILE_CREEPS, range, {
+				filter: function (object) {
+					return (
+						object.getActiveBodyparts(ATTACK) != 0 ||
+						object.getActiveBodyparts(RANGED_ATTACK) != 0
+					);
+				},
+			}).length == 0
+		);
+	},
 };
