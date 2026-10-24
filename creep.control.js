@@ -101,7 +101,7 @@ module.exports = {
 					while (energy - cost >= set_cost) {
 						work.push(WORK);
 						parts.push(CARRY);
-						move = move.concat([MOVE,MOVE]);
+						move = move.concat([MOVE, MOVE]);
 						cost += set_cost;
 						if (parts.length == 12) {
 							break;
@@ -189,7 +189,7 @@ module.exports = {
 				}
 				if (
 					room.memory.defend.indexOf(room_name) != -1 &&
-					map.status == "hostile"
+					["hostile", "rival"].includes(map.status)
 				) {
 					hostile++;
 				}

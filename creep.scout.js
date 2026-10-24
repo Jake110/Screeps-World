@@ -50,25 +50,25 @@ module.exports = {
 		let target = creep.memory.target;
 		if (creep.room.name == target) {
 			// find new target if already in room
-			target = null
+			target = null;
 		}
 		let avoid_rooms = this.get_enemy_rooms();
 		if (target == null) {
 			let route = null;
 			let range = 100;
-			let room_status = "pending";
+			let room_status = ["pending"];
 			let room_list = home.memory.defend.concat(home.memory.expand);
 			if (creep.memory.role == "guard") {
-				room_status = "hostile";
+				room_status = ["hostile", "rival"];
 				room_list = home.memory.defend;
 			}
 			console.log(
-				"\tLooking for rooms with a status of [" + room_status + "]",
+				"\tLooking for rooms with a statuses of: " + room_status,
 			);
 			for (let room_name in map) {
 				console.log("\t\tChecking Room [" + room_name + "]");
 				if (
-					map[room_name].status == room_status &&
+					room_status.includes(map[room_name].status) &&
 					room_list.indexOf(room_name) != -1
 				) {
 					let path = get_route(creep.room, room_name, avoid_rooms);
@@ -103,7 +103,7 @@ module.exports = {
 				log = "Guard [" + creep.name + "] standing down. Recycling...";
 			}
 			console.log(log);
-			creep.memory.recycle = spawn_util.get_spawn_coord(home)
+			creep.memory.recycle = spawn_util.get_spawn_coord(home);
 			if (creep.memory.role == "scout") {
 				for (let room_name in home.memory.defend.concat(
 					home.memory.expand,
