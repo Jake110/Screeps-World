@@ -41,7 +41,11 @@ module.exports = {
 			.lookFor(LOOK_STRUCTURES)[0];
 
 		// Ensure the room is mapped
-		if (Memory.map[room.name].status == "pending") {
+		let room_map = Memory.map[room.name];
+		if (
+			room_map.status == "pending" ||
+			room_map.last_checked < Game.time - 400
+		) {
 			memory.map_room(core_spawn);
 		}
 
@@ -234,7 +238,11 @@ module.exports = {
 				creep.body.forEach(function (part) {
 					creep_body.push(part.type);
 				});
-				let spawn = spawn_util.get_spawn(room, creep.pos, used_spawners);
+				let spawn = spawn_util.get_spawn(
+					room,
+					creep.pos,
+					used_spawners,
+				);
 				if (spawn && !creep.memory.recycle) {
 					let spawn_body = creeper.body(
 						role,
@@ -283,9 +291,13 @@ module.exports = {
 				) {
 					// If a creep has less than 200 ticks left
 					// and doesn't have a CLAIM part, trigger renew process
-					let nearest_spawn = spawn_util.get_spawn_coord(room, creep.pos, used_spawners)
+					let nearest_spawn = spawn_util.get_spawn_coord(
+						room,
+						creep.pos,
+						used_spawners,
+					);
 					if (nearest_spawn) {
-						creep.memory.renew = nearest_spawn
+						creep.memory.renew = nearest_spawn;
 						if (creep.memory.role == "harvester") {
 							harvester.reset_target(creep);
 						}
