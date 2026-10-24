@@ -156,7 +156,7 @@ module.exports = {
 	return: function (creep) {
 		if (creep.room.name == creep.memory.home) {
 			let home = Game.rooms[creep.memory.home];
-			creep.moveTo(memory.coord_to_pos(home.core, home));
+			creep.moveTo(memory.coord_to_pos(home.memory.core, home));
 		} else {
 			this.travel(creep.memory.home, creep, true);
 		}
