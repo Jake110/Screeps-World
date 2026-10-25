@@ -91,7 +91,7 @@ module.exports = {
 		}
 	},
 	map_room: function (creep, override = false) {
-		if (creep.memory.route.length == 0) {
+		if (!creep.memory.route || creep.memory.route.length == 0) {
 			override = true;
 		}
 		if (!override) {
