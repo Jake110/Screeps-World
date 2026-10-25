@@ -96,6 +96,11 @@ module.exports = {
 		console.log("\tRoute length: " + creep.memory.route.length);
 		console.log(creep.memory.route);
 		console.log("\tStatus: " + map[creep.memory.target].status);
+		console.log(
+			"\tTicks since last checked: " +
+				Game.time -
+				map[creep.memory.target].last_checked,
+		);
 		if (creep.memory.target == null) {
 			let log =
 				"Scout [" +
@@ -163,7 +168,7 @@ module.exports = {
 		memory.map_room(creep);
 		if (creep.room.name == target) {
 			// Already in target room
-			return true
+			return true;
 		}
 		let avoid = [];
 		if (avoid_hostiles) {
@@ -182,7 +187,7 @@ module.exports = {
 					"]",
 			);
 			creep.memory.route = get_route(creep.room.name, target, avoid);
-			console.log(creep.memory.route.length)
+			console.log(creep.memory.route.length);
 		}
 		let next_step = creep.memory.route[0];
 		if (next_step.room == creep.room.name) {
