@@ -178,7 +178,7 @@ module.exports = {
 					"]",
 			);
 			creep.memory.route = get_route(creep.room.name, target, avoid);
-			console.log(creep.memory.route)
+			console.log(JSON.parse(creep.memory.route))
 		}
 		let next_step = creep.memory.route[0];
 		if (next_step.room == creep.room.name) {
