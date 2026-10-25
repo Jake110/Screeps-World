@@ -186,6 +186,10 @@ module.exports = {
 					spawn.spawnCreep(creep.parts, new_name, {
 						memory: creep_memory,
 					});
+					if (spawn.memory.renew) {
+						Memory.creeps[spawn.memory.renew].renew = false;
+						spawn.memory.renew = false;
+					}
 					used_spawners.push(spawn.id);
 				}
 			});
