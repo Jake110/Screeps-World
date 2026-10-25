@@ -94,10 +94,13 @@ module.exports = {
 					let nearest_spawn = spawn_util.get_spawn(
 						creep.room,
 						creep.pos,
+						[],
+						true,
 					);
 					if (nearest_spawn) {
 						creep.memory.recycle = spawn_util.get_spawn_coord(
 							nearest_spawn.room,
+							null,
 							null,
 							null,
 							nearest_spawn,
@@ -113,10 +116,8 @@ module.exports = {
 		}
 	},
 	upgrade: function (creep) {
-		let controller = Game.rooms[creep.memory.home].controller
-		if (
-			creep.upgradeController(controller) == ERR_NOT_IN_RANGE
-		) {
+		let controller = Game.rooms[creep.memory.home].controller;
+		if (creep.upgradeController(controller) == ERR_NOT_IN_RANGE) {
 			creep.moveTo(controller, {
 				visualizePathStyle: { stroke: "#7b00ac" },
 			});

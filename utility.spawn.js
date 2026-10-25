@@ -1,10 +1,19 @@
 const memory = require("utility.memory");
 
 module.exports = {
-	get_spawn: function (room, pos = null, used_spawners = []) {
+	get_spawn: function (
+		room,
+		pos = null,
+		used_spawners = [],
+		ignore_renew = false,
+	) {
 		let spawns = room.find(FIND_MY_SPAWNS, {
 			filter: function (spawner) {
-				return !spawner.spawning && !used_spawners.includes(spawner.id);
+				return (
+					!spawner.spawning &&
+					!used_spawners.includes(spawner.id) &&
+					(ignore_renew || !spawner.memory.renew)
+				);
 			},
 		});
 		let spawn = null;
@@ -26,10 +35,11 @@ module.exports = {
 		room,
 		pos = null,
 		used_spawners = [],
+		ignore_renew=false,
 		spawn = null,
 	) {
 		if (!spawn) {
-			spawn = this.get_spawn(room, pos, used_spawners);
+			spawn = this.get_spawn(room, pos, used_spawners, ignore_renew);
 		}
 		if (spawn) {
 			return room.name + "_" + memory.pos_to_coord(spawn.pos);

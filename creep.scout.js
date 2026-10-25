@@ -92,7 +92,12 @@ module.exports = {
 				log = "Guard [" + creep.name + "] standing down. Recycling...";
 			}
 			console.log(log);
-			creep.memory.recycle = spawn_util.get_spawn_coord(home);
+			creep.memory.recycle = spawn_util.get_spawn_coord(
+				home,
+				null,
+				[],
+				true,
+			);
 			if (creep.memory.role == "scout") {
 				for (let room_name in home.memory.defend.concat(
 					home.memory.expand,

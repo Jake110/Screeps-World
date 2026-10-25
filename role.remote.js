@@ -78,6 +78,9 @@ module.exports = {
 				// Cannot reach target room, recycling...
 				creep.memory.recycle = spawn_util.get_spawn_coord(
 					Game.rooms[creep.memory.home],
+					null,
+					[],
+					true,
 				);
 			}
 		}

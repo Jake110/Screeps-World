@@ -90,10 +90,15 @@ module.exports = {
 						spawn_coord = spawn_util.get_spawn_coord(
 							room,
 							creep.pos,
+							[],
+							true,
 						);
 					} else {
 						spawn_coord = spawn_util.get_spawn_coord(
-							Game.rooms[creep],
+							room,
+							null,
+							[],
+							true,
 						);
 					}
 					console.log(
@@ -125,7 +130,12 @@ module.exports = {
 				});
 				let role_additions = 0;
 				while (role_count + role_additions < role.max) {
-					let spawn = spawn_util.get_spawn(room, null, used_spawners);
+					let spawn = spawn_util.get_spawn(
+						room,
+						null,
+						used_spawners,
+						true,
+					);
 					if (!spawn) {
 						// No spawn was available
 						return null;
@@ -238,49 +248,57 @@ module.exports = {
 				creep.body.forEach(function (part) {
 					creep_body.push(part.type);
 				});
-				let spawn = spawn_util.get_spawn(
-					room,
-					creep.pos,
-					used_spawners,
-				);
-				if (spawn && !creep.memory.recycle) {
-					let spawn_body = creeper.body(
-						role,
-						spawn.store[RESOURCE_ENERGY] + extension_energy,
-					).parts;
-					let dry_run = spawn.spawnCreep(spawn_body, "TestSpawn", {
-						dryRun: true,
-					});
-					if (
-						dry_run == OK &&
-						creep_body.join("-") != spawn_body.join("-") &&
-						spawn_body.length >= creep_body.length
-					) {
-						console.log(
-							room.name +
-								" - Recycling " +
-								role +
-								": " +
-								creep.name,
+				if (!creep.memory.recycle) {
+					let spawn = spawn_util.get_spawn(
+						room,
+						creep.pos,
+						used_spawners,
+						true,
+					);
+					if (spawn) {
+						let spawn_body = creeper.body(
+							role,
+							spawn.store[RESOURCE_ENERGY] + extension_energy,
+						).parts;
+						let dry_run = spawn.spawnCreep(
+							spawn_body,
+							"TestSpawn",
+							{
+								dryRun: true,
+							},
 						);
-						let spawn_coord = spawn_util.get_spawn_coord(
-							spawn.room,
-							null,
-							null,
-							spawn,
-						);
-						console.log(
-							"Recycling obsolete [" +
-								role.name +
-								"] creep [" +
-								creep.name +
-								"] at [" +
-								spawn_coord +
-								"]",
-						);
-						creep.memory.recycle = spawn_coord;
-						if (role == "harvester") {
-							harvester.reset_target(creep);
+						if (
+							dry_run == OK &&
+							creep_body.join("-") != spawn_body.join("-") &&
+							spawn_body.length >= creep_body.length
+						) {
+							console.log(
+								room.name +
+									" - Recycling " +
+									role +
+									": " +
+									creep.name,
+							);
+							let spawn_coord = spawn_util.get_spawn_coord(
+								spawn.room,
+								null,
+								null,
+								null,
+								spawn,
+							);
+							console.log(
+								"Recycling obsolete [" +
+									role.name +
+									"] creep [" +
+									creep.name +
+									"] at [" +
+									spawn_coord +
+									"]",
+							);
+							creep.memory.recycle = spawn_coord;
+							if (role == "harvester") {
+								harvester.reset_target(creep);
+							}
 						}
 					}
 				}
@@ -291,13 +309,20 @@ module.exports = {
 				) {
 					// If a creep has less than 200 ticks left
 					// and doesn't have a CLAIM part, trigger renew process
-					let nearest_spawn = spawn_util.get_spawn_coord(
+					let nearest_spawn = spawn_util.get_spawn(
 						room,
 						creep.pos,
 						used_spawners,
 					);
 					if (nearest_spawn) {
-						creep.memory.renew = nearest_spawn;
+						creep.memory.renew = spawn_util.get_spawn_coord(
+							room,
+							null,
+							null,
+							null,
+							nearest_spawn,
+						);
+						nearest_spawn.memory.renew = creep.name;
 						if (creep.memory.role == "harvester") {
 							harvester.reset_target(creep);
 						}
@@ -315,6 +340,7 @@ module.exports = {
 						Game.rooms[creep.memory[mode].split("_")[0]],
 						creep.pos,
 						used_spawners,
+						mode == "recycle" ? true : false,
 					);
 				}
 				if (_spawn) {
@@ -336,10 +362,12 @@ module.exports = {
 								ERR_NOT_ENOUGH_RESOURCES
 							) {
 								creep.memory.renew = false;
+								_spawn.memory.renew = false;
 							}
 						}
 						if (creep.ticksToLive >= 1300) {
 							creep.memory.renew = false;
+							_spawn.memory.renew = false;
 						}
 					} else {
 						scout.travel(_spawn.room.name, creep, true);
