@@ -108,10 +108,6 @@ module.exports = {
 			};
 		}
 		console.log("Mapping room: " + creep.room.name);
-		if (creep.room.name == creep.memory.target) {
-			creep.memory.target = null;
-			creep.memory.route = null;
-		}
 		if (map.status == "pending") {
 			let sources = creep.room.find(FIND_SOURCES);
 			if (sources.length > 0) {
