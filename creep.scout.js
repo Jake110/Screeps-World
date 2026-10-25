@@ -98,8 +98,7 @@ module.exports = {
 		console.log("\tStatus: " + map[creep.memory.target].status);
 		console.log(
 			"\tTicks since last checked: " +
-				Game.time -
-				map[creep.memory.target].last_checked,
+				(Game.time - map[creep.memory.target].last_checked).toString(),
 		);
 		if (creep.memory.target == null) {
 			let log =
