@@ -165,52 +165,54 @@ function place_rampart(room, start, end) {
  * @param {RoomPosition} target
  */
 function place_road(room, origin, target, mode, range = 0, force_tunnel) {
-	let route = [];
-	if (!force_tunnel) {
-		route = origin.findPathTo(target, {
+	let get_route = function (mode) {
+		let route = origin.findPathTo(target, {
 			ignoreCreeps: true,
 			ignoreRoads: true,
 			costCallback: function (room_name, costMatrix) {
 				let _room = null;
 				try {
 					_room = Game.rooms[room_name];
-				} catch (error) {}
+				} catch {}
 				if (_room != null) {
-					let adjust_matrix = function (pos) {
+					let block_square = function (pos) {
 						// Set all positions to be non-walkable
 						costMatrix.set(pos.x, pos.y, 0xff);
 					};
-					memory.build_pos(_room).forEach(adjust_matrix);
-					if (avoid) {
-						avoid.forEach(function (coord) {
-							adjust_matrix(memory.coord_to_pos(coord, _room));
-						});
+					if (mode == "tunnels") {
+						let terrain = Game.map.getRoomTerrain(_room);
+						for (let x = 1; x < 50; x++) {
+							for (let x = 1; x < 50; x++) {
+								if (
+									terrain.get(x, y) == TERRAIN_MASK_WALL
+								) {
+									let cost = 5
+									if (_room.memory.roads.includes(x + ":" + y)) {
+										cost = 10
+									}
+									costMatrix.set(x, y, cost);
+								}
+							}
+						}
+					}
+					if (_room.memory.core_pos) {
+						memory.build_pos(_room).forEach(block_square);
 					}
 				}
 			},
-			swampCost: 1,
+			swampCost: 3,
 		});
 		for (; range > 0; range--) {
 			route.pop();
 		}
-		if (!avoid) {
-			route.pop();
-			route.shift();
-		}
+		return route;
+	};
+	let route = [];
+	if (!force_tunnel) {
+		route = get_route("roads");
 	}
 	if (mode == "tunnels") {
-		let tunnel_route = [];
-		let x = origin.x;
-		let y = origin.y;
-		while (x != target.x && y != target.y) {
-			let step = step_with_coord(x, y, target, room);
-			tunnel_route.push(step);
-			x = step.split(":")[0];
-			y = step.split(":")[1];
-		}
-		for (; range > 0; range--) {
-			tunnel_route.pop();
-		}
+		let tunnel_route = get_route(mode);
 		if (tunnel_route.length < route.length / 2 || force_tunnel) {
 			tunnel_route.forEach(function (coord) {
 				save_road(room, coord);
