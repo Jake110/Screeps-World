@@ -91,8 +91,10 @@ module.exports = {
 				creep.memory.route = route;
 			}
 		}
+		console.log("\tCurrent Room: "+creep.room.name)
 		console.log("\tTarget: " + creep.memory.target);
 		console.log("\tRoute length: " + creep.memory.route.length);
+		console.log(creep.memory.route)
 		console.log("\tStatus: " + map[creep.memory.target].status);
 		if (creep.memory.target == null) {
 			let log =
