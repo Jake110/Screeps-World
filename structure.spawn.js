@@ -187,7 +187,10 @@ module.exports = {
 						memory: creep_memory,
 					});
 					if (spawn.memory.renew) {
-						Memory.creeps[spawn.memory.renew].renew = false;
+						let _creep = Memory.creeps[spawn.memory.renew];
+						if (_creep) {
+							_creep.renew = false;
+						}
 						spawn.memory.renew = false;
 					}
 					used_spawners.push(spawn.id);
@@ -241,6 +244,13 @@ module.exports = {
 					spawn.pos.y + 1,
 					{ color: "#2bff00", opacity: 0.8 },
 				);
+			}
+			let creep_name = spawn.memory.renew;
+			if (creep_name) {
+				let _creep = Memory.creeps[creep_name];
+				if (!_creep) {
+					spawn.memory.renew = false;
+				}
 			}
 		});
 
