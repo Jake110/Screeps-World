@@ -91,10 +91,10 @@ module.exports = {
 				creep.memory.route = route;
 			}
 		}
-		console.log("\tCurrent Room: "+creep.room.name)
+		console.log("\tCurrent Room: " + creep.room.name);
 		console.log("\tTarget: " + creep.memory.target);
 		console.log("\tRoute length: " + creep.memory.route.length);
-		console.log(creep.memory.route)
+		console.log(creep.memory.route);
 		console.log("\tStatus: " + map[creep.memory.target].status);
 		if (creep.memory.target == null) {
 			let log =
@@ -170,6 +170,13 @@ module.exports = {
 			creep.memory.route.length == 0 ||
 			creep.memory.route[creep.memory.route.length - 1].room != target
 		) {
+			console.log(
+				"Getting new route from [" +
+					creep.room.name +
+					"] to [" +
+					target +
+					"]",
+			);
 			creep.memory.route = get_route(creep.room.name, target, avoid);
 		}
 		let next_step = creep.memory.route[0];
