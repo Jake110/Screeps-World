@@ -95,8 +95,6 @@ module.exports = {
 			override = true;
 		}
 		if (!override) {
-			console.log("Room: " + creep.room.name);
-			console.log("Route length: " + creep.memory.route.length);
 			try {
 				if (creep.room.name != creep.memory.route[0].room) {
 					// only trigger on the first tick in a new room

@@ -83,15 +83,6 @@ module.exports = {
 				creep.memory.route = route;
 			}
 		}
-		console.log("\tCurrent Room: " + creep.room.name);
-		console.log("\tTarget: " + creep.memory.target);
-		console.log("\tRoute length: " + creep.memory.route.length);
-		console.log(creep.memory.route);
-		console.log("\tStatus: " + map[creep.memory.target].status);
-		console.log(
-			"\tTicks since last checked: " +
-				(Game.time - map[creep.memory.target].last_checked).toString(),
-		);
 		if (creep.memory.target == null) {
 			let log =
 				"Scout [" +
@@ -170,15 +161,7 @@ module.exports = {
 			creep.memory.route.length == 0 ||
 			creep.memory.route[creep.memory.route.length - 1].room != target
 		) {
-			console.log(
-				"Getting new route from [" +
-					creep.room.name +
-					"] to [" +
-					target +
-					"]",
-			);
 			creep.memory.route = get_route(creep.room.name, target, avoid);
-			console.log(creep.memory.route.length);
 		}
 		let next_step = creep.memory.route[0];
 		if (next_step.room == creep.room.name) {
