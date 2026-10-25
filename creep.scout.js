@@ -161,6 +161,10 @@ module.exports = {
 	},
 	travel: function (target, creep, avoid_hostiles) {
 		memory.map_room(creep);
+		if (creep.room.name == target) {
+			// Already in target room
+			return true
+		}
 		let avoid = [];
 		if (avoid_hostiles) {
 			avoid = this.get_enemy_rooms();
