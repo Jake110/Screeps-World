@@ -59,13 +59,6 @@ module.exports = {
 			let current_tick = Game.time;
 			for (let room_name in map) {
 				let room_map = map[room_name];
-				console.log(
-					"\tChecking Room [" +
-						room_name +
-						"] with status [" +
-						room_map.status +
-						"]",
-				);
 				if (
 					(creep.memory.role == "scout" &&
 						(room_map.status == "pending" ||
@@ -78,7 +71,6 @@ module.exports = {
 						home.memory.defend.includes(room_name))
 				) {
 					let path = get_route(creep.room, room_name, avoid_rooms);
-					console.log("\t\tPath length: " + path.length);
 					if (path.length < range) {
 						target = room_name;
 						route = path;

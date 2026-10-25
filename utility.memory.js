@@ -92,6 +92,9 @@ module.exports = {
 	},
 	map_room: function (creep, override = false) {
 		if (!override) {
+			console.log("Room: " + creep.room.name);
+			console.log("Route length: " + creep.memory.route.length);
+			console.log("Next room: " + creep.memory.route[0].room);
 			try {
 				if (creep.room.name != creep.memory.route[0].room) {
 					// only trigger on the first tick in a new room
@@ -132,10 +135,10 @@ module.exports = {
 			}
 		}
 		if (owned) {
-			map.status = controller.my ? "mine":"enemy";
+			map.status = controller.my ? "mine" : "enemy";
 		} else if (combat.safe_check(creep, 50)) {
 			if (combat.rival_check(creep, 50)) {
-				map.status == "rival"
+				map.status == "rival";
 			} else {
 				map.status = "explored";
 			}
