@@ -113,10 +113,11 @@ module.exports = {
 		}
 	},
 	upgrade: function (creep) {
+		let controller = Game.rooms[creep.memory.home].controller
 		if (
-			creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE
+			creep.upgradeController(controller) == ERR_NOT_IN_RANGE
 		) {
-			creep.moveTo(creep.room.controller, {
+			creep.moveTo(controller, {
 				visualizePathStyle: { stroke: "#7b00ac" },
 			});
 		}
