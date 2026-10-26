@@ -162,6 +162,9 @@ module.exports = {
 			avoid = this.get_enemy_rooms();
 		}
 		let new_route = false;
+		console.log(creep.memory.route);
+		console.log(creep.memory.route.length);
+		console.log(creep.memory.route[creep.memory.route.length - 1]);
 		if (!creep.memory.route) {
 			new_route = true;
 		} else if (creep.memory.route.length == 0) {
