@@ -6,72 +6,78 @@ const worker = require("creep.worker");
 module.exports = {
 	/** @param {Creep} creep **/
 	harvest: function (creep) {
-		if (creep.room.memory.containers.length > 0) {
+		let target;
+		let room = Game.rooms[creep.memory.home];
+		if (creep.memory.target) {
+			target = room.find(FIND_SOURCES, {
+				filter: { id: creep.memory.target },
+			})[0];
+		} else {
 			let max_harvesters = this.harvester_per_source(creep.room);
-			let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
+			let harvester_check = function (creep_s, source_id) {
+				return (
+					creep_s.room.find(FIND_MY_CREEPS, {
+						filter: function (_creep) {
+							return (
+								_creep.memory.role == "harvester" &&
+								_creep.memory.target == source_id &&
+								_creep.name != creep_s.name
+							);
+						},
+					}).length >= max_harvesters
+				);
+			};
+			let sources = room.find(FIND_SOURCES, {
 				filter: function (source) {
-					if (combat.safe_check(source.pos)) {
-						let valid = false;
-						source.pos
-							.findInRange(FIND_STRUCTURES, 2, {
-								filter: function (structure) {
-									return (
-										structure.structureType ==
-											STRUCTURE_CONTAINER ||
-										(structure.structureType ==
-											STRUCTURE_LINK &&
-											structure.my)
-									);
-								},
-							})
-							.forEach(function (structure) {
-								if (
-									structure.store.getFreeCapacity(
-										RESOURCE_ENERGY,
-									) > 0
-								) {
-									valid = true;
-								}
-							});
-						if (valid) {
-							return (harvesters =
-								creep.room.find(FIND_MY_CREEPS, {
-									filter: function (_creep) {
-										return (
-											_creep.memory.role == "harvester" &&
-											_creep.memory.target == source.id &&
-											_creep.name != creep.name
-										);
-									},
-								}).length < max_harvesters);
-						}
-					}
+					return combat.safe_check(source.pos);
 				},
 			});
-			if (source) {
-				creep.memory.target = source.id;
-				if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-					creep.moveTo(source, {
-						visualizePathStyle: { stroke: "#fff23e" },
-					});
+			let source_active, source_all;
+			let refresh_active,
+				refresh_all = 300;
+			sources.forEach(function (source) {
+				if (harvester_check(creep, source)) {
+					// ignore sources that are already fully staffed
+					return null;
 				}
+				let timer =
+					source.ticksToRegeneration -
+					creep.pos.findPathTo(source).length;
+				if (
+					(source.energy > 0 || timer <= 0) &&
+					timer < refresh_active
+				) {
+					source_active = source;
+					refresh_active = timer;
+				}
+				if (timer < refresh_all) {
+					source_all = source;
+					refresh_all = timer;
+				}
+			});
+			if (source_active) {
+				target = source_active;
+			} else if (source_all) {
+				target = source_all;
+			}
+			if (target) {
+				creep.memory.target = target.id;
+			}
+		}
+		if (target) {
+			if (creep.harvest(target) == ERR_NOT_IN_RANGE) {
+				creep.moveTo(target, {
+					visualizePathStyle: { stroke: "#fff23e" },
+				});
 			}
 		} else {
-			let harvest_target = creep.pos.findClosestByPath(
-				FIND_SOURCES_ACTIVE,
-				{
-					filter: function (source) {
-						return combat.safe_check(source);
-					},
-				},
+			console.log(
+				"Harvester [" +
+					creep.name +
+					"] cannot find a target source in [" +
+					creep.memory.home +
+					"]",
 			);
-			if (harvest_target) {
-				if (creep.harvest(harvest_target) == ERR_NOT_IN_RANGE) {
-					creep.moveTo(harvest_target, {
-						visualizePathStyle: { stroke: "#fff23e" },
-					});
-				}
-			}
 		}
 		let deposit_target = creep.pos.findInRange(FIND_MY_STRUCTURES, 3, {
 			filter: { structureType: STRUCTURE_LINK },
