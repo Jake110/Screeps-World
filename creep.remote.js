@@ -56,17 +56,19 @@ module.exports = {
 		}
 	},
 	road_check: function (creep) {
-		// check if any nearby roads need repairing
-		let road = creep.pos.findClosestByRange(FIND_STRUCTURES, 3, {
-			filter: function (structure) {
-				return (
-					structure.structureType == STRUCTURE_ROAD &&
-					structure.hits < structure.hitsMax
-				);
-			},
-		});
-		if (road) {
-			creep.repair(road);
+		if (creep.memory.full) {
+			// when full, check if any nearby roads need repairing
+			let road = creep.pos.findClosestByRange(FIND_STRUCTURES, 3, {
+				filter: function (structure) {
+					return (
+						structure.structureType == STRUCTURE_ROAD &&
+						structure.hits < structure.hitsMax
+					);
+				},
+			});
+			if (road) {
+				creep.repair(road);
+			}
 		}
 		try {
 			if (creep.room.name != creep.memory.route[0].room) {
