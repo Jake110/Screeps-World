@@ -14,8 +14,8 @@ module.exports = {
 			scout.return(creep);
 			return null;
 		}
-		remote.road_check(creep);
 		hauler.capacity_check(creep, RESOURCE_ENERGY);
+		remote.road_check(creep);
 		remote.confirm_remote_source(creep);
 		if (remote.build_and_scavenge(creep)) {
 			return null;
