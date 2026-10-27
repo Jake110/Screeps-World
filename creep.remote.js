@@ -56,13 +56,25 @@ module.exports = {
 		}
 	},
 	road_check: function (creep) {
+		// check if any nearby roads need repairing
+		let road = creep.pos.findClosestByRange(FIND_STRUCTURES, 3, {
+			filter: function (structure) {
+				return (
+					structure.structureType == STRUCTURE_ROAD &&
+					structure.hits < structure.hitsMax
+				);
+			},
+		});
+		if (road) {
+			creep.repair(road);
+		}
 		try {
 			if (creep.room.name != creep.memory.route[0].room) {
 				// only trigger on the first tick in a new room
 				return null;
 			}
 		} catch {
-			return null
+			return null;
 		}
 		if (!creep.room.memory.remote_roads) {
 			creep.room.memory.remote_roads = [];
@@ -89,14 +101,12 @@ module.exports = {
 			let rampart = creep.pos.findClosestByRange(ramparts);
 			set_up_road(creep, creep.pos, rampart);
 			// setup road from rampart to dropoff
-			let dropoff = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+			let dropoff = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 				ignoreCreeps: true,
 				swampCost: 1,
 				filter: function (structure) {
-					return (
-						[STRUCTURE_LINK, STRUCTURE_STORAGE].indexOf(
-							structure.structureType,
-						) != -1
+					return [STRUCTURE_LINK, STRUCTURE_STORAGE].includes(
+						structure.structureType,
 					);
 				},
 			});
