@@ -208,7 +208,7 @@ module.exports = {
 			{
 				name: "harvester",
 				max: Math.max(
-					1,
+					2,
 					Math.ceil(
 						source_count *
 							Math.min(3, harvester.harvester_per_source(room)),
