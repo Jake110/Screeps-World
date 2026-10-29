@@ -65,10 +65,14 @@ module.exports = {
 			}
 		}
 		if (target) {
-			if (creep.harvest(target) == ERR_NOT_IN_RANGE) {
+			let result = creep.harvest(target);
+			if (result == ERR_NOT_IN_RANGE) {
 				creep.moveTo(target, {
 					visualizePathStyle: { stroke: "#fff23e" },
 				});
+			} else if (result == ERR_NOT_ENOUGH_RESOURCES) {
+				// Reset the target if it's empty
+				this.reset_target(creep);
 			}
 		} else {
 			console.log(
