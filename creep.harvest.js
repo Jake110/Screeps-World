@@ -8,6 +8,13 @@ module.exports = {
 	harvest: function (creep) {
 		let target;
 		let room = Game.rooms[creep.memory.home];
+		console.log(
+			"Creep [" +
+				creep.name +
+				"] harvesting target [" +
+				creep.memory.target +
+				"]",
+		);
 		if (creep.memory.target) {
 			target = room.find(FIND_SOURCES, {
 				filter: { id: creep.memory.target },
@@ -55,6 +62,8 @@ module.exports = {
 					refresh_all = timer;
 				}
 			});
+			console.log("Active Source: " + source_active);
+			console.log("Any Source: " + source_all);
 			if (source_active) {
 				target = source_active;
 			} else if (source_all) {
@@ -64,6 +73,7 @@ module.exports = {
 				creep.memory.target = target.id;
 			}
 		}
+		console.log(target);
 		if (target) {
 			let result = creep.harvest(target);
 			if (result == ERR_NOT_IN_RANGE) {
