@@ -1,4 +1,4 @@
-const memory = require("utility.memory");
+const coord_lib = require("utility.coord");
 
 function weigh_targets(pos, range, hostiles) {
 	let max_weight = 0;
@@ -116,7 +116,7 @@ module.exports = {
 						}
 						if (creep.room.memory.walls) {
 							return creep.room.memory.walls.includes(
-								memory.pos_to_coord(structure.pos),
+								coord_lib.pos_to_coord(structure.pos),
 							);
 						}
 						return true;
@@ -131,7 +131,7 @@ module.exports = {
 						}
 						if (creep.room.memory.roads) {
 							return creep.room.memory.roads.includes(
-								memory.pos_to_coord(structure.pos),
+								coord_lib.pos_to_coord(structure.pos),
 							);
 						}
 						return true;
