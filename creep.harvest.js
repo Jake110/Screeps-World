@@ -49,13 +49,12 @@ module.exports = {
 					// ignore sources that are already fully staffed
 					return null;
 				}
+				let regen = source.ticksToRegeneration;
 				let timer =
-					source.ticksToRegeneration -
+					(isNaN(regen) ? 0 : regen) -
 					creep.pos.findPathTo(source).length;
 				console.log("\tTimer: " + timer);
-				console.log(
-					"\t\tTicks to regen: " + source.ticksToRegeneration,
-				);
+				console.log("\t\tTicks to regen: " + regen);
 				console.log(
 					"\t\tDistance: " + creep.pos.findPathTo(source).length,
 				);
