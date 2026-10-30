@@ -53,6 +53,12 @@ module.exports = {
 					source.ticksToRegeneration -
 					creep.pos.findPathTo(source).length;
 				console.log("\tTimer: " + timer);
+				console.log(
+					"\t\tTicks to regen: " + source.ticksToRegeneration,
+				);
+				console.log(
+					"\t\tDistance: " + creep.pos.findPathTo(source).length,
+				);
 				console.log("\tEnergy: " + source.energy);
 				if (
 					(source.energy > 0 || timer <= 0) &&
