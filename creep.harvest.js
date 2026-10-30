@@ -43,13 +43,17 @@ module.exports = {
 			let refresh_active,
 				refresh_all = 300;
 			sources.forEach(function (source) {
+				console.log("Checking Source at: " + source.pos);
 				if (harvester_check(creep, source)) {
+					console.log("\tFully staffed");
 					// ignore sources that are already fully staffed
 					return null;
 				}
 				let timer =
 					source.ticksToRegeneration -
 					creep.pos.findPathTo(source).length;
+				console.log("\tTimer: " + timer);
+				console.log("\tEnergy: " + source.energy);
 				if (
 					(source.energy > 0 || timer <= 0) &&
 					timer < refresh_active
