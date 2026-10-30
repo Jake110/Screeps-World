@@ -115,7 +115,7 @@ module.exports = {
 							return false;
 						}
 						if (creep.room.memory.walls) {
-							return creep.room.memory.walls.includes(
+							return !creep.room.memory.walls.includes(
 								coord_lib.pos_to_coord(structure.pos),
 							);
 						}
