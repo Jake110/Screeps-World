@@ -8,13 +8,6 @@ module.exports = {
 	harvest: function (creep) {
 		let target;
 		let room = Game.rooms[creep.memory.home];
-		console.log(
-			"Creep [" +
-				creep.name +
-				"] harvesting target [" +
-				creep.memory.target +
-				"]",
-		);
 		if (creep.memory.target) {
 			target = room.find(FIND_SOURCES, {
 				filter: { id: creep.memory.target },
@@ -43,9 +36,7 @@ module.exports = {
 			let refresh_active,
 				refresh_all = 300;
 			sources.forEach(function (source) {
-				console.log("Checking Source at: " + source.pos);
 				if (harvester_check(creep, source)) {
-					console.log("\tFully staffed");
 					// ignore sources that are already fully staffed
 					return null;
 				}
@@ -53,12 +44,6 @@ module.exports = {
 				let timer =
 					(isNaN(regen) ? 0 : regen) -
 					creep.pos.findPathTo(source).length;
-				console.log("\tTimer: " + timer);
-				console.log("\t\tTicks to regen: " + regen);
-				console.log(
-					"\t\tDistance: " + creep.pos.findPathTo(source).length,
-				);
-				console.log("\tEnergy: " + source.energy);
 				if (
 					(source.energy > 0 || timer <= 0) &&
 					timer < refresh_active
@@ -71,8 +56,6 @@ module.exports = {
 					refresh_all = timer;
 				}
 			});
-			console.log("Active Source: " + source_active);
-			console.log("Any Source: " + source_all);
 			if (source_active) {
 				target = source_active;
 			} else if (source_all) {
@@ -82,7 +65,6 @@ module.exports = {
 				creep.memory.target = target.id;
 			}
 		}
-		console.log(target);
 		if (target) {
 			let result = creep.harvest(target);
 			if (result == ERR_NOT_IN_RANGE) {
