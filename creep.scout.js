@@ -112,13 +112,11 @@ module.exports = {
 			}
 		} else if (
 			creep.memory.role == "guard" &&
-			length(
-				creep.pos.findInRange(FIND_MY_CREEPS, 1, {
-					filter: function (_creep) {
-						return _creep.memory.role == "medic";
-					},
-				}),
-			) == 0
+			creep.pos.findInRange(FIND_MY_CREEPS, 1, {
+				filter: function (_creep) {
+					return _creep.memory.role == "medic";
+				},
+			}).length == 0
 		) {
 			console.log("Guard [" + creep.name + "] awaiting arrival of Medic");
 		} else {
