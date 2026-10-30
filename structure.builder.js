@@ -1,67 +1,5 @@
 const memory = require("utility.memory");
 
-function step_with_coord(
-	x,
-	y,
-	target,
-	room,
-	pos_return = false,
-	leave = false,
-) {
-	let pass_room = false;
-	if (pos_return) {
-		pass_room = room;
-	}
-	return step_with_pos(room.getPositionAt(x, y), target, pass_room, leave);
-}
-
-function step_with_pos(pos, target, pos_return = false, leave = false) {
-	let x = pos.x;
-	let y = pos.y;
-	let direction = pos.getDirectionTo(target);
-	if (leave) {
-		if (direction > 4) {
-			direction -= 4;
-		} else {
-			direction += 4;
-		}
-	}
-	switch (direction) {
-		case 1:
-			y--;
-			break;
-		case 2:
-			x++;
-			y--;
-			break;
-		case 3:
-			x++;
-			break;
-		case 4:
-			x++;
-			y++;
-			break;
-		case 5:
-			y++;
-			break;
-		case 6:
-			x--;
-			y++;
-			break;
-		case 7:
-			x--;
-			break;
-		case 8:
-			x--;
-			y--;
-			break;
-	}
-	if (pos_return) {
-		return pos_return.getPositionAt(x, y);
-	}
-	return x + ":" + y;
-}
-
 function place_container(room, source_pos, spawn_pos) {
 	let harvest_points = [];
 	for (let x = -1; x <= 1; x++) {
@@ -183,12 +121,12 @@ function place_road(room, origin, target, mode, range = 0, force_tunnel) {
 						let terrain = Game.map.getRoomTerrain(_room);
 						for (let x = 1; x < 50; x++) {
 							for (let x = 1; x < 50; x++) {
-								if (
-									terrain.get(x, y) == TERRAIN_MASK_WALL
-								) {
-									let cost = 5
-									if (_room.memory.roads.includes(x + ":" + y)) {
-										cost = 10
+								if (terrain.get(x, y) == TERRAIN_MASK_WALL) {
+									let cost = 5;
+									if (
+										_room.memory.roads.includes(x + ":" + y)
+									) {
+										cost = 10;
 									}
 									costMatrix.set(x, y, cost);
 								}

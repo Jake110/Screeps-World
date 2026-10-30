@@ -1,6 +1,5 @@
 const combat = require("utility.combat");
 const hauler = require("creep.hauler");
-const memory = require("utility.memory");
 const worker = require("creep.worker");
 
 module.exports = {

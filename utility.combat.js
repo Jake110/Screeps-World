@@ -1,3 +1,5 @@
+const memory = require("utility.memory");
+
 function weigh_targets(pos, range, hostiles) {
 	let max_weight = 0;
 	let target = null;
