@@ -130,7 +130,7 @@ module.exports = {
 							return false;
 						}
 						if (creep.room.memory.roads) {
-							return creep.room.memory.roads.includes(
+							return !creep.room.memory.roads.includes(
 								coord_lib.pos_to_coord(structure.pos),
 							);
 						}
