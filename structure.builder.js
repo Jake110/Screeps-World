@@ -448,6 +448,10 @@ module.exports = {
 			coord_list = [coord_list];
 		}
 		coord_list.forEach(function (coord) {
+			if (typeof coord != "string") {
+				coord_list.splice(coord_list.indexOf(coord), 1);
+				return null;
+			}
 			pos = memory.coord_to_pos(coord, room);
 			let unfinished = true;
 			pos.lookFor(LOOK_STRUCTURES).forEach(function (structure) {
