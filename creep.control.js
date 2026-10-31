@@ -229,7 +229,7 @@ module.exports = {
 			},
 			{
 				name: "remote",
-				max: room.memory.remotes.length > 0 ? 1 : 0,
+				max: room.memory.remotes.length,
 			},
 			{
 				name: "scout",
