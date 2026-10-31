@@ -1,4 +1,5 @@
 const combat = require("utility.combat");
+const coord_lib = require("utility.coord");
 
 let structure_names = [
 	"containers",
@@ -8,15 +9,6 @@ let structure_names = [
 	"towers",
 	"walls",
 ];
-
-function coord_to_pos(coord, room) {
-	let split_coord = coord.split(":");
-	return room.getPositionAt(split_coord[0], split_coord[1]);
-}
-
-function pos_to_coord(pos) {
-	return pos.x + ":" + pos.y;
-}
 
 function set_up_list(room, path) {
 	if (path.constructor != Array) {
@@ -53,7 +45,7 @@ module.exports = {
 	build_pos: function (room) {
 		let pos_list = [];
 		this.build_coords(room).forEach(function (coord) {
-			pos_list.push(coord_to_pos(coord, room));
+			pos_list.push(coord_lib.coord_to_pos(coord, room));
 		});
 		return pos_list;
 	},
@@ -69,7 +61,7 @@ module.exports = {
 			}
 		}
 	},
-	coord_to_pos: coord_to_pos,
+	coord_to_pos: coord_lib.coord_to_pos,
 	build_map: function (map, home, room_name, range) {
 		if (!(room_name in map)) {
 			map[room_name] = {
@@ -116,14 +108,14 @@ module.exports = {
 			if (sources.length > 0) {
 				map.sources = [];
 				sources.forEach(function (source) {
-					map.sources.push(pos_to_coord(source.pos));
+					map.sources.push(coord_lib.pos_to_coord(source.pos));
 				});
 			}
 			let minerals = creep.room.find(FIND_MINERALS);
 			if (minerals.length > 0) {
 				map.mineral = {
 					type: minerals[0].mineralType,
-					coord: pos_to_coord(minerals[0].pos),
+					coord: coord_lib.pos_to_coord(minerals[0].pos),
 				};
 			}
 		}
@@ -150,12 +142,12 @@ module.exports = {
 			Memory.map[creep.room.name] = map;
 		}
 	},
-	pos_to_coord: pos_to_coord,
+	pos_to_coord: coord_lib.pos_to_coord,
 	set_up: function (room) {
 		let spawns = room.find(FIND_MY_SPAWNS);
 		if (spawns.length > 0) {
 			if (!room.memory.core) {
-				room.memory.core = pos_to_coord(spawns[0].pos);
+				room.memory.core = coord_lib.pos_to_coord(spawns[0].pos);
 			}
 			if (!room.memory.defend) {
 				room.memory.defend = [];
@@ -168,7 +160,7 @@ module.exports = {
 				}
 			});
 			spawns.forEach(function (spawn) {
-				let coord = pos_to_coord(spawn.pos);
+				let coord = coord_lib.pos_to_coord(spawn.pos);
 				if (!room.memory.spawns.includes(coord)) {
 					room.memory.spawns.push(coord);
 				}

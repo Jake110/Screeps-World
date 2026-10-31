@@ -1,5 +1,4 @@
 const hauler = require("creep.hauler");
-const memory = require("utility.memory");
 const spawn_util = require("utility.spawn");
 
 module.exports = {
