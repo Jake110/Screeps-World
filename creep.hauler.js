@@ -258,6 +258,7 @@ module.exports = {
 	get_collection_target: get_collection_target,
 	get_home_room: get_home_room,
 	recharge: function (creep) {
+		// Ensure towers are 75% charged
 		let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 			filter: function (structure) {
 				return (
@@ -268,6 +269,7 @@ module.exports = {
 			},
 		});
 		if (!target) {
+			// Recharge extensions
 			target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 				filter: function (structure) {
 					if (
@@ -276,7 +278,7 @@ module.exports = {
 							memory.pos_to_coord(structure.pos),
 						)
 					) {
-						// Ignore Extensions marked for dismantling
+						// Ignore extensions marked for dismantling
 						return false;
 					}
 					return (
@@ -290,6 +292,7 @@ module.exports = {
 		}
 		let creep_memory = creep.memory;
 		if (!target && creep_memory.role == "hauler") {
+			// Fully charge the towers
 			target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 				filter: function (structure) {
 					return (
@@ -300,6 +303,7 @@ module.exports = {
 			});
 		}
 		if (!target && creep_memory.role == "harvester") {
+			// Pass energy onto haulers
 			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 				filter: function (_creep) {
 					return (
@@ -313,6 +317,7 @@ module.exports = {
 			!target &&
 			(creep_memory.role == "harvester" || !this.can_work(creep))
 		) {
+			// Harvesters and creeps without WORK parts pass energy onto workers
 			target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
 				filter: function (_creep) {
 					return (
@@ -324,6 +329,7 @@ module.exports = {
 			});
 
 			if (!target) {
+				// Dump extra into storage
 				target = creep.room.find(FIND_MY_STRUCTURES, {
 					filter: function (structure) {
 						return structure.structureType == STRUCTURE_STORAGE;
@@ -332,8 +338,10 @@ module.exports = {
 			}
 			if (!target) {
 				if (creep.store.getFreeCapacity() > 0) {
+					// Collect more if there's space
 					creep_memory.full = false;
 				} else {
+					// Otherwise dump it into a container
 					target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
 						filter: function (structure) {
 							if (
