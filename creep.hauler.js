@@ -170,7 +170,7 @@ module.exports = {
 		return can_work;
 	},
 	capacity_check: function (creep, resource) {
-		if (creep.memory.full && creep.store[resource] == 0) {
+		if (creep.memory.full && creep.store[resource] < 5) {
 			creep.memory.full = false;
 		}
 		if (!creep.memory.full && creep.store.getFreeCapacity() == 0) {
