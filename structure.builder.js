@@ -104,7 +104,7 @@ function place_rampart(room, start, end) {
  */
 function place_road(room, origin, target, mode, range = 0, force_tunnel) {
 	let get_route = function (mode) {
-		let route = origin.findPathTo(target, {
+		let path = origin.findPathTo(target, {
 			ignoreCreeps: true,
 			ignoreRoads: true,
 			costCallback: function (room_name, costMatrix) {
@@ -141,8 +141,12 @@ function place_road(room, origin, target, mode, range = 0, force_tunnel) {
 			swampCost: 3,
 		});
 		for (; range > 0; range--) {
-			route.pop();
+			path.pop();
 		}
+		let route = [];
+		path.forEach(function (step) {
+			route.push(step.x + ":" + step.y);
+		});
 		return route;
 	};
 	let route = [];
@@ -157,8 +161,8 @@ function place_road(room, origin, target, mode, range = 0, force_tunnel) {
 			});
 		}
 	} else {
-		route.forEach(function (step) {
-			save_road(room, memory.pos_to_coord(step));
+		route.forEach(function (coord) {
+			save_road(room, coord);
 		});
 	}
 }
