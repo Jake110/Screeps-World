@@ -449,7 +449,17 @@ module.exports = {
 		}
 		coord_list.forEach(function (coord) {
 			if (typeof coord != "string") {
-				coord_list.splice(coord_list.indexOf(coord), 1);
+				let index = coord_list.indexOf(coord);
+				console.log(
+					"Removing [" +
+						path +
+						"] index [" +
+						index +
+						"] from room [" +
+						room.name +
+						"]",
+				);
+				coord_list.splice(index, 1);
 				return null;
 			}
 			pos = memory.coord_to_pos(coord, room);
