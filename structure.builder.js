@@ -118,7 +118,7 @@ function place_road(room, origin, target, mode, range = 0, force_tunnel) {
 						costMatrix.set(pos.x, pos.y, 0xff);
 					};
 					if (mode == "tunnels") {
-						let terrain = Game.map.getRoomTerrain(_room);
+						let terrain = Game.map.getRoomTerrain(_room.name);
 						for (let x = 1; x < 50; x++) {
 							for (let x = 1; x < 50; x++) {
 								if (terrain.get(x, y) == TERRAIN_MASK_WALL) {
