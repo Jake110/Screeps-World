@@ -348,6 +348,7 @@ module.exports = {
 				if (creep.memory.recycle) {
 					mode = "recycle";
 				}
+				console.log("["+mode+"] Creep ["+creep.name+"]")
 				let _spawn = saved_spawn(creep, mode);
 				if (!_spawn || _spawn.spawning) {
 					_spawn = spawn_util.get_spawn(
@@ -358,6 +359,7 @@ module.exports = {
 					);
 				}
 				if (_spawn) {
+					console.log("\tAt spawn ["+_spawn.pos+"]")
 					if (creep.room == _spawn.room) {
 						let result = null;
 						if (mode == "recycle") {
